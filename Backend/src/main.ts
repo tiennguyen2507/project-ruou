@@ -14,15 +14,13 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
+  // Enable CORS cho tất cả các URL (Render, Vercel, localhost, domain riêng,...)
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      process.env.CORS_ORIGIN || '*',
-    ],
+    origin: true, // Cho phép tất cả các origin truy cập (bao gồm https://project-ruou.onrender.com/)
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With, Range',
+    exposedHeaders: 'Content-Range, X-Content-Range',
   });
 
   // Global API Prefix
@@ -38,7 +36,7 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT || 5001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 NestJS Backend server is running at: http://localhost:${port}/api`);
   logger.log(`📦 Product endpoints:`);
