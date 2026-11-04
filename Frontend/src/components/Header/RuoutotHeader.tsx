@@ -79,61 +79,51 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
             </button>
 
             {/* Desktop Utility Links with Red Circle Outline Icons */}
-            <div className="hidden md:flex space-x-6 text-[13px] font-bold text-gray-800">
+            <div className="hidden lg:flex items-center gap-5 xl:gap-7 text-[13px] font-bold text-gray-800 shrink-0">
               <Link
                 href="/lien-he"
-                className="hover:text-[#b30000] flex items-center group transition"
+                className="hover:text-[#b30000] flex items-center group transition whitespace-nowrap shrink-0"
               >
-                <span className="w-6 h-6 rounded-full border border-[#b30000] flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition">
+                <span className="w-6 h-6 rounded-full border border-[#b30000] flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition shrink-0">
                   <Home className="w-3 h-3 text-[#b30000] group-hover:text-white" />
                 </span>
-                Về chúng tôi
+                <span>Về chúng tôi</span>
               </Link>
 
               <Link
                 href="/lien-he"
-                className="hover:text-[#b30000] flex items-center group transition"
+                className="hover:text-[#b30000] flex items-center group transition whitespace-nowrap shrink-0"
               >
-                <span className="w-6 h-6 rounded-full border border-[#b30000] flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition">
+                <span className="w-6 h-6 rounded-full border border-[#b30000] flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition shrink-0">
                   <Phone className="w-3 h-3 text-[#b30000] group-hover:text-white" />
                 </span>
-                Liên hệ
+                <span>Liên hệ</span>
               </Link>
 
               <Link
                 href="/lien-he"
-                className="hover:text-[#b30000] flex items-center group transition"
+                className="hover:text-[#b30000] flex items-center group transition whitespace-nowrap shrink-0"
               >
-                <span className="w-6 h-6 rounded-full border border-[#b30000] flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition">
+                <span className="w-6 h-6 rounded-full border border-[#b30000] flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition shrink-0">
                   <User className="w-3 h-3 text-[#b30000] group-hover:text-white" />
                 </span>
-                Dịch vụ khách hàng
-              </Link>
-
-              <Link
-                href="/admin"
-                className="hover:text-[#b30000] flex items-center group transition font-extrabold text-[#b30000]"
-              >
-                <span className="w-6 h-6 rounded-full border border-[#b30000] bg-red-100 flex items-center justify-center mr-1.5 group-hover:bg-[#b30000] group-hover:text-white transition">
-                  <ShieldCheck className="w-3 h-3 text-[#b30000] group-hover:text-white" />
-                </span>
-                Quản trị Admin
+                <span>Dịch vụ khách hàng</span>
               </Link>
             </div>
           </div>
 
           {/* Center: Official RƯỢU TỐT Logo */}
-          <div className="flex-shrink-0 z-10 text-center">
+          <div className="flex-shrink-0 z-10 text-center px-2">
             <Link href="/" className="block group">
-              <div className="flex items-center space-x-3 justify-center">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#b30000] to-[#800000] rounded-lg shadow flex items-center justify-center text-white font-serif font-black text-2xl md:text-3xl">
+              <div className="flex items-center space-x-2.5 justify-center">
+                <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-[#b30000] to-[#800000] rounded-lg shadow flex items-center justify-center text-white font-serif font-black text-2xl shrink-0">
                   R
                 </div>
-                <div className="text-left">
-                  <div className="font-serif font-black text-xl md:text-2xl text-[#b30000] tracking-tight leading-none group-hover:opacity-90 transition">
+                <div className="text-left shrink-0">
+                  <div className="font-serif font-black text-xl md:text-2xl text-[#b30000] tracking-tight leading-none group-hover:opacity-90 transition whitespace-nowrap">
                     RƯỢU TỐT
                   </div>
-                  <div className="text-[10px] md:text-[11px] font-medium text-gray-600 tracking-normal mt-0.5">
+                  <div className="text-[10px] md:text-[11px] font-medium text-gray-600 tracking-normal mt-0.5 whitespace-nowrap">
                     Rượu ngon dành cho người sành
                   </div>
                 </div>
@@ -143,7 +133,7 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
 
           {/* Right: Rounded Search Bar */}
           <div className="flex-1 flex justify-end items-center relative z-20">
-            <div ref={searchRef} className="hidden md:flex relative w-full max-w-[340px] z-30">
+            <div ref={searchRef} className="hidden md:flex relative w-full max-w-[280px] xl:max-w-[340px] z-30">
               <form
                 onSubmit={handleSearchSubmit}
                 className="relative rounded-full overflow-hidden bg-white h-10 w-full shadow-sm border border-gray-300"
@@ -208,15 +198,15 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
             </div>
 
             {/* Hotline number on top right */}
-            <div className="hidden lg:flex items-center ml-4 pl-4 border-l border-gray-300">
+            <div className="hidden lg:flex items-center ml-4 pl-4 border-l border-gray-300 shrink-0">
               <a
                 href={`tel:${siteConfig.hotline}`}
-                className="flex items-center space-x-1.5 text-[#b30000] font-bold text-xs"
+                className="flex items-center space-x-2 text-[#b30000] font-bold text-xs whitespace-nowrap"
               >
-                <div className="w-7 h-7 rounded-full bg-[#b30000] text-white flex items-center justify-center">
-                  <Phone className="w-3.5 h-3.5" />
+                <div className="w-8 h-8 rounded-full bg-[#b30000] text-white flex items-center justify-center shrink-0">
+                  <Phone className="w-4 h-4" />
                 </div>
-                <div>
+                <div className="whitespace-nowrap">
                   <div className="text-[10px] text-gray-500 leading-none">Hotline tư vấn</div>
                   <div className="text-sm text-[#b30000] font-extrabold leading-tight">
                     {siteConfig.hotlineDisplay}
@@ -231,17 +221,17 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
       {/* 2. Main Red Navigation Bar - exact ruoutot.net style: bg-[#b30000] */}
       <nav className="bg-[#b30000] hidden md:block sticky top-0 z-[60] w-full shadow-md">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-center items-stretch text-white text-[12px] font-semibold tracking-wider uppercase space-x-6">
+          <div className="flex justify-between items-center text-white text-[11px] lg:text-[12px] font-bold tracking-normal uppercase w-full py-0">
             <Link
               href="/"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
               Trang chủ
             </Link>
 
             <Link
               href="/san-pham?quoc-gia=Chile"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition relative group"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition relative group whitespace-nowrap shrink-0"
             >
               <span>Vang Chile</span>
               <span className="ml-1 text-[9px] bg-[#f9d776] text-[#b30000] px-1 rounded font-black">
@@ -251,50 +241,50 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
 
             <Link
               href="/san-pham?quoc-gia=Ý"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
               Rượu Vang Ý
             </Link>
 
             <Link
               href="/san-pham?quoc-gia=Pháp"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
               Rượu Vang Pháp
             </Link>
 
             <Link
               href="/san-pham?loai-vang=Champagne"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
-              Champagne & Vang Sủi
+              Champagne &amp; Sủi
             </Link>
 
             <Link
               href="/san-pham?loai-vang=Không Cồn"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
-              Vang 0.0% & Cocktail
+              Vang 0.0% &amp; Cocktail
             </Link>
 
             <Link
               href="/bao-gia-2026"
-              className="flex items-center py-3.5 text-[#f9d776] font-bold hover:underline transition"
+              className="flex items-center py-3.5 text-[#f9d776] font-bold hover:underline transition whitespace-nowrap shrink-0"
             >
-              <FileText className="w-3.5 h-3.5 mr-1" />
-              Báo Giá 2026 (PDF)
+              <FileText className="w-3.5 h-3.5 mr-1 shrink-0" />
+              <span>Báo Giá 2026</span>
             </Link>
 
             <Link
               href="/kien-thuc-ruou-vang"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
               Cẩm Nang Vang
             </Link>
 
             <Link
               href="/lien-he"
-              className="flex items-center py-3.5 hover:text-[#f9d776] transition"
+              className="flex items-center py-3.5 hover:text-[#f9d776] transition whitespace-nowrap shrink-0"
             >
               Hệ Thống Cửa Hàng
             </Link>
@@ -304,27 +294,27 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
 
       {/* 3. Sub-Value Bar - exact ruoutot.net proposition strip */}
       <div className="bg-[#f8f8f8] border-b border-gray-200 hidden md:block py-2 text-xs text-gray-700">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-[11px] font-semibold text-gray-600">
-          <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition">
-            <Gift className="w-3.5 h-3.5 text-[#b30000]" />
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-[11px] font-semibold text-gray-600 gap-3 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition whitespace-nowrap shrink-0">
+            <Gift className="w-3.5 h-3.5 text-[#b30000] shrink-0" />
             <span>Quà tặng doanh nghiệp</span>
           </div>
 
-          <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition">
-            <Gift className="w-3.5 h-3.5 text-[#b30000]" />
+          <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition whitespace-nowrap shrink-0">
+            <Gift className="w-3.5 h-3.5 text-[#b30000] shrink-0" />
             <span>Quà tặng cá nhân</span>
           </div>
 
-          <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition">
-            <Truck className="w-3.5 h-3.5 text-[#b30000]" />
+          <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition whitespace-nowrap shrink-0">
+            <Truck className="w-3.5 h-3.5 text-[#b30000] shrink-0" />
             <span>Giao hàng và đổi trả</span>
           </div>
 
           <a
             href={`tel:${siteConfig.hotline}`}
-            className="flex items-center gap-1.5 hover:text-[#b30000] transition"
+            className="flex items-center gap-1.5 hover:text-[#b30000] transition whitespace-nowrap shrink-0"
           >
-            <Headphones className="w-3.5 h-3.5 text-[#b30000]" />
+            <Headphones className="w-3.5 h-3.5 text-[#b30000] shrink-0" />
             <span>Liên hệ đội ngũ tư vấn ({siteConfig.hotlineDisplay})</span>
           </a>
         </div>

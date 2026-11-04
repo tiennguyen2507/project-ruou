@@ -520,34 +520,31 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* Top Header Bar */}
-      <header className="bg-[#b30000] text-white shadow-md sticky top-0 z-40 border-b border-red-800">
-        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex flex-col md:flex-row items-center justify-between gap-3">
+      {/* Top Standalone Admin Header Bar */}
+      <header className="bg-slate-900 text-white shadow-xl sticky top-0 z-40 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-3.5 flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="w-10 h-10 bg-white text-[#b30000] rounded-lg font-serif font-black text-2xl flex items-center justify-center shadow hover:opacity-95"
-            >
+            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 text-white rounded-xl flex items-center justify-center font-serif font-black text-2xl shadow-md shrink-0">
               R
-            </Link>
+            </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-bold text-lg sm:text-xl tracking-tight">
-                  Quản Trị Rượu Tốt (Huy Phong Admin)
+                <h1 className="font-extrabold text-base sm:text-lg tracking-wide text-white uppercase whitespace-nowrap">
+                  RƯỢU TỐT — ADMIN PORTAL
                 </h1>
-                <span className="bg-red-950/80 text-yellow-300 text-[10px] uppercase font-black px-2 py-0.5 rounded border border-yellow-500/40">
-                  Dashboard
+                <span className="bg-red-900/60 text-yellow-300 text-[10px] uppercase font-black px-2 py-0.5 rounded border border-yellow-500/40 whitespace-nowrap">
+                  Trang Quản Trị Riêng
                 </span>
               </div>
-              <p className="text-xs text-red-100">
-                Quản lý 111+ dòng vang nhập khẩu, bảng giá 2026 và tối ưu hình ảnh Cloudinary
+              <p className="text-[11px] text-slate-400 whitespace-nowrap">
+                Hệ thống quản lý 111+ dòng vang, bảng giá 2026 &amp; tối ưu lưu trữ Cloudinary
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
             {/* Cloudinary Status Indicator */}
-            <div className="flex items-center gap-1.5 bg-red-950/70 border border-red-800 px-3 py-1.5 rounded-lg text-xs text-red-100">
+            <div className="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-200 whitespace-nowrap">
               <Cloud className="w-4 h-4 text-sky-400 animate-pulse" />
               <span>Cloudinary:</span>
               <span className="font-semibold text-sky-300">Folder &apos;ruoutot_products&apos;</span>
@@ -558,24 +555,24 @@ export default function AdminDashboardPage() {
               onClick={handleReSeed}
               disabled={refreshing}
               title="Đồng bộ lại danh sách 111 sản phẩm gốc"
-              className="flex items-center gap-1.5 bg-red-800 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-red-600 transition"
+              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition whitespace-nowrap"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} />
               <span>Đồng bộ gốc</span>
             </button>
 
             <Link
-              href="/san-pham"
+              href="/"
               target="_blank"
-              className="flex items-center gap-1.5 bg-white text-[#b30000] hover:bg-gray-100 px-3 py-1.5 rounded-lg text-xs font-bold shadow transition"
+              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition whitespace-nowrap"
             >
-              <Eye className="w-3.5 h-3.5" />
-              <span>Xem Cửa Hàng</span>
+              <Eye className="w-3.5 h-3.5 text-sky-400" />
+              <span>Xem Web Khách ↗</span>
             </Link>
 
             <button
               onClick={openCreateModal}
-              className="flex items-center gap-1.5 bg-[#f9d776] hover:bg-yellow-400 text-[#7a0000] px-3.5 py-1.5 rounded-lg text-xs font-black shadow transition"
+              className="flex items-center gap-1.5 bg-[#f9d776] hover:bg-yellow-400 text-red-950 px-3.5 py-1.5 rounded-lg text-xs font-black shadow transition whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               <span>Thêm Sản Phẩm Mới</span>
@@ -2049,6 +2046,20 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Dedicated Standalone Admin Portal Footer */}
+      <footer className="mt-16 py-6 border-t border-gray-200 bg-white text-center text-xs text-gray-500">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="font-medium text-gray-700">
+            Hệ Thống Quản Trị Rượu Tốt (Huy Phong Wine Admin Portal) — Báo Giá 2026
+          </p>
+          <div className="flex items-center gap-2 text-[11px] text-gray-400">
+            <span>Trang quản trị nội bộ độc lập</span>
+            <span>•</span>
+            <span className="text-sky-600 font-medium">Cloudinary: daqwg8oql / ruoutot_products</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

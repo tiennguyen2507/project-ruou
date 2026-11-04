@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/data/siteConfig";
 import {
   MapPin,
@@ -14,6 +15,11 @@ import {
 } from "lucide-react";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide customer footer on admin portal
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="bg-[#dfdfdf] text-gray-800 pt-10 pb-8 border-t-2 border-gray-300 relative overflow-hidden">
       {/* Giant R background Watermark like Ruoutot */}
@@ -118,15 +124,6 @@ export default function Footer() {
               Báo Giá & Dịch Vụ
             </h4>
             <ul className="text-[12px] space-y-1.5 text-gray-700">
-              <li>
-                <Link
-                  href="/admin"
-                  className="text-red-700 font-bold hover:underline flex items-center gap-1"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Trang Quản Trị Hệ Thống (Admin Dashboard)</span>
-                </Link>
-              </li>
               <li>
                 <Link
                   href="/bao-gia-2026"
