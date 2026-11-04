@@ -23,8 +23,10 @@ async function bootstrap() {
     exposedHeaders: 'Content-Range, X-Content-Range',
   });
 
-  // Global API Prefix
-  app.setGlobalPrefix('api');
+  // Global API Prefix with root & health check exclusions
+  app.setGlobalPrefix('api', {
+    exclude: ['/', 'health', 'api', 'api/health'],
+  });
 
   // Normalize duplicate slashes (e.g. //products) and route /products -> /api/products
   app.use((req: any, res: any, next: any) => {

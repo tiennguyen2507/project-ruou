@@ -3,12 +3,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { AppController } from './app.controller';
 import * as mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 let memoryServerInstance: MongoMemoryServer | null = null;
 
 @Module({
+  controllers: [AppController],
   imports: [
     // Global Config
     ConfigModule.forRoot({
