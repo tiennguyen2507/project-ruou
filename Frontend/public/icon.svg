@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="wineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b30000"/>
+      <stop offset="50%" stop-color="#720b18"/>
+      <stop offset="100%" stop-color="#4a0606"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe28a"/>
+      <stop offset="50%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#aa820a"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  
+  <!-- Rounded Shield Base -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#wineGrad)" stroke="url(#goldGrad)" stroke-width="16" filter="url(#shadow)"/>
+  
+  <!-- Inner Gold Filigree Border -->
+  <rect x="48" y="48" width="416" height="416" rx="88" fill="none" stroke="url(#goldGrad)" stroke-width="4" stroke-opacity="0.6" stroke-dasharray="8 6"/>
+
+  <!-- Serif Letter 'R' for RƯỢU TỐT -->
+  <text x="256" y="340" font-family="'Playfair Display', Georgia, 'Times New Roman', serif" font-size="300" font-weight="900" text-anchor="middle" fill="url(#goldGrad)" filter="url(#shadow)">R</text>
+
+  <!-- Crown / Star Accent on Top -->
+  <polygon points="256,92 266,118 294,118 272,134 280,160 256,144 232,160 240,134 218,118 246,118" fill="url(#goldGrad)"/>
+</svg>

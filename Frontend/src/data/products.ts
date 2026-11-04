@@ -45,6 +45,8 @@ export interface WineProduct {
   isBestSeller?: boolean;
   image: string;
   cloudinaryPublicId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export function getApiBaseUrl(): string {

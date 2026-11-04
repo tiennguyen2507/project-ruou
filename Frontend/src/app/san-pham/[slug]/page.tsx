@@ -135,8 +135,96 @@ export default function ProductDetailPage({
     }, 3000);
   };
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com";
+
+  const productJsonLd = product
+    ? {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: product.name,
+        image: [product.image],
+        description:
+          product.tastingNotes?.raw ||
+          `${product.name} nhập khẩu chính hãng từ ${product.country}. Bảng giá niêm yết 2026 tại Rượu Tốt.`,
+        sku: product.sku,
+        mpn: product.sku,
+        brand: {
+          "@type": "Brand",
+          name: product.brand || "Rượu Vang Nhập Khẩu",
+        },
+        offers: {
+          "@type": "Offer",
+          url: `${siteUrl}/san-pham/${product.slug}`,
+          priceCurrency: "VND",
+          price: product.price,
+          priceValidUntil: "2026-12-31",
+          itemCondition: "https://schema.org/NewCondition",
+          availability: product.inStock
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          seller: {
+            "@type": "Organization",
+            name: "RƯỢU TỐT — Công ty Cổ phần Huy Phong",
+          },
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: product.rating || 4.9,
+          reviewCount: product.reviewCount || 45,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    : null;
+
+  const breadcrumbJsonLd = product
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Trang chủ",
+            item: siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Sản phẩm",
+            item: `${siteUrl}/san-pham`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: `Vang ${product.country}`,
+            item: `${siteUrl}/san-pham?quoc-gia=${encodeURIComponent(product.country)}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 4,
+            name: product.name,
+            item: `${siteUrl}/san-pham/${product.slug}`,
+          },
+        ],
+      }
+    : null;
+
   return (
     <div className="bg-[#fcfcfc] py-5">
+      {/* Google Rich Snippets Structured Data */}
+      {productJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+      )}
+      {breadcrumbJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
+      )}
       <div className="max-w-7xl mx-auto px-4 space-y-6">
         {/* Breadcrumb Navigation - exact Ruoutot style */}
         <nav

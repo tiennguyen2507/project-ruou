@@ -72,6 +72,20 @@ export default function PriceListPage() {
 
     return (
       <div className="bg-[#fbfbfb] py-8">
+        {/* Google PriceSpecification JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: "Bảng Báo Giá Rượu Vang Niêm Yết 2026 — Công Ty CP Huy Phong",
+              description:
+                "Tra cứu bảng giá niêm yết bán lẻ & nguyên thùng 111+ dòng rượu vang Chile, Pháp, Ý, Tây Ban Nha, Úc chính hãng 2026. Tải PDF chính thức.",
+              url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com"}/bao-gia-2026`,
+            }),
+          }}
+        />
         <div className="max-w-7xl mx-auto px-4 space-y-6">
           {/* Document Header Card */}
           <div className="bg-gradient-to-r from-[#4a0606] via-[#720b18] to-[#4a0606] text-white p-6 sm:p-8 rounded-3xl shadow-lg border-2 border-[#d4af37]">

@@ -87,6 +87,11 @@ export default function HomePage() {
 
   return (
     <div className="space-y-12 pb-16 bg-[#fafafa]">
+      {/* Primary Semantic H1 for Google Search Crawlers */}
+      <h1 className="sr-only">
+        RƯỢU TỐT — Hệ Thống Rượu Vang Nhập Khẩu Chính Hãng &amp; Bảng Báo Giá 2026 (Công Ty CP Huy Phong)
+      </h1>
+
       {/* 1. HERO CAROUSEL - Ruoutot Full Width Luxury Slider */}
       <section className="relative w-full overflow-hidden bg-black aspect-[16/6] min-h-[360px] md:min-h-[500px]">
         {heroSlides.map((slide, idx) => (
@@ -105,9 +110,9 @@ export default function HomePage() {
               <span className="text-[#f9d776] text-xs md:text-sm font-bold tracking-widest uppercase mb-1 drop-shadow">
                 {slide.subtitle}
               </span>
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif font-black text-white tracking-wide mb-6 drop-shadow-md">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-serif font-black text-white tracking-wide mb-6 drop-shadow-md">
                 {slide.title}
-              </h1>
+              </h2>
               <Link
                 href={slide.link}
                 className="bg-[#b30000] hover:bg-[#850000] text-white font-bold px-8 py-3 rounded-full text-xs md:text-sm uppercase tracking-wider transition shadow-2xl border border-white/20 hover:scale-105"

@@ -120,6 +120,21 @@ function ProductCatalogContent() {
 
   return (
     <div className="space-y-10 pb-16 bg-[#fafafa]">
+      {/* Google CollectionPage Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "Danh Mục Rượu Vang Nhập Khẩu Chính Hãng — RƯỢU TỐT",
+            description:
+              "Khám phá 111+ dòng rượu vang Chile, Pháp, Ý, Tây Ban Nha, Úc, Champagne chính hãng với bảng giá 2026 niêm yết tốt nhất.",
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com"}/san-pham`,
+            numberOfItems: sortedProducts.length,
+          }),
+        }}
+      />
       {/* 1. TOP HERO CATEGORY BANNER - Ruoutot exact aesthetic */}
       <section className="relative w-full overflow-hidden bg-stone-900 min-h-[300px] md:min-h-[420px] flex items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
