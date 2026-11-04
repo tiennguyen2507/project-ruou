@@ -47,8 +47,16 @@ export interface WineProduct {
   cloudinaryPublicId?: string;
 }
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+export function getApiBaseUrl(): string {
+  let url = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").trim();
+  url = url.replace(/\/+$/, "");
+  if (!url.endsWith("/api")) {
+    url = `${url}/api`;
+  }
+  return url;
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Empty fallback array - All data is fetched 100% dynamically from Backend

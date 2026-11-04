@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/data/siteConfig";
-import { WineProduct } from "@/data/products";
+import { WineProduct, getApiBaseUrl } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatPrice } from "@/lib/utils";
@@ -39,7 +39,7 @@ export default function MainHeader({ onToggleMobileMenu }: MainHeaderProps) {
       return;
     }
     const timer = setTimeout(() => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const apiUrl = getApiBaseUrl();
       fetch(`${apiUrl}/products?search=${encodeURIComponent(searchQuery.trim())}&limit=6`)
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {

@@ -26,6 +26,17 @@ async function bootstrap() {
   // Global API Prefix
   app.setGlobalPrefix('api');
 
+  // Normalize duplicate slashes (e.g. //products) and route /products -> /api/products
+  app.use((req: any, res: any, next: any) => {
+    if (typeof req.url === 'string') {
+      req.url = req.url.replace(/^\/+/, '/');
+      if (req.url.startsWith('/products')) {
+        req.url = `/api${req.url}`;
+      }
+    }
+    next();
+  });
+
   // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({

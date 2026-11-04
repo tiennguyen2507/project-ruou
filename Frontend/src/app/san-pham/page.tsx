@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { WineProduct, fetchAllProducts } from "@/data/products";
+import { WineProduct, fetchAllProducts, getApiBaseUrl } from "@/data/products";
 import ProductCard from "@/components/Product/ProductCard";
 import {
   Filter,
@@ -29,7 +29,7 @@ function ProductCatalogContent() {
   const [sortBy, setSortBy] = useState<string>("featured");
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const apiUrl = getApiBaseUrl();
     fetch(`${apiUrl}/products?limit=200`)
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { WineProduct } from "@/data/products";
+import { WineProduct, getApiBaseUrl } from "@/data/products";
 import { siteConfig } from "@/data/siteConfig";
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/Product/ProductCard";
@@ -37,7 +37,7 @@ export default function ProductDetailPage({
   const [notFoundState, setNotFoundState] = useState(false);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const apiUrl = getApiBaseUrl();
     // 1. Fetch product detail by slug
     fetch(`${apiUrl}/products/slug/${encodeURIComponent(slug)}`)
       .then((res) => {
