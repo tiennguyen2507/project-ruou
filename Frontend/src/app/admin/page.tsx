@@ -522,57 +522,68 @@ export default function AdminDashboardPage() {
 
       {/* Top Standalone Admin Header Bar */}
       <header className="bg-slate-900 text-white shadow-xl sticky top-0 z-40 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-3.5 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 text-white rounded-xl flex items-center justify-center font-serif font-black text-2xl shadow-md shrink-0">
-              R
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-extrabold text-base sm:text-lg tracking-wide text-white uppercase whitespace-nowrap">
-                  RƯỢU TỐT — ADMIN PORTAL
-                </h1>
-                <span className="bg-red-900/60 text-yellow-300 text-[10px] uppercase font-black px-2 py-0.5 rounded border border-yellow-500/40 whitespace-nowrap">
-                  Trang Quản Trị Riêng
-                </span>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
+          <div className="flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-red-600 to-red-800 text-white rounded-xl flex items-center justify-center font-serif font-black text-xl sm:text-2xl shadow-md shrink-0">
+                R
               </div>
-              <p className="text-[11px] text-slate-400 whitespace-nowrap">
-                Hệ thống quản lý 111+ dòng vang, bảng giá 2026 &amp; tối ưu lưu trữ Cloudinary
-              </p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h1 className="font-extrabold text-sm sm:text-base md:text-lg tracking-wide text-white uppercase truncate">
+                    RƯỢU TỐT ADMIN
+                  </h1>
+                  <span className="bg-red-900/60 text-yellow-300 text-[9px] sm:text-[10px] uppercase font-black px-1.5 py-0.5 rounded border border-yellow-500/40 shrink-0">
+                    Portal
+                  </span>
+                </div>
+                <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1">
+                  Quản lý 111+ dòng vang • Bảng giá 2026 • Cloudinary
+                </p>
+              </div>
             </div>
+
+            {/* Mobile quick "+ Thêm SP" button on top bar for SP */}
+            <button
+              onClick={openCreateModal}
+              className="flex md:hidden items-center gap-1 bg-[#f9d776] active:bg-yellow-400 text-red-950 px-3 py-1.5 rounded-lg text-xs font-black shadow transition shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Thêm SP</span>
+            </button>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             {/* Cloudinary Status Indicator */}
-            <div className="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-200 whitespace-nowrap">
-              <Cloud className="w-4 h-4 text-sky-400 animate-pulse" />
-              <span>Cloudinary:</span>
-              <span className="font-semibold text-sky-300">Folder &apos;ruoutot_products&apos;</span>
-              <span className="w-2 h-2 rounded-full bg-green-400 ml-1"></span>
+            <div className="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs text-slate-200">
+              <Cloud className="w-3.5 h-3.5 text-sky-400 animate-pulse shrink-0" />
+              <span className="hidden sm:inline">Cloudinary:</span>
+              <span className="font-semibold text-sky-300">ruoutot_products</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 ml-0.5 shrink-0"></span>
             </div>
 
             <button
               onClick={handleReSeed}
               disabled={refreshing}
               title="Đồng bộ lại danh sách 111 sản phẩm gốc"
-              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition whitespace-nowrap"
+              className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold border border-slate-600 transition"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} />
-              <span>Đồng bộ gốc</span>
+              <span className="hidden xs:inline">Đồng bộ gốc</span>
             </button>
 
             <Link
               href="/"
               target="_blank"
-              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition whitespace-nowrap"
+              className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold border border-slate-600 transition"
             >
               <Eye className="w-3.5 h-3.5 text-sky-400" />
-              <span>Xem Web Khách ↗</span>
+              <span>Xem Web ↗</span>
             </Link>
 
             <button
               onClick={openCreateModal}
-              className="flex items-center gap-1.5 bg-[#f9d776] hover:bg-yellow-400 text-red-950 px-3.5 py-1.5 rounded-lg text-xs font-black shadow transition whitespace-nowrap"
+              className="hidden md:flex items-center gap-1.5 bg-[#f9d776] hover:bg-yellow-400 text-red-950 px-3.5 py-1.5 rounded-lg text-xs font-black shadow transition whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               <span>Thêm Sản Phẩm Mới</span>
@@ -582,87 +593,63 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 pt-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
         {/* Metrics Banner */}
-        <section className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-red-50 text-[#b30000] flex items-center justify-center shrink-0">
-              <Wine className="w-5 h-5" />
+        <section className="grid grid-cols-2 md:grid-cols-5 gap-2.5 sm:gap-4">
+          <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-red-50 text-[#b30000] flex items-center justify-center shrink-0">
+              <Wine className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="text-xs text-gray-500 font-medium">Tổng Sản Phẩm</div>
-              <div className="text-xl font-black text-gray-800">{metrics.total}</div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-50 text-green-700 flex items-center justify-center shrink-0">
-              <Package className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs text-gray-500 font-medium">Còn Hàng</div>
-              <div className="text-xl font-black text-green-700">{metrics.inStockCount}</div>
+            <div className="min-w-0">
+              <div className="text-[11px] sm:text-xs text-gray-500 font-medium truncate">Tổng Sản Phẩm</div>
+              <div className="text-lg sm:text-xl font-black text-gray-800">{metrics.total}</div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-              <AlertCircle className="w-5 h-5" />
+          <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-green-50 text-green-700 flex items-center justify-center shrink-0">
+              <Package className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="text-xs text-gray-500 font-medium">Hết Hàng</div>
-              <div className="text-xl font-black text-amber-600">{metrics.outOfStockCount}</div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
-              <Cloud className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs text-gray-500 font-medium">Ảnh Cloudinary</div>
-              <div className="text-xl font-black text-sky-600">{metrics.cloudinaryCount} SP</div>
+            <div className="min-w-0">
+              <div className="text-[11px] sm:text-xs text-gray-500 font-medium truncate">Còn Hàng</div>
+              <div className="text-lg sm:text-xl font-black text-green-700">{metrics.inStockCount}</div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3 col-span-2 md:col-span-1">
-            <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
-              <DollarSign className="w-5 h-5" />
+          <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="text-xs text-gray-500 font-medium">Giá Trị Kho Ước Tính</div>
-              <div className="text-sm font-extrabold text-purple-800">
+            <div className="min-w-0">
+              <div className="text-[11px] sm:text-xs text-gray-500 font-medium truncate">Hết Hàng</div>
+              <div className="text-lg sm:text-xl font-black text-amber-600">{metrics.outOfStockCount}</div>
+            </div>
+          </div>
+
+          <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+              <Cloud className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[11px] sm:text-xs text-gray-500 font-medium truncate">Ảnh Cloudinary</div>
+              <div className="text-lg sm:text-xl font-black text-sky-600">{metrics.cloudinaryCount} SP</div>
+            </div>
+          </div>
+
+          <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-2.5 sm:gap-3 col-span-2 md:col-span-1">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[11px] sm:text-xs text-gray-500 font-medium truncate">Giá Trị Kho Ước Tính</div>
+              <div className="text-xs sm:text-sm font-extrabold text-purple-800 truncate">
                 {formatPrice(metrics.totalInventoryValue)}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Cloudinary Feature Reminder Card */}
-        <div className="bg-gradient-to-r from-blue-900 to-indigo-950 text-white rounded-xl p-4 shadow-sm border border-blue-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 bg-blue-500/20 rounded-lg text-sky-300 mt-0.5">
-              <Cloud className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="font-bold text-sm text-sky-200 flex items-center gap-2">
-                Hệ thống lưu trữ ảnh Cloudinary tự động tối ưu
-                <span className="text-[10px] bg-green-500/30 text-green-300 px-2 py-0.5 rounded border border-green-400/30">
-                  Folder: ruoutot_products
-                </span>
-              </h2>
-              <p className="text-xs text-gray-300 mt-0.5">
-                • <strong>Khi Cập Nhật Ảnh:</strong> Tự động xóa vĩnh viễn ảnh cũ trên Cloudinary để
-                tiết kiệm dung lượng và thay thế ảnh mới chuẩn WebP/Auto Quality.
-                <br />• <strong>Khi Xóa Sản Phẩm:</strong> Tự động xóa luôn file ảnh trên
-                Cloudinary tương ứng.
-              </p>
-            </div>
-          </div>
-          <div className="shrink-0 text-xs text-sky-300 font-mono bg-blue-950/80 px-3 py-2 rounded border border-blue-800/80">
-            CLOUDINARY_URL: 571933744629575:***@daqwg8oql
-          </div>
-        </div>
+
 
         {/* Filter & Search Bar */}
         <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-3">
@@ -691,7 +678,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Quick Filters */}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
               {/* Country */}
               <select
                 value={countryFilter}
@@ -700,7 +687,7 @@ export default function AdminDashboardPage() {
                   setCurrentPage(1);
                 }}
                 aria-label="Lọc theo quốc gia"
-                className="border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
+                className="w-full sm:w-auto border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
               >
                 <option value="all">Mọi Quốc Gia ({products.length})</option>
                 {availableCountries.map((c) => (
@@ -718,7 +705,7 @@ export default function AdminDashboardPage() {
                   setCurrentPage(1);
                 }}
                 aria-label="Lọc theo loại vang"
-                className="border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
+                className="w-full sm:w-auto border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
               >
                 <option value="all">Mọi Loại Vang</option>
                 {availableWineTypes.map((wt) => (
@@ -736,7 +723,7 @@ export default function AdminDashboardPage() {
                   setCurrentPage(1);
                 }}
                 aria-label="Lọc theo trạng thái kho"
-                className="border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
+                className="w-full sm:w-auto border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
               >
                 <option value="all">Tất cả tồn kho</option>
                 <option value="in-stock">Còn hàng ({metrics.inStockCount})</option>
@@ -751,7 +738,7 @@ export default function AdminDashboardPage() {
                   setCurrentPage(1);
                 }}
                 aria-label="Lọc theo ảnh Cloudinary"
-                className="border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
+                className="w-full sm:w-auto border border-gray-300 rounded-lg px-2.5 py-2 text-xs font-medium bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b30000]"
               >
                 <option value="all">Mọi nguồn ảnh</option>
                 <option value="cloudinary">Ảnh Cloudinary ({metrics.cloudinaryCount})</option>
@@ -772,7 +759,7 @@ export default function AdminDashboardPage() {
                     setCloudinaryFilter("all");
                     setCurrentPage(1);
                   }}
-                  className="text-xs text-red-600 hover:underline px-2 font-medium"
+                  className="col-span-2 sm:col-span-1 text-xs text-red-600 hover:underline px-2 py-1 font-medium text-center"
                 >
                   Xóa bộ lọc
                 </button>
@@ -824,8 +811,155 @@ export default function AdminDashboardPage() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+            <>
+              {/* 1. Mobile Card List for Smartphones (SP) */}
+              <div className="block md:hidden divide-y divide-gray-200 bg-white">
+                {paginatedProducts.map((product, idx) => {
+                  const isCloudinary =
+                    Boolean(product.cloudinaryPublicId) ||
+                    product.image?.includes("res.cloudinary.com");
+                  const indexNumber = (currentPage - 1) * itemsPerPage + idx + 1;
+
+                  return (
+                    <div
+                      key={product._id}
+                      className="p-3.5 space-y-3 bg-white hover:bg-amber-50/20 transition"
+                    >
+                      <div className="flex gap-3">
+                        {/* Bottle Thumbnail */}
+                        <div className="relative w-16 h-20 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center p-1 shrink-0">
+                          <img
+                            src={product.image || "/images/products/santa-carolina-carmenere.jpg"}
+                            alt={product.name}
+                            className="object-contain max-h-full max-w-full"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src =
+                                "/images/products/santa-carolina-carmenere.jpg";
+                            }}
+                          />
+                          {isCloudinary && (
+                            <div
+                              title="Đã lưu Cloudinary"
+                              className="absolute bottom-0 right-0 bg-sky-600 text-white p-0.5 rounded-tl text-[8px]"
+                            >
+                              <Cloud className="w-2.5 h-2.5" />
+                            </div>
+                          )}
+                          <span className="absolute top-0 left-0 bg-black/60 text-white text-[9px] font-mono px-1 rounded-br">
+                            #{indexNumber}
+                          </span>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-mono text-[10px] bg-gray-100 text-gray-700 font-bold px-1.5 py-0.5 rounded">
+                              {product.sku}
+                            </span>
+                            {product.vintage && (
+                              <span className="text-[10px] bg-red-50 text-red-700 font-semibold px-1.5 py-0.5 rounded">
+                                {product.vintage}
+                              </span>
+                            )}
+                            {isCloudinary ? (
+                              <span className="text-[9px] bg-sky-100 text-sky-800 font-semibold px-1 py-0.5 rounded flex items-center gap-0.5">
+                                <Cloud className="w-2.5 h-2.5" />
+                                Cloudinary
+                              </span>
+                            ) : (
+                              <span className="text-[9px] bg-gray-100 text-gray-500 px-1 py-0.5 rounded">
+                                Local
+                              </span>
+                            )}
+                          </div>
+
+                          <h4 className="font-bold text-gray-900 text-sm mt-1 line-clamp-2 leading-snug">
+                            {product.name}
+                          </h4>
+
+                          <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-1 flex-wrap">
+                            <span className="font-medium text-gray-800">{product.country}</span>
+                            <span>•</span>
+                            <span>{product.wineType}</span>
+                            <span>•</span>
+                            <span>{product.alcohol || `${product.alcoholNumeric}%`}</span>
+                          </div>
+
+                          {/* Price & Stock info */}
+                          <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-gray-100">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="font-bold text-[#b30000] text-sm">
+                                {formatPrice(product.price)}
+                              </span>
+                              {product.originalPrice > product.price && (
+                                <span className="text-[10px] text-gray-400 line-through">
+                                  {formatPrice(product.originalPrice)}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Quick InStock Toggle */}
+                            <button
+                              onClick={() => handleToggleStock(product)}
+                              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border transition shrink-0 ${
+                                product.inStock
+                                  ? "bg-green-50 text-green-700 border-green-300 active:bg-green-100"
+                                  : "bg-red-50 text-red-700 border-red-300 active:bg-red-100"
+                              }`}
+                            >
+                              {product.inStock ? `Còn hàng (${product.stockCount})` : "Hết hàng"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4 Touch-friendly Action Buttons for SP */}
+                      <div className="grid grid-cols-4 gap-1.5 pt-1">
+                        <button
+                          onClick={() => openUploadModal(product)}
+                          title="Tải ảnh mới lên Cloudinary"
+                          className="flex items-center justify-center gap-1 bg-sky-50 active:bg-sky-100 text-sky-700 py-2 rounded-lg border border-sky-200 text-xs font-semibold"
+                        >
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>Đổi ảnh</span>
+                        </button>
+
+                        <button
+                          onClick={() => openEditModal(product)}
+                          title="Chỉnh sửa sản phẩm"
+                          className="flex items-center justify-center gap-1 bg-amber-50 active:bg-amber-100 text-amber-800 py-2 rounded-lg border border-amber-200 text-xs font-semibold"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span>Sửa</span>
+                        </button>
+
+                        <Link
+                          href={`/san-pham/${product.slug}`}
+                          target="_blank"
+                          title="Xem web khách"
+                          className="flex items-center justify-center gap-1 bg-gray-100 active:bg-gray-200 text-gray-700 py-2 rounded-lg border border-gray-300 text-xs font-semibold"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>Xem</span>
+                        </Link>
+
+                        <button
+                          onClick={() => openDeleteModal(product)}
+                          title="Xóa sản phẩm"
+                          className="flex items-center justify-center gap-1 bg-red-50 active:bg-red-100 text-red-700 py-2 rounded-lg border border-red-200 text-xs font-semibold"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Xóa</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 2. Desktop Table for Tablet & PC (hidden on SP) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200 text-gray-600 font-bold uppercase tracking-wider text-[11px]">
                     <th className="py-3 px-3 w-12 text-center">STT</th>
@@ -1051,17 +1185,18 @@ export default function AdminDashboardPage() {
                 </tbody>
               </table>
             </div>
+          </>
           )}
 
           {/* Pagination Controls */}
           {filteredProducts.length > 0 && (
-            <div className="bg-gray-50 border-t border-gray-200 px-4 py-3 flex items-center justify-between text-xs text-gray-600">
-              <div>
+            <div className="bg-gray-50 border-t border-gray-200 px-3 sm:px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-0 text-xs text-gray-600">
+              <div className="text-center sm:text-left">
                 Trang <strong>{currentPage}</strong> / <strong>{totalPages}</strong> (
                 {filteredProducts.length} sản phẩm)
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap justify-center">
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                   disabled={currentPage === 1}
@@ -1113,11 +1248,11 @@ export default function AdminDashboardPage() {
           onClick={(e) => {
             if (e.target === e.currentTarget) closeAllModals();
           }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
         >
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-gray-200 overflow-hidden animate-scale-up">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-gray-200 overflow-hidden my-auto sm:my-8 animate-scale-up max-h-[92vh] flex flex-col">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-blue-900 to-indigo-950 text-white p-5 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-blue-900 to-indigo-950 text-white p-4 sm:p-5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-500/20 rounded-lg text-sky-300">
                   <UploadCloud className="w-6 h-6" />
@@ -1140,7 +1275,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-5 space-y-4">
+            <div className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
               {/* Product Info */}
               <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 flex items-center gap-3">
                 <div className="w-12 h-16 bg-white border rounded flex items-center justify-center shrink-0 p-1">
@@ -1279,11 +1414,11 @@ export default function AdminDashboardPage() {
           onClick={(e) => {
             if (e.target === e.currentTarget) closeAllModals();
           }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
         >
-          <div className="bg-white rounded-2xl max-w-3xl w-full shadow-2xl border border-gray-200 overflow-hidden my-8 animate-scale-up">
+          <div className="bg-white rounded-2xl max-w-3xl w-full shadow-2xl border border-gray-200 overflow-hidden my-auto sm:my-8 animate-scale-up max-h-[92vh] flex flex-col">
             {/* Header */}
-            <div className="bg-[#b30000] text-white p-5 flex items-center justify-between">
+            <div className="bg-[#b30000] text-white p-4 sm:p-5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-red-950/60 rounded-lg">
                   <Edit2 className="w-5 h-5 text-yellow-300" />
@@ -1306,8 +1441,8 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSaveEditProduct}>
-              <div className="p-6 space-y-6 max-h-[72vh] overflow-y-auto text-xs">
+            <form onSubmit={handleSaveEditProduct} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto flex-1 text-xs">
                 {/* 1. Basic Information */}
                 <div>
                   <h4 className="font-bold text-sm text-gray-800 pb-2 border-b border-gray-200 mb-3 flex items-center gap-2">
@@ -1736,7 +1871,7 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Footer */}
-              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+              <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => setEditModalOpen(false)}
@@ -1776,10 +1911,10 @@ export default function AdminDashboardPage() {
           onClick={(e) => {
             if (e.target === e.currentTarget) closeAllModals();
           }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
         >
-          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-gray-200 overflow-hidden my-8 animate-scale-up">
-            <div className="bg-[#b30000] text-white p-5 flex items-center justify-between">
+          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-gray-200 overflow-hidden my-auto sm:my-8 animate-scale-up max-h-[92vh] flex flex-col">
+            <div className="bg-[#b30000] text-white p-4 sm:p-5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-yellow-400 text-red-950 rounded-lg">
                   <Plus className="w-5 h-5 font-bold" />
@@ -1799,8 +1934,8 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            <form onSubmit={handleCreateSubmit}>
-              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-xs">
+            <form onSubmit={handleCreateSubmit} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 text-xs">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label className="block font-bold text-gray-700 mb-1">
@@ -1937,7 +2072,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+              <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => setCreateModalOpen(false)}
@@ -1977,10 +2112,10 @@ export default function AdminDashboardPage() {
           onClick={(e) => {
             if (e.target === e.currentTarget) closeAllModals();
           }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
         >
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-200 overflow-hidden animate-scale-up">
-            <div className="p-6 text-center space-y-4">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-200 overflow-hidden animate-scale-up my-auto">
+            <div className="p-4 sm:p-6 text-center space-y-4">
               <div className="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
                 <AlertTriangle className="w-8 h-8" />
               </div>

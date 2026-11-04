@@ -92,9 +92,8 @@ export default function HomePage() {
         {heroSlides.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+              }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -142,9 +141,8 @@ export default function HomePage() {
             <button
               key={idx}
               onClick={() => setCurrentSlide(idx)}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                currentSlide === idx ? "bg-white w-6" : "bg-white/50"
-              }`}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${currentSlide === idx ? "bg-white w-6" : "bg-white/50"
+                }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}

@@ -66,7 +66,7 @@ export default function ProductDetailPage({
           setRelatedCatalog(json.data);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [slug]);
 
   const [activeRelatedTab, setActiveRelatedTab] = useState<"brand" | "grape" | "origin" | "sale">("origin");
@@ -80,30 +80,30 @@ export default function ProductDetailPage({
   const currentId = product?._id || product?.id;
   const sameBrandProducts = product
     ? relatedCatalog
-        .filter((p) => (p._id || p.id) !== currentId && p.brand === product.brand)
-        .slice(0, 5)
+      .filter((p) => (p._id || p.id) !== currentId && p.brand === product.brand)
+      .slice(0, 5)
     : [];
 
   const sameGrapeProducts = product
     ? relatedCatalog
-        .filter(
-          (p) =>
-            (p._id || p.id) !== currentId &&
-            p.grapes?.some((g) => product.grapes?.includes(g))
-        )
-        .slice(0, 5)
+      .filter(
+        (p) =>
+          (p._id || p.id) !== currentId &&
+          p.grapes?.some((g) => product.grapes?.includes(g))
+      )
+      .slice(0, 5)
     : [];
 
   const sameOriginProducts = product
     ? relatedCatalog
-        .filter((p) => (p._id || p.id) !== currentId && p.country === product.country)
-        .slice(0, 5)
+      .filter((p) => (p._id || p.id) !== currentId && p.country === product.country)
+      .slice(0, 5)
     : [];
 
   const saleProducts = product
     ? relatedCatalog
-        .filter((p) => (p._id || p.id) !== currentId && p.discountPercent > 0)
-        .slice(0, 5)
+      .filter((p) => (p._id || p.id) !== currentId && p.discountPercent > 0)
+      .slice(0, 5)
     : [];
 
   let currentRelatedList = sameOriginProducts;
@@ -423,44 +423,40 @@ export default function ProductDetailPage({
           <div className="flex items-center gap-2 overflow-x-auto border-b border-gray-200 pb-2">
             <button
               onClick={() => setActiveRelatedTab("origin")}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-                activeRelatedTab === "origin"
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${activeRelatedTab === "origin"
                   ? "bg-gray-200 text-gray-900 shadow-sm"
                   : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Sản phẩm cùng xuất xứ
             </button>
 
             <button
               onClick={() => setActiveRelatedTab("grape")}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-                activeRelatedTab === "grape"
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${activeRelatedTab === "grape"
                   ? "bg-gray-200 text-gray-900 shadow-sm"
                   : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Sản phẩm cùng giống nho
             </button>
 
             <button
               onClick={() => setActiveRelatedTab("brand")}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-                activeRelatedTab === "brand"
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${activeRelatedTab === "brand"
                   ? "bg-gray-200 text-gray-900 shadow-sm"
                   : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Sản phẩm cùng thương hiệu
             </button>
 
             <button
               onClick={() => setActiveRelatedTab("sale")}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-                activeRelatedTab === "sale"
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap ${activeRelatedTab === "sale"
                   ? "bg-gray-200 text-gray-900 shadow-sm"
                   : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Sản phẩm đang sale
             </button>

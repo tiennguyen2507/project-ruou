@@ -37,7 +37,7 @@ function ProductCatalogContent() {
           setProductList(json.data);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // Subcategories matching Ruoutot
@@ -199,11 +199,10 @@ function ProductCatalogContent() {
               <button
                 key={c.val}
                 onClick={() => setSelectedCountry(c.val)}
-                className={`text-xs px-3 py-1.5 rounded-full transition font-medium ${
-                  selectedCountry === c.val
+                className={`text-xs px-3 py-1.5 rounded-full transition font-medium ${selectedCountry === c.val
                     ? "bg-[#b30000] text-white shadow-sm"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                  }`}
               >
                 {c.label}
               </button>

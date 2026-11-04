@@ -23,7 +23,7 @@ export class ProductsService implements OnApplicationBootstrap {
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   /**
    * Auto-seed products on initial application startup if collection is empty
@@ -237,7 +237,7 @@ export class ProductsService implements OnApplicationBootstrap {
         updateProductDto.discountPercent = Math.round(
           ((updateProductDto.originalPrice - updateProductDto.price) /
             updateProductDto.originalPrice) *
-            100,
+          100,
         );
       }
     }

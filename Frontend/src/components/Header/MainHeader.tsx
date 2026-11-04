@@ -47,7 +47,7 @@ export default function MainHeader({ onToggleMobileMenu }: MainHeaderProps) {
             setSearchResults(json.data);
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }, 200);
 
     return () => clearTimeout(timer);
