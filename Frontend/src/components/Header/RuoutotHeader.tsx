@@ -66,7 +66,7 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
   return (
     <header className="w-full z-[70] shadow-sm sticky top-0 md:relative">
       {/* 1. Top Light Gray Bar (Utility + Logo + Search) - exact ruoutot.net style */}
-      <div className="bg-[#eaeaea] border-b border-gray-300 relative">
+      <div className="bg-[#eaeaea] border-b border-gray-300 relative z-[80]">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center relative h-14 md:h-[84px]">
           {/* Left: Mobile Menu Button & Desktop Utility Links */}
           <div className="flex-1 flex items-center justify-start">
@@ -132,8 +132,8 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
           </div>
 
           {/* Right: Rounded Search Bar */}
-          <div className="flex-1 flex justify-end items-center relative z-20">
-            <div ref={searchRef} className="hidden md:flex relative w-full max-w-[280px] xl:max-w-[340px] z-30">
+          <div className="flex-1 flex justify-end items-center relative z-40">
+            <div ref={searchRef} className="hidden md:flex relative w-full max-w-[280px] xl:max-w-[340px] z-50">
               <form
                 onSubmit={handleSearchSubmit}
                 className="relative rounded-full overflow-hidden bg-white h-10 w-full shadow-sm border border-gray-300"
@@ -158,7 +158,7 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
 
               {/* Autocomplete Dropdown */}
               {isSearchFocused && searchResults.length > 0 && (
-                <div className="absolute top-full mt-2 right-0 w-[380px] bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-[380px] overflow-y-auto">
+                <div className="absolute top-full mt-2 right-0 w-[380px] bg-white rounded-xl shadow-2xl border border-gray-200 z-[999] max-h-[380px] overflow-y-auto">
                   <div className="p-2.5 bg-gray-50 border-b text-[11px] font-bold text-gray-500 uppercase tracking-wider flex justify-between">
                     <span>Sản phẩm gợi ý ({searchResults.length})</span>
                     <span className="text-[#b30000]">Xem tất cả</span>
@@ -219,7 +219,7 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
       </div>
 
       {/* 2. Main Red Navigation Bar - exact ruoutot.net style: bg-[#b30000] */}
-      <nav className="bg-[#b30000] hidden md:block sticky top-0 z-[60] w-full shadow-md">
+      <nav className="bg-[#b30000] hidden md:block sticky top-0 z-[40] w-full shadow-md">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center text-white text-[11px] lg:text-[12px] font-bold tracking-normal uppercase w-full py-0">
             <Link
@@ -293,7 +293,7 @@ export default function RuoutotHeader({ onToggleMobileMenu }: { onToggleMobileMe
       </nav>
 
       {/* 3. Sub-Value Bar - exact ruoutot.net proposition strip */}
-      <div className="bg-[#f8f8f8] border-b border-gray-200 hidden md:block py-2 text-xs text-gray-700">
+      <div className="bg-[#f8f8f8] border-b border-gray-200 hidden md:block py-2 text-xs text-gray-700 relative z-[30]">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-[11px] font-semibold text-gray-600 gap-3 overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-1.5 hover:text-[#b30000] cursor-pointer transition whitespace-nowrap shrink-0">
             <Gift className="w-3.5 h-3.5 text-[#b30000] shrink-0" />
