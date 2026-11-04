@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <defs>
+    <linearGradient id="bottle-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#111111" />
+      <stop offset="20%" stop-color="#50050e" />
+      <stop offset="50%" stop-color="#222222" />
+      <stop offset="75%" stop-color="#50050e" />
+      <stop offset="100%" stop-color="#080808" />
+    </linearGradient>
+    <linearGradient id="foil-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8a6f27" />
+      <stop offset="50%" stop-color="#ffd700" />
+      <stop offset="100%" stop-color="#6d551c" />
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.4)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-10%" width="140%" height="120%">
+      <feDropShadow dx="5" dy="15" stdDeviation="12" flood-color="rgba(0,0,0,0.35)" />
+    </filter>
+  </defs>
+
+  <!-- Bottle Silhouette with Drop Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Bottle Body & Neck -->
+    <path d="M178,70 L222,70 L224,200 C224,240 270,280 270,360 L270,710 C270,735 250,745 200,745 C150,745 130,735 130,710 L130,360 C130,280 176,240 176,200 Z" fill="url(#bottle-grad)" />
+    
+    <!-- Capsule / Foil on Neck -->
+    <path d="M176,70 L224,70 L225,180 C225,185 220,190 200,190 C180,190 175,185 175,180 Z" fill="url(#foil-grad)" />
+    <!-- Cork Lip -->
+    <rect x="173" y="65" width="54" height="12" rx="4" fill="url(#foil-grad)" />
+    <line x1="175" y1="100" x2="225" y2="100" stroke="rgba(0,0,0,0.3)" stroke-width="1.5" />
+    
+    <!-- Wine Label -->
+    <g transform="translate(142, 380)">
+      <!-- Label Background -->
+      <rect x="0" y="0" width="116" height="200" rx="6" fill="#1a1412" stroke="#d4af37" stroke-width="2" />
+      <rect x="4" y="4" width="108" height="192" rx="4" fill="none" stroke="#d4af37" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.7" />
+      
+      <!-- Label Crest / Icon -->
+      <circle cx="58" cy="35" r="16" fill="none" stroke="#d4af37" stroke-width="1.2" />
+      <path d="M52,38 L58,25 L64,38 L50,29 L66,29 Z" fill="#d4af37" opacity="0.9" />
+      
+      <!-- Typography -->
+      <text x="58" y="72" font-family="'Cinzel', 'Playfair Display', serif" font-size="8" font-weight="bold" fill="#d4af37" text-anchor="middle" letter-spacing="1">HUY PHONG VINTAGE</text>
+      
+      <text x="58" y="98" font-family="'Cinzel', 'Playfair Display', Georgia, serif" font-size="9" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="0.5">SANTA CAROLINA</text>
+      
+      <line x1="25" y1="110" x2="91" y2="110" stroke="#d4af37" stroke-width="0.8" opacity="0.5" />
+      
+      <text x="58" y="128" font-family="sans-serif" font-size="6.5" font-weight="600" fill="#d4af37" text-anchor="middle" opacity="0.9">RESERVA DE FAMILIA CARME</text>
+      <text x="58" y="140" font-family="sans-serif" font-size="6" fill="#d4af37" text-anchor="middle" opacity="0.75">NERE</text>
+      
+      <text x="58" y="165" font-family="serif" font-size="7.5" font-style="italic" fill="#d4af37" text-anchor="middle">Grand Vin Selection</text>
+      <text x="30" y="185" font-family="sans-serif" font-size="6" font-weight="bold" fill="#d4af37">750 ml</text>
+      <text x="86" y="185" font-family="sans-serif" font-size="6" font-weight="bold" fill="#d4af37">Alc. 14%</text>
+    </g>
+
+    <!-- Glass Highlights / Sheen -->
+    <path d="M140,360 L140,710 C140,710 148,720 152,720 L152,360 C152,320 140,360 140,360 Z" fill="url(#shine)" />
+    <path d="M182,190 L182,90 L186,90 L186,190 Z" fill="rgba(255,255,255,0.25)" />
+  </g>
+</svg>
