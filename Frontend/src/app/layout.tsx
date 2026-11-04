@@ -7,8 +7,9 @@ import Footer from "@/components/Footer/Footer";
 import AgeVerificationModal from "@/components/UI/AgeVerificationModal";
 import FloatingActionBar from "@/components/UI/FloatingActionBar";
 import { siteConfig } from "@/data/siteConfig";
+import { getSiteUrl } from "@/lib/utils";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com";
+const siteUrl = getSiteUrl();
 
 export const viewport: Viewport = {
   width: "device-width",

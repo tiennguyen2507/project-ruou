@@ -5,7 +5,7 @@ import Link from "next/link";
 import { WineProduct, fetchAllProducts } from "@/data/products";
 import { siteConfig } from "@/data/siteConfig";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getSiteUrl } from "@/lib/utils";
 import {
   FileText,
   Download,
@@ -82,7 +82,7 @@ export default function PriceListPage() {
               name: "Bảng Báo Giá Rượu Vang Niêm Yết 2026 — Công Ty CP Huy Phong",
               description:
                 "Tra cứu bảng giá niêm yết bán lẻ & nguyên thùng 111+ dòng rượu vang Chile, Pháp, Ý, Tây Ban Nha, Úc chính hãng 2026. Tải PDF chính thức.",
-              url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com"}/bao-gia-2026`,
+              url: `${getSiteUrl()}/bao-gia-2026`,
             }),
           }}
         />

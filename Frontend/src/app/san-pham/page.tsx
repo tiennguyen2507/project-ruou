@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { WineProduct, fetchAllProducts, getApiBaseUrl } from "@/data/products";
+import { getSiteUrl } from "@/lib/utils";
 import ProductCard from "@/components/Product/ProductCard";
 import {
   Filter,
@@ -130,7 +131,7 @@ function ProductCatalogContent() {
             name: "Danh Mục Rượu Vang Nhập Khẩu Chính Hãng — RƯỢU TỐT",
             description:
               "Khám phá 111+ dòng rượu vang Chile, Pháp, Ý, Tây Ban Nha, Úc, Champagne chính hãng với bảng giá 2026 niêm yết tốt nhất.",
-            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com"}/san-pham`,
+            url: `${getSiteUrl()}/san-pham`,
             numberOfItems: sortedProducts.length,
           }),
         }}

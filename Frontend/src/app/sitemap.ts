@@ -1,11 +1,10 @@
 import { MetadataRoute } from 'next';
-import { fetchAllProducts } from '@/data/products';
+import { getSiteUrl } from '@/lib/utils';
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || 'https://project-ruou.onrender.com';
+  const baseUrl = getSiteUrl();
 
   const currentDate = new Date();
 

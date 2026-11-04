@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WineProduct, getApiBaseUrl } from "@/data/products";
 import { siteConfig } from "@/data/siteConfig";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getSiteUrl } from "@/lib/utils";
 import ProductCard from "@/components/Product/ProductCard";
 import {
   Phone,
@@ -135,7 +135,7 @@ export default function ProductDetailPage({
     }, 3000);
   };
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://project-ruou.onrender.com";
+  const siteUrl = getSiteUrl();
 
   const productJsonLd = product
     ? {
