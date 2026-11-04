@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { productsData } from "@/data/products";
+import { WineProduct, fetchAllProducts } from "@/data/products";
 import { siteConfig } from "@/data/siteConfig";
 import ProductCard from "@/components/Product/ProductCard";
 import { formatPrice } from "@/lib/utils";
@@ -71,9 +71,19 @@ export default function HomePage() {
     { label: "Vang Úc", href: "/san-pham?quoc-gia=Úc" },
   ];
 
+  const [products, setProducts] = useState<WineProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAllProducts(100).then((data) => {
+      setProducts(data);
+      setIsLoading(false);
+    });
+  }, []);
+
   // Top 10 wines to show on main shelf
-  const featuredWines = productsData.slice(0, 10);
-  const chileWines = productsData.filter((p) => p.country === "Chile").slice(0, 5);
+  const featuredWines = products.slice(0, 10);
+  const chileWines = products.filter((p) => p.country === "Chile").slice(0, 5);
 
   return (
     <div className="space-y-12 pb-16 bg-[#fafafa]">

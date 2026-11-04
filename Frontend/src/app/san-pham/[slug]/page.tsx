@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { productsData, WineProduct } from "@/data/products";
+import { WineProduct } from "@/data/products";
 import { siteConfig } from "@/data/siteConfig";
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/Product/ProductCard";
@@ -30,25 +30,44 @@ export default function ProductDetailPage({
 }) {
   const { slug } = params;
 
-  // Find product (initial fallback from static data)
-  const initialProduct = productsData.find((p) => p.slug === slug);
-  const [product, setProduct] = useState<WineProduct | any>(initialProduct);
+  // Dynamic 100% backend state
+  const [product, setProduct] = useState<WineProduct | any>(null);
+  const [relatedCatalog, setRelatedCatalog] = useState<WineProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFoundState, setNotFoundState] = useState(false);
 
   useEffect(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
-    fetch(`${apiUrl}/products/slug/${slug}`)
+    // 1. Fetch product detail by slug
+    fetch(`${apiUrl}/products/slug/${encodeURIComponent(slug)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Product not found");
+        return res.json();
+      })
+      .then((json) => {
+        if (json && json.data) {
+          setProduct(json.data);
+        } else {
+          setNotFoundState(true);
+        }
+      })
+      .catch(() => {
+        setNotFoundState(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    // 2. Fetch related products catalog
+    fetch(`${apiUrl}/products?limit=50`)
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
         if (json && json.data) {
-          setProduct((prev: any) => ({ ...prev, ...json.data }));
+          setRelatedCatalog(json.data);
         }
       })
       .catch(() => {});
   }, [slug]);
-
-  if (!product && !initialProduct) {
-    notFound();
-  }
 
   const [activeRelatedTab, setActiveRelatedTab] = useState<"brand" | "grape" | "origin" | "sale">("origin");
   const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
@@ -57,27 +76,53 @@ export default function ProductDetailPage({
   const [consultQuantity, setConsultQuantity] = useState("1");
   const [consultSuccess, setConsultSuccess] = useState(false);
 
-  // Filter related products by tabs
-  const sameBrandProducts = productsData
-    .filter((p) => p.id !== product.id && p.brand === product.brand)
-    .slice(0, 5);
+  // Filter related products by tabs from backend catalog
+  const currentId = product?._id || product?.id;
+  const sameBrandProducts = product
+    ? relatedCatalog
+        .filter((p) => (p._id || p.id) !== currentId && p.brand === product.brand)
+        .slice(0, 5)
+    : [];
 
-  const sameGrapeProducts = productsData
-    .filter((p) => p.id !== product.id && p.grapes.some((g) => product.grapes.includes(g)))
-    .slice(0, 5);
+  const sameGrapeProducts = product
+    ? relatedCatalog
+        .filter(
+          (p) =>
+            (p._id || p.id) !== currentId &&
+            p.grapes?.some((g) => product.grapes?.includes(g))
+        )
+        .slice(0, 5)
+    : [];
 
-  const sameOriginProducts = productsData
-    .filter((p) => p.id !== product.id && p.country === product.country)
-    .slice(0, 5);
+  const sameOriginProducts = product
+    ? relatedCatalog
+        .filter((p) => (p._id || p.id) !== currentId && p.country === product.country)
+        .slice(0, 5)
+    : [];
 
-  const saleProducts = productsData
-    .filter((p) => p.id !== product.id && p.discountPercent > 0)
-    .slice(0, 5);
+  const saleProducts = product
+    ? relatedCatalog
+        .filter((p) => (p._id || p.id) !== currentId && p.discountPercent > 0)
+        .slice(0, 5)
+    : [];
 
   let currentRelatedList = sameOriginProducts;
   if (activeRelatedTab === "brand" && sameBrandProducts.length > 0) currentRelatedList = sameBrandProducts;
   else if (activeRelatedTab === "grape" && sameGrapeProducts.length > 0) currentRelatedList = sameGrapeProducts;
   else if (activeRelatedTab === "sale") currentRelatedList = saleProducts;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[500px] flex flex-col items-center justify-center space-y-4 py-24 bg-[#fafafa]">
+        <div className="w-12 h-12 border-4 border-[#8b0000] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-600 text-sm font-medium">Đang tải thông tin sản phẩm từ hệ thống...</p>
+      </div>
+    );
+  }
+
+  if (notFoundState || !product) {
+    notFound();
+  }
 
   const handleConsultSubmit = (e: React.FormEvent) => {
     e.preventDefault();

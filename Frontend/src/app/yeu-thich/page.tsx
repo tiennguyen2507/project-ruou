@@ -1,17 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { productsData } from "@/data/products";
+import { WineProduct, fetchAllProducts } from "@/data/products";
 import { useWishlist } from "@/context/WishlistContext";
 import ProductCard from "@/components/Product/ProductCard";
 import { Heart, ArrowLeft } from "lucide-react";
 
 export default function WishlistPage() {
   const { wishlistIds } = useWishlist();
+  const [products, setProducts] = useState<WineProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const favoriteProducts = productsData.filter((p) =>
-    wishlistIds.includes(p.id)
+  useEffect(() => {
+    fetchAllProducts(200).then((data) => {
+      setProducts(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  const favoriteProducts = products.filter((p) =>
+    wishlistIds.includes(p.id) || (p._id && wishlistIds.includes(p._id))
   );
 
   return (
@@ -27,7 +36,11 @@ export default function WishlistPage() {
           </p>
         </div>
 
-        {favoriteProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="min-h-[200px] flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-[#8b0000] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : favoriteProducts.length === 0 ? (
           <div className="bg-white rounded-3xl border border-gray-200 p-12 text-center text-gray-500 shadow-sm max-w-md mx-auto space-y-4">
             <Heart className="w-16 h-16 text-gray-300 mx-auto" />
             <h3 className="text-base font-bold text-gray-800">
@@ -47,7 +60,7 @@ export default function WishlistPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {favoriteProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p._id || p.id} product={p} />
             ))}
           </div>
         )}
@@ -55,4 +68,3 @@ export default function WishlistPage() {
     </div>
   );
 }
-

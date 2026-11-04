@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { productsData, WineProduct } from "@/data/products";
+import { WineProduct, fetchAllProducts } from "@/data/products";
 import ProductCard from "@/components/Product/ProductCard";
 import {
   Filter,
@@ -21,7 +21,7 @@ function ProductCatalogContent() {
   const initialQuery = searchParams.get("q") || "";
 
   // State
-  const [productList, setProductList] = useState<WineProduct[]>(productsData);
+  const [productList, setProductList] = useState<WineProduct[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>(initialCountry);
   const [selectedWineType, setSelectedWineType] = useState<string>(initialWineType);
   const [selectedRegion, setSelectedRegion] = useState<string>(initialRegion);

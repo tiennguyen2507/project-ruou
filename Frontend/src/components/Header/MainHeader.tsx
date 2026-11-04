@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/data/siteConfig";
-import { productsData, WineProduct } from "@/data/products";
+import { WineProduct } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatPrice } from "@/lib/utils";
@@ -38,19 +38,19 @@ export default function MainHeader({ onToggleMobileMenu }: MainHeaderProps) {
       setSearchResults([]);
       return;
     }
-    const q = searchQuery.toLowerCase().trim();
-    const filtered = productsData
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q) ||
-          p.country.toLowerCase().includes(q) ||
-          p.region.toLowerCase().includes(q) ||
-          p.grapes.some((g) => g.toLowerCase().includes(q)) ||
-          p.classification.toLowerCase().includes(q)
-      )
-      .slice(0, 6);
-    setSearchResults(filtered);
+    const timer = setTimeout(() => {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      fetch(`${apiUrl}/products?search=${encodeURIComponent(searchQuery.trim())}&limit=6`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (json && json.data) {
+            setSearchResults(json.data);
+          }
+        })
+        .catch(() => {});
+    }, 200);
+
+    return () => clearTimeout(timer);
   }, [searchQuery]);
 
   useEffect(() => {

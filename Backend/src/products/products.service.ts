@@ -347,9 +347,11 @@ export class ProductsService implements OnApplicationBootstrap {
     }
 
     const potentialPaths = [
+      path.resolve(__dirname, '../data/products.json'),
+      path.resolve(process.cwd(), 'src/data/products.json'),
+      path.resolve(process.cwd(), 'dist/data/products.json'),
       path.resolve(__dirname, '../../../../Frontend/src/data/products.json'),
       path.resolve(process.cwd(), '../Frontend/src/data/products.json'),
-      path.resolve(process.cwd(), 'src/data/products.json'),
     ];
 
     let jsonPath = '';

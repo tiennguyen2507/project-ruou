@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { productsData, WineProduct } from "@/data/products";
+import { WineProduct, fetchAllProducts } from "@/data/products";
 import { siteConfig } from "@/data/siteConfig";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
@@ -21,11 +21,20 @@ import {
 
 export default function PriceListPage() {
   const { addToCart } = useCart();
+  const [products, setProducts] = useState<WineProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+  useEffect(() => {
+    fetchAllProducts(200).then((data) => {
+      setProducts(data);
+      setIsLoading(false);
+    });
+  }, []);
+
   const categories = [
-    { id: "all", label: "Tất cả sản phẩm (111)" },
+    { id: "all", label: `Tất cả sản phẩm (${products.length || 111})` },
     { id: "Chile", label: "🇨🇱 Vang Chile" },
     { id: "Ý", label: "🇮🇹 Vang Ý" },
     { id: "Pháp", label: "🇫🇷 Vang Pháp" },
@@ -36,7 +45,7 @@ export default function PriceListPage() {
   ];
 
   const filteredItems = useMemo(() => {
-    return productsData.filter((p) => {
+    return products.filter((p) => {
       // Tab filter
       if (activeTab === "Chile" && p.country !== "Chile") return false;
       if (activeTab === "Ý" && p.country !== "Ý") return false;

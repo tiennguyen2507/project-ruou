@@ -1,7 +1,8 @@
-// Generated from BAO GIA 2026 - SHOP 170826.pdf (Công ty CP Huy Phong)
-import productsRaw from "./products.json";
+// Wine Products definitions and Backend API integration
+// 100% Data dynamically loaded from Backend NestJS API (MongoDB + Cloudinary)
 
 export interface WineProduct {
+  _id?: string;
   id: string;
   sku: string;
   name: string;
@@ -43,6 +44,47 @@ export interface WineProduct {
   isFeatured?: boolean;
   isBestSeller?: boolean;
   image: string;
+  cloudinaryPublicId?: string;
 }
 
-export const productsData: WineProduct[] = productsRaw as unknown as WineProduct[];
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+
+/**
+ * Empty fallback array - All data is fetched 100% dynamically from Backend
+ */
+export const productsData: WineProduct[] = [];
+
+/**
+ * Helper to fetch all products from Backend
+ */
+export async function fetchAllProducts(limit = 200): Promise<WineProduct[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products?limit=${limit}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data?.data || [];
+  } catch (e) {
+    console.error("Failed to fetch products from backend:", e);
+    return [];
+  }
+}
+
+/**
+ * Helper to fetch single product by slug from Backend
+ */
+export async function fetchProductBySlug(slug: string): Promise<WineProduct | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products/slug/${encodeURIComponent(slug)}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.data || null;
+  } catch (e) {
+    console.error(`Failed to fetch product '${slug}' from backend:`, e);
+    return null;
+  }
+}

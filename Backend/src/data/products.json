@@ -16,7 +16,7 @@
       "100% Carmenere"
     ],
     "alcohol": "15%",
-    "alcoholNumeric": 15.0,
+    "alcoholNumeric": 15,
     "volume": "750ml",
     "vintage": "2021",
     "price": 680000,
@@ -39,7 +39,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút trước khi thưởng thức để rượu bộc lộ trọn vẹn hương vị",
     "glassType": "Ly vang đỏ Bordeaux bầu lớn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 88,
     "badge": "Bán Chạy Nhất",
     "inStock": true,
@@ -47,7 +47,8 @@
     "pdfPage": 19,
     "isFeatured": true,
     "isBestSeller": true,
-    "image": "/images/products/santa-carolina-carmenere.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802374/ruoutot_products/fpp2wv83ltawtouqkxuq.jpg",
+    "cloudinaryPublicId": "ruoutot_products/fpp2wv83ltawtouqkxuq"
   },
   {
     "id": "hp-3-1",
@@ -68,7 +69,7 @@
       "Chardonnay"
     ],
     "alcohol": "12%",
-    "alcoholNumeric": 12.0,
+    "alcoholNumeric": 12,
     "volume": "750ml",
     "vintage": "2022",
     "price": 1800000,
@@ -98,7 +99,8 @@
     "pdfPage": 3,
     "isFeatured": true,
     "isBestSeller": true,
-    "image": "/images/products/avatar-moscato-dasti-francesco-capetta.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802375/ruoutot_products/i6kdwenavsmdgftpidr1.jpg",
+    "cloudinaryPublicId": "ruoutot_products/i6kdwenavsmdgftpidr1"
   },
   {
     "id": "hp-3-2",
@@ -117,7 +119,7 @@
       "Grand"
     ],
     "alcohol": "12%",
-    "alcoholNumeric": 12.0,
+    "alcoholNumeric": 12,
     "volume": "750ml",
     "vintage": "2021",
     "price": 2250000,
@@ -147,7 +149,8 @@
     "pdfPage": 3,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/7006-153-1.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802377/ruoutot_products/xrpgxx78n1wivalusqkz.jpg",
+    "cloudinaryPublicId": "ruoutot_products/xrpgxx78n1wivalusqkz"
   },
   {
     "id": "hp-3-3",
@@ -166,7 +169,7 @@
       "Pinot Noir"
     ],
     "alcohol": "12%",
-    "alcoholNumeric": 12.0,
+    "alcoholNumeric": 12,
     "volume": "750ml",
     "vintage": "2022",
     "price": 2600000,
@@ -196,7 +199,8 @@
     "pdfPage": 3,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/20491-valdo-floral-edition.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802378/ruoutot_products/zz1ropb8re2fgpcyf8qn.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zz1ropb8re2fgpcyf8qn"
   },
   {
     "id": "hp-4-4",
@@ -215,7 +219,7 @@
       "Prosecco"
     ],
     "alcohol": "11%",
-    "alcoholNumeric": 11.0,
+    "alcoholNumeric": 11,
     "volume": "750ml",
     "vintage": "2021",
     "price": 450000,
@@ -245,7 +249,8 @@
     "pdfPage": 4,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-no-y-prosseco.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802379/ruoutot_products/zhpl7jluaoxtzy062ene.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zhpl7jluaoxtzy062ene"
   },
   {
     "id": "hp-4-5",
@@ -264,7 +269,7 @@
       "Prosecco ROSÉ"
     ],
     "alcohol": "11%",
-    "alcoholNumeric": 11.0,
+    "alcoholNumeric": 11,
     "volume": "750ml",
     "vintage": "2022",
     "price": 450000,
@@ -294,7 +299,8 @@
     "pdfPage": 4,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/pol-remy-ice-rose.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802381/ruoutot_products/lhkpecsxaag0x4hflzgv.jpg",
+    "cloudinaryPublicId": "ruoutot_products/lhkpecsxaag0x4hflzgv"
   },
   {
     "id": "hp-4-6",
@@ -313,7 +319,7 @@
       "Prosecco"
     ],
     "alcohol": "11%",
-    "alcoholNumeric": 11.0,
+    "alcoholNumeric": 11,
     "volume": "750ml",
     "vintage": "2021",
     "price": 480000,
@@ -343,7 +349,8 @@
     "pdfPage": 4,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/avatar-moet-chandon-ice-imperial.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802382/ruoutot_products/hq13w7mq6asqlebbyizi.jpg",
+    "cloudinaryPublicId": "ruoutot_products/hq13w7mq6asqlebbyizi"
   },
   {
     "id": "hp-4-7",
@@ -362,7 +369,7 @@
       "Prosecco"
     ],
     "alcohol": "11%",
-    "alcoholNumeric": 11.0,
+    "alcoholNumeric": 11,
     "volume": "750ml",
     "vintage": "2022",
     "price": 600000,
@@ -392,7 +399,8 @@
     "pdfPage": 4,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avt-moscato-dolce-guarini.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802383/ruoutot_products/n14xq27psbfkdrtcphlc.jpg",
+    "cloudinaryPublicId": "ruoutot_products/n14xq27psbfkdrtcphlc"
   },
   {
     "id": "hp-5-8",
@@ -411,7 +419,7 @@
       "0.0"
     ],
     "alcohol": "0%",
-    "alcoholNumeric": 0.0,
+    "alcoholNumeric": 0,
     "volume": "750ml",
     "vintage": "2021",
     "price": 400000,
@@ -440,7 +448,8 @@
     "pdfPage": 5,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/avatar-moscato-dasti-francesco-capetta.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802375/ruoutot_products/i6kdwenavsmdgftpidr1.jpg",
+    "cloudinaryPublicId": "ruoutot_products/i6kdwenavsmdgftpidr1"
   },
   {
     "id": "hp-5-9",
@@ -482,7 +491,7 @@
     "servingTemp": "10 - 12°C",
     "decanting": "Ướp lạnh trước khi uống",
     "glassType": "Ly Tulip nhỏ",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 43,
     "badge": null,
     "inStock": true,
@@ -490,7 +499,8 @@
     "pdfPage": 5,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-vitige-limited-17-do.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802384/ruoutot_products/bb94heoyk7hxj3ened5b.jpg",
+    "cloudinaryPublicId": "ruoutot_products/bb94heoyk7hxj3ened5b"
   },
   {
     "id": "hp-5-10",
@@ -541,7 +551,8 @@
     "pdfPage": 5,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-ruou-vang-la-chitarra-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802385/ruoutot_products/gfzax0wy9vsgfx9webbr.jpg",
+    "cloudinaryPublicId": "ruoutot_products/gfzax0wy9vsgfx9webbr"
   },
   {
     "id": "hp-5-11",
@@ -560,7 +571,7 @@
       "BRUT"
     ],
     "alcohol": "11%",
-    "alcoholNumeric": 11.0,
+    "alcoholNumeric": 11,
     "volume": "750ml",
     "vintage": "2022",
     "price": 495000,
@@ -590,7 +601,8 @@
     "pdfPage": 5,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/7006-153-1.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802377/ruoutot_products/xrpgxx78n1wivalusqkz.jpg",
+    "cloudinaryPublicId": "ruoutot_products/xrpgxx78n1wivalusqkz"
   },
   {
     "id": "hp-6-12",
@@ -639,7 +651,8 @@
     "pdfPage": 6,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/20491-valdo-floral-edition.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802378/ruoutot_products/zz1ropb8re2fgpcyf8qn.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zz1ropb8re2fgpcyf8qn"
   },
   {
     "id": "hp-6-13",
@@ -688,7 +701,8 @@
     "pdfPage": 6,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-no-y-prosseco.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802379/ruoutot_products/zhpl7jluaoxtzy062ene.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zhpl7jluaoxtzy062ene"
   },
   {
     "id": "hp-6-14",
@@ -737,7 +751,8 @@
     "pdfPage": 6,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/pol-remy-ice-rose.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802381/ruoutot_products/lhkpecsxaag0x4hflzgv.jpg",
+    "cloudinaryPublicId": "ruoutot_products/lhkpecsxaag0x4hflzgv"
   },
   {
     "id": "hp-7-15",
@@ -787,7 +802,8 @@
     "pdfPage": 7,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/avt-83-sangiovese-puglia-igt.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802387/ruoutot_products/pqc6nsoftsdxzxyiyggm.jpg",
+    "cloudinaryPublicId": "ruoutot_products/pqc6nsoftsdxzxyiyggm"
   },
   {
     "id": "hp-7-16",
@@ -837,7 +853,8 @@
     "pdfPage": 7,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/ruou-cocktail-y-dolce-vita-equivocado-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802388/ruoutot_products/hbmgncojxo6kr9t0yoqd.jpg",
+    "cloudinaryPublicId": "ruoutot_products/hbmgncojxo6kr9t0yoqd"
   },
   {
     "id": "hp-7-17",
@@ -886,7 +903,8 @@
     "pdfPage": 7,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/toreto-gran-reserva-chardonnay.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802389/ruoutot_products/twgl79jakqqkfoy5dnzq.jpg",
+    "cloudinaryPublicId": "ruoutot_products/twgl79jakqqkfoy5dnzq"
   },
   {
     "id": "hp-7-18",
@@ -935,7 +953,8 @@
     "pdfPage": 7,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/chateau-lynch-moussas-pauillac-grand-cru-classe.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802390/ruoutot_products/ocvg8kzu6gmmfrs4ozfm.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ocvg8kzu6gmmfrs4ozfm"
   },
   {
     "id": "hp-7-19",
@@ -976,7 +995,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 17,
     "badge": "Bán Chạy",
     "inStock": true,
@@ -984,7 +1003,8 @@
     "pdfPage": 7,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-chile-correa-lisoni-family-reserva-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802391/ruoutot_products/td64g9jiw1dgfktgsmn3.jpg",
+    "cloudinaryPublicId": "ruoutot_products/td64g9jiw1dgfktgsmn3"
   },
   {
     "id": "hp-7-20",
@@ -1033,7 +1053,8 @@
     "pdfPage": 7,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/casta-reserva-cabernet-sauvignon-central-valley.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802392/ruoutot_products/qmwsxybi9oodi65snhzy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qmwsxybi9oodi65snhzy"
   },
   {
     "id": "hp-8-21",
@@ -1082,7 +1103,8 @@
     "pdfPage": 8,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/avatar-moscato-dasti-francesco-capetta.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802375/ruoutot_products/i6kdwenavsmdgftpidr1.jpg",
+    "cloudinaryPublicId": "ruoutot_products/i6kdwenavsmdgftpidr1"
   },
   {
     "id": "hp-8-22",
@@ -1132,7 +1154,8 @@
     "pdfPage": 8,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/avatar-il-pumo-negroamaro.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802393/ruoutot_products/yqttqgch7tvjqxkpe6ag.jpg",
+    "cloudinaryPublicId": "ruoutot_products/yqttqgch7tvjqxkpe6ag"
   },
   {
     "id": "hp-8-23",
@@ -1151,7 +1174,7 @@
       "Chardonnay"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 600000,
@@ -1181,7 +1204,8 @@
     "pdfPage": 8,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-trimbach-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802394/ruoutot_products/bpxzu4wpilgfqzlujyyg.jpg",
+    "cloudinaryPublicId": "ruoutot_products/bpxzu4wpilgfqzlujyyg"
   },
   {
     "id": "hp-8-24",
@@ -1230,7 +1254,8 @@
     "pdfPage": 8,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-ruou-vang-primitivo-di-manduria-60.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802395/ruoutot_products/swhds4h9evnvjv9oklz8.jpg",
+    "cloudinaryPublicId": "ruoutot_products/swhds4h9evnvjv9oklz8"
   },
   {
     "id": "hp-8-25",
@@ -1249,7 +1274,7 @@
       "Negroamaro"
     ],
     "alcohol": "15%",
-    "alcoholNumeric": 15.0,
+    "alcoholNumeric": 15,
     "volume": "750ml",
     "vintage": "2022",
     "price": 800000,
@@ -1279,7 +1304,8 @@
     "pdfPage": 8,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avt-impero-negroamaro-sangiovese-puglia.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802396/ruoutot_products/mgjnvop1ij301jxkhrbo.jpg",
+    "cloudinaryPublicId": "ruoutot_products/mgjnvop1ij301jxkhrbo"
   },
   {
     "id": "hp-9-26",
@@ -1330,7 +1356,8 @@
     "pdfPage": 9,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/avatar-attanasio-sei-filari-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802398/ruoutot_products/jaihnrcg0jkuj1pf7puw.jpg",
+    "cloudinaryPublicId": "ruoutot_products/jaihnrcg0jkuj1pf7puw"
   },
   {
     "id": "hp-9-27",
@@ -1379,7 +1406,8 @@
     "pdfPage": 9,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-impero-semi-dolce.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802399/ruoutot_products/yi6fwiv9kstqmtxeteeg.jpg",
+    "cloudinaryPublicId": "ruoutot_products/yi6fwiv9kstqmtxeteeg"
   },
   {
     "id": "hp-9-28",
@@ -1400,7 +1428,7 @@
       "Montepulciano"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 875000,
@@ -1430,7 +1458,8 @@
     "pdfPage": 9,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avt-monteverdi-dolce-novella.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802401/ruoutot_products/a4ih8zgxwxcqpvo8pmg2.jpg",
+    "cloudinaryPublicId": "ruoutot_products/a4ih8zgxwxcqpvo8pmg2"
   },
   {
     "id": "hp-9-29",
@@ -1471,7 +1500,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 59,
     "badge": null,
     "inStock": true,
@@ -1479,7 +1508,8 @@
     "pdfPage": 9,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/20491-valdo-floral-edition.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802378/ruoutot_products/zz1ropb8re2fgpcyf8qn.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zz1ropb8re2fgpcyf8qn"
   },
   {
     "id": "hp-9-30",
@@ -1528,7 +1558,8 @@
     "pdfPage": 9,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-y-mondovino-rosso-chat-750ml-cao-cap.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802402/ruoutot_products/hdf2pqr2j5esdeiymlhj.jpg",
+    "cloudinaryPublicId": "ruoutot_products/hdf2pqr2j5esdeiymlhj"
   },
   {
     "id": "hp-10-31",
@@ -1547,7 +1578,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 600000,
@@ -1577,7 +1608,8 @@
     "pdfPage": 10,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/avatar-vindoro-negroamaro.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802403/ruoutot_products/soughzwyppa9lbbw2nrc.jpg",
+    "cloudinaryPublicId": "ruoutot_products/soughzwyppa9lbbw2nrc"
   },
   {
     "id": "hp-10-32",
@@ -1627,7 +1659,8 @@
     "pdfPage": 10,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-stilio-primitivo-di-manduria.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802405/ruoutot_products/zxz3n5ehx6bnnxyoth0d.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zxz3n5ehx6bnnxyoth0d"
   },
   {
     "id": "hp-10-33",
@@ -1676,7 +1709,8 @@
     "pdfPage": 10,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-trang-syn-natural-sauvignon-blanc-750ml-gia-tot.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802406/ruoutot_products/x3ktnwg6cmgvjyqqmnx9.jpg",
+    "cloudinaryPublicId": "ruoutot_products/x3ktnwg6cmgvjyqqmnx9"
   },
   {
     "id": "hp-10-34",
@@ -1727,7 +1761,8 @@
     "pdfPage": 10,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-no-y-prosseco.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802379/ruoutot_products/zhpl7jluaoxtzy062ene.jpg",
+    "cloudinaryPublicId": "ruoutot_products/zhpl7jluaoxtzy062ene"
   },
   {
     "id": "hp-10-35",
@@ -1776,7 +1811,8 @@
     "pdfPage": 10,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-ruou-vang-y-segreto.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802407/ruoutot_products/i5vojluekafqtxw0wgp8.jpg",
+    "cloudinaryPublicId": "ruoutot_products/i5vojluekafqtxw0wgp8"
   },
   {
     "id": "hp-11-36",
@@ -1796,7 +1832,7 @@
       "Malvasia"
     ],
     "alcohol": "13.0%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2021",
     "price": 730000,
@@ -1826,7 +1862,8 @@
     "pdfPage": 11,
     "isFeatured": true,
     "isBestSeller": true,
-    "image": "/images/products/avatar-62-anniversario-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802409/ruoutot_products/kzopaindqra2gzfykadi.jpg",
+    "cloudinaryPublicId": "ruoutot_products/kzopaindqra2gzfykadi"
   },
   {
     "id": "hp-11-37",
@@ -1845,7 +1882,7 @@
       "Sangiovese"
     ],
     "alcohol": "14.0%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 2200000,
@@ -1875,7 +1912,8 @@
     "pdfPage": 11,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/10-ocho-tierras-gran-reserva-syrah.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802411/ruoutot_products/ry4tecy0efbyue6dqyhw.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ry4tecy0efbyue6dqyhw"
   },
   {
     "id": "hp-12-38",
@@ -1924,7 +1962,8 @@
     "pdfPage": 12,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/pol-remy-ice-rose.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802381/ruoutot_products/lhkpecsxaag0x4hflzgv.jpg",
+    "cloudinaryPublicId": "ruoutot_products/lhkpecsxaag0x4hflzgv"
   },
   {
     "id": "hp-12-39",
@@ -1943,7 +1982,7 @@
       "Montepulciano"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 850000,
@@ -1965,7 +2004,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 33,
     "badge": null,
     "inStock": true,
@@ -1973,7 +2012,8 @@
     "pdfPage": 12,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-viking-negroamaro.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802412/ruoutot_products/vng8ib0oqrfosh4g17jb.jpg",
+    "cloudinaryPublicId": "ruoutot_products/vng8ib0oqrfosh4g17jb"
   },
   {
     "id": "hp-12-40",
@@ -2022,7 +2062,8 @@
     "pdfPage": 12,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-luccarelli-negroamaro.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802413/ruoutot_products/kkqybufp9o8trunsrodg.jpg",
+    "cloudinaryPublicId": "ruoutot_products/kkqybufp9o8trunsrodg"
   },
   {
     "id": "hp-12-41",
@@ -2071,7 +2112,8 @@
     "pdfPage": 12,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/avt-1930-old-wine-appassimento-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802415/ruoutot_products/hqqsmwsximcgole2qari.jpg",
+    "cloudinaryPublicId": "ruoutot_products/hqqsmwsximcgole2qari"
   },
   {
     "id": "hp-12-42",
@@ -2120,7 +2162,8 @@
     "pdfPage": 12,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/jpchennet-syrah.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802416/ruoutot_products/muwgqownmauafpposair.jpg",
+    "cloudinaryPublicId": "ruoutot_products/muwgqownmauafpposair"
   },
   {
     "id": "hp-13-43",
@@ -2172,7 +2215,8 @@
     "pdfPage": 13,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/avt-luna-feudo-croce-merlot-malvasia-nera-salento.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802417/ruoutot_products/rcvhq2oh3cghnoci57qp.jpg",
+    "cloudinaryPublicId": "ruoutot_products/rcvhq2oh3cghnoci57qp"
   },
   {
     "id": "hp-13-44",
@@ -2224,7 +2268,8 @@
     "pdfPage": 13,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avt-moscato-dolce-guarini.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802383/ruoutot_products/n14xq27psbfkdrtcphlc.jpg",
+    "cloudinaryPublicId": "ruoutot_products/n14xq27psbfkdrtcphlc"
   },
   {
     "id": "hp-13-45",
@@ -2244,7 +2289,7 @@
       "Montepulciano"
     ],
     "alcohol": "15%",
-    "alcoholNumeric": 15.0,
+    "alcoholNumeric": 15,
     "volume": "750ml",
     "vintage": "2022",
     "price": 2100000,
@@ -2274,7 +2319,8 @@
     "pdfPage": 13,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avt-porto-salvo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802419/ruoutot_products/cxjbygkmq6zgalmyrlm3.jpg",
+    "cloudinaryPublicId": "ruoutot_products/cxjbygkmq6zgalmyrlm3"
   },
   {
     "id": "hp-13-46",
@@ -2295,7 +2341,7 @@
       "Montepulciano"
     ],
     "alcohol": "15%",
-    "alcoholNumeric": 15.0,
+    "alcoholNumeric": 15,
     "volume": "750ml",
     "vintage": "2021",
     "price": 2200000,
@@ -2325,7 +2371,8 @@
     "pdfPage": 13,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/avatar-ruou-vang-100-essenza-primitivo-di-manduria.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802420/ruoutot_products/ptxjgw8oeycuwtkohvgx.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ptxjgw8oeycuwtkohvgx"
   },
   {
     "id": "hp-14-47",
@@ -2374,7 +2421,8 @@
     "pdfPage": 14,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-santa-carolina-reserva-chardonnay.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802421/ruoutot_products/vskbg8qjg2scv4y2oqro.jpg",
+    "cloudinaryPublicId": "ruoutot_products/vskbg8qjg2scv4y2oqro"
   },
   {
     "id": "hp-14-48",
@@ -2423,7 +2471,8 @@
     "pdfPage": 14,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-villa-diana-vino-rosso-ditalia.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802422/ruoutot_products/rpnnzsnjact6qgg8zfru.jpg",
+    "cloudinaryPublicId": "ruoutot_products/rpnnzsnjact6qgg8zfru"
   },
   {
     "id": "hp-14-49",
@@ -2464,7 +2513,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 75,
     "badge": "Bán Chạy",
     "inStock": true,
@@ -2472,7 +2521,8 @@
     "pdfPage": 14,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-12-e-mezzo-primitivo-del-salento.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802423/ruoutot_products/vnjuf1rh0mkjg8iia4lf.jpg",
+    "cloudinaryPublicId": "ruoutot_products/vnjuf1rh0mkjg8iia4lf"
   },
   {
     "id": "hp-14-50",
@@ -2521,7 +2571,8 @@
     "pdfPage": 14,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/avatar-porto-dolce-semi-dolce.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802425/ruoutot_products/cmyz8kbpdryy7jvqbzkh.jpg",
+    "cloudinaryPublicId": "ruoutot_products/cmyz8kbpdryy7jvqbzkh"
   },
   {
     "id": "hp-14-51",
@@ -2570,7 +2621,8 @@
     "pdfPage": 14,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/ruou-vang-vitige-limited-17-do.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802384/ruoutot_products/bb94heoyk7hxj3ened5b.jpg",
+    "cloudinaryPublicId": "ruoutot_products/bb94heoyk7hxj3ened5b"
   },
   {
     "id": "hp-15-52",
@@ -2589,7 +2641,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "15%",
-    "alcoholNumeric": 15.0,
+    "alcoholNumeric": 15,
     "volume": "750ml",
     "vintage": "2021",
     "price": 1600000,
@@ -2619,7 +2671,8 @@
     "pdfPage": 15,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-ruou-vang-la-chitarra-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802385/ruoutot_products/gfzax0wy9vsgfx9webbr.jpg",
+    "cloudinaryPublicId": "ruoutot_products/gfzax0wy9vsgfx9webbr"
   },
   {
     "id": "hp-15-53",
@@ -2638,7 +2691,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "16%",
-    "alcoholNumeric": 16.0,
+    "alcoholNumeric": 16,
     "volume": "750ml",
     "vintage": "2022",
     "price": 2300000,
@@ -2668,7 +2721,8 @@
     "pdfPage": 15,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avt-83-sangiovese-puglia-igt.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802387/ruoutot_products/pqc6nsoftsdxzxyiyggm.jpg",
+    "cloudinaryPublicId": "ruoutot_products/pqc6nsoftsdxzxyiyggm"
   },
   {
     "id": "hp-15-54",
@@ -2717,7 +2771,8 @@
     "pdfPage": 15,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-cocktail-y-dolce-vita-equivocado-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802388/ruoutot_products/hbmgncojxo6kr9t0yoqd.jpg",
+    "cloudinaryPublicId": "ruoutot_products/hbmgncojxo6kr9t0yoqd"
   },
   {
     "id": "hp-16-55",
@@ -2736,7 +2791,7 @@
       "AILIME"
     ],
     "alcohol": "10%",
-    "alcoholNumeric": 10.0,
+    "alcoholNumeric": 10,
     "volume": "750ml",
     "vintage": "2022",
     "price": 375000,
@@ -2766,7 +2821,8 @@
     "pdfPage": 16,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/toreto-gran-reserva-chardonnay.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802389/ruoutot_products/twgl79jakqqkfoy5dnzq.jpg",
+    "cloudinaryPublicId": "ruoutot_products/twgl79jakqqkfoy5dnzq"
   },
   {
     "id": "hp-16-56",
@@ -2815,7 +2871,8 @@
     "pdfPage": 16,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/chateau-lynch-moussas-pauillac-grand-cru-classe.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802390/ruoutot_products/ocvg8kzu6gmmfrs4ozfm.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ocvg8kzu6gmmfrs4ozfm"
   },
   {
     "id": "hp-16-57",
@@ -2834,7 +2891,7 @@
       "AILIME"
     ],
     "alcohol": "9%",
-    "alcoholNumeric": 9.0,
+    "alcoholNumeric": 9,
     "volume": "750ml",
     "vintage": "2022",
     "price": 500000,
@@ -2864,7 +2921,8 @@
     "pdfPage": 16,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/vang-chile-correa-lisoni-family-reserva-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802391/ruoutot_products/td64g9jiw1dgfktgsmn3.jpg",
+    "cloudinaryPublicId": "ruoutot_products/td64g9jiw1dgfktgsmn3"
   },
   {
     "id": "hp-16-58",
@@ -2883,7 +2941,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "5%",
-    "alcoholNumeric": 5.0,
+    "alcoholNumeric": 5,
     "volume": "750ml",
     "vintage": "2021",
     "price": 650000,
@@ -2913,7 +2971,8 @@
     "pdfPage": 16,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/casta-reserva-cabernet-sauvignon-central-valley.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802392/ruoutot_products/qmwsxybi9oodi65snhzy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qmwsxybi9oodi65snhzy"
   },
   {
     "id": "hp-17-59",
@@ -2932,7 +2991,7 @@
       "Central"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 300000,
@@ -2954,7 +3013,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 49,
     "badge": null,
     "inStock": true,
@@ -2962,7 +3021,8 @@
     "pdfPage": 17,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-chile-casta-gran-reserva-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802426/ruoutot_products/jimznwpcbxz2kvjljmnf.jpg",
+    "cloudinaryPublicId": "ruoutot_products/jimznwpcbxz2kvjljmnf"
   },
   {
     "id": "hp-17-60",
@@ -3011,7 +3071,8 @@
     "pdfPage": 17,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ancianos-classic-cabernet-sauvignon.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802427/ruoutot_products/qqjvrgafinuvzjmd63st.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qqjvrgafinuvzjmd63st"
   },
   {
     "id": "hp-17-61",
@@ -3060,7 +3121,8 @@
     "pdfPage": 17,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/ruou-vang-chile-san-marino-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802428/ruoutot_products/xz7flvmaah9oixsqimvt.jpg",
+    "cloudinaryPublicId": "ruoutot_products/xz7flvmaah9oixsqimvt"
   },
   {
     "id": "hp-17-62",
@@ -3109,7 +3171,8 @@
     "pdfPage": 17,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/casillero-del-diablo-cabernet-sauvignon.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802430/ruoutot_products/w4wcfszbc86edv9cois1.jpg",
+    "cloudinaryPublicId": "ruoutot_products/w4wcfszbc86edv9cois1"
   },
   {
     "id": "hp-17-63",
@@ -3158,7 +3221,8 @@
     "pdfPage": 17,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-chile-correa-lisoni-family-reserva-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802391/ruoutot_products/td64g9jiw1dgfktgsmn3.jpg",
+    "cloudinaryPublicId": "ruoutot_products/td64g9jiw1dgfktgsmn3"
   },
   {
     "id": "hp-17-64",
@@ -3207,7 +3271,8 @@
     "pdfPage": 17,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/casta-reserva-cabernet-sauvignon-central-valley.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802392/ruoutot_products/qmwsxybi9oodi65snhzy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qmwsxybi9oodi65snhzy"
   },
   {
     "id": "hp-18-65",
@@ -3256,7 +3321,8 @@
     "pdfPage": 18,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/regalo-de-dios-selected.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802431/ruoutot_products/ybxbnqrujd1qkj6scg9h.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ybxbnqrujd1qkj6scg9h"
   },
   {
     "id": "hp-18-66",
@@ -3275,7 +3341,7 @@
       "Syrah"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 720000,
@@ -3305,7 +3371,8 @@
     "pdfPage": 18,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/ruou-toro-de-piedra-cabernet-sauvignon-750ml-vang-chile.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802432/ruoutot_products/uwaqapta6tmaxulyomkn.jpg",
+    "cloudinaryPublicId": "ruoutot_products/uwaqapta6tmaxulyomkn"
   },
   {
     "id": "hp-18-67",
@@ -3324,7 +3391,7 @@
       "Cabernet Sauvignon"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 900000,
@@ -3354,7 +3421,8 @@
     "pdfPage": 18,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-san-marino-reserva-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802433/ruoutot_products/qf2sxzipeepv63n1ke4h.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qf2sxzipeepv63n1ke4h"
   },
   {
     "id": "hp-18-68",
@@ -3377,7 +3445,7 @@
       "Cabernet Franc"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 900000,
@@ -3407,7 +3475,8 @@
     "pdfPage": 18,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-chile-cao-cap.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802434/ruoutot_products/n4pe1etqnewithduapai.jpg",
+    "cloudinaryPublicId": "ruoutot_products/n4pe1etqnewithduapai"
   },
   {
     "id": "hp-18-69",
@@ -3428,7 +3497,7 @@
       "Syrah"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 2000000,
@@ -3450,7 +3519,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 23,
     "badge": "Icon Wine",
     "inStock": true,
@@ -3458,7 +3527,8 @@
     "pdfPage": 18,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-regalo-de-dios-reserve-cabernet-sauvignon-750ml-vang-chile.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802435/ruoutot_products/px7belqv65yrpiy7ubj0.jpg",
+    "cloudinaryPublicId": "ruoutot_products/px7belqv65yrpiy7ubj0"
   },
   {
     "id": "hp-19-70",
@@ -3480,7 +3550,7 @@
       "Petit Verdot"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 2200000,
@@ -3510,7 +3580,8 @@
     "pdfPage": 19,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-montes-alpha-cabernet-sauvignon.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802436/ruoutot_products/f1nys8yhqeo5uaszknfk.jpg",
+    "cloudinaryPublicId": "ruoutot_products/f1nys8yhqeo5uaszknfk"
   },
   {
     "id": "hp-19-71",
@@ -3561,7 +3632,8 @@
     "pdfPage": 19,
     "isFeatured": true,
     "isBestSeller": true,
-    "image": "/images/products/ruou-vang-trang-syn-natural-sauvignon-blanc-750ml-gia-tot.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802406/ruoutot_products/x3ktnwg6cmgvjyqqmnx9.jpg",
+    "cloudinaryPublicId": "ruoutot_products/x3ktnwg6cmgvjyqqmnx9"
   },
   {
     "id": "hp-19-72",
@@ -3585,7 +3657,7 @@
       "Malbec"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 2800000,
@@ -3615,7 +3687,8 @@
     "pdfPage": 19,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-chile-carta-vieja-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802438/ruoutot_products/dhkcy7ud50ffar4xuabp.jpg",
+    "cloudinaryPublicId": "ruoutot_products/dhkcy7ud50ffar4xuabp"
   },
   {
     "id": "hp-19-73",
@@ -3637,7 +3710,7 @@
       "Syrah"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 4500000,
@@ -3667,7 +3740,8 @@
     "pdfPage": 19,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-montes-classic-series-sauvignon-blanc.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802440/ruoutot_products/serxqxy15393o0xblsaz.jpg",
+    "cloudinaryPublicId": "ruoutot_products/serxqxy15393o0xblsaz"
   },
   {
     "id": "hp-19-74",
@@ -3686,7 +3760,7 @@
       "Central"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 720000,
@@ -3716,7 +3790,8 @@
     "pdfPage": 19,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/1865-cabernet-sauvignon-ava.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802441/ruoutot_products/qfsgx8wgzyx1gvs0rtkx.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qfsgx8wgzyx1gvs0rtkx"
   },
   {
     "id": "hp-20-75",
@@ -3765,7 +3840,8 @@
     "pdfPage": 20,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-chile-montes-alpha-m.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802442/ruoutot_products/tzrpw5rwpjjn6s577jcy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/tzrpw5rwpjjn6s577jcy"
   },
   {
     "id": "hp-20-76",
@@ -3814,7 +3890,8 @@
     "pdfPage": 20,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/santa-cruz-chile-classic-cabernet-sauvignon.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802443/ruoutot_products/xusb1kgpibzktolqjymb.jpg",
+    "cloudinaryPublicId": "ruoutot_products/xusb1kgpibzktolqjymb"
   },
   {
     "id": "hp-21-77",
@@ -3833,7 +3910,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 420000,
@@ -3863,7 +3940,8 @@
     "pdfPage": 21,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/meillier-bordeaux-superieur-rouge.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802444/ruoutot_products/ab6laqlnk50zprlqaaxb.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ab6laqlnk50zprlqaaxb"
   },
   {
     "id": "hp-21-78",
@@ -3912,7 +3990,8 @@
     "pdfPage": 21,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/fontein-de-france-cabernet-sauvignon-14.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802445/ruoutot_products/dnobpbpa26cuamwe9bvy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/dnobpbpa26cuamwe9bvy"
   },
   {
     "id": "hp-21-79",
@@ -3931,7 +4010,7 @@
       "Sauvignon Blanc"
     ],
     "alcohol": "12%",
-    "alcoholNumeric": 12.0,
+    "alcoholNumeric": 12,
     "volume": "750ml",
     "vintage": "2022",
     "price": 420000,
@@ -3953,7 +4032,7 @@
     "servingTemp": "6 - 10°C",
     "decanting": "Ướp xô đá 20 phút trước khi dùng",
     "glassType": "Ly Champagne Flute hoặc ly vang trắng bầu hẹp",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 65,
     "badge": "Bán Chạy",
     "inStock": true,
@@ -3961,7 +4040,8 @@
     "pdfPage": 21,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/chateau-lynch-moussas-pauillac-grand-cru-classe.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802390/ruoutot_products/ocvg8kzu6gmmfrs4ozfm.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ocvg8kzu6gmmfrs4ozfm"
   },
   {
     "id": "hp-21-80",
@@ -3980,7 +4060,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2021",
     "price": 580000,
@@ -4010,7 +4090,8 @@
     "pdfPage": 21,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/chateau-de-camensac-haut-medoc-bordeaux.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802447/ruoutot_products/favb6mfht3zjeassypt8.jpg",
+    "cloudinaryPublicId": "ruoutot_products/favb6mfht3zjeassypt8"
   },
   {
     "id": "hp-21-81",
@@ -4029,7 +4110,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 580000,
@@ -4059,7 +4140,8 @@
     "pdfPage": 21,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/la-belle-parcelle-14.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802448/ruoutot_products/t1azcu6lwlwck5ytpzmk.jpg",
+    "cloudinaryPublicId": "ruoutot_products/t1azcu6lwlwck5ytpzmk"
   },
   {
     "id": "hp-21-82",
@@ -4108,7 +4190,8 @@
     "pdfPage": 21,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/saint-emilion-emilion-reserve-dulong.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802450/ruoutot_products/vhmyvnuuomdlpgk0lhee.jpg",
+    "cloudinaryPublicId": "ruoutot_products/vhmyvnuuomdlpgk0lhee"
   },
   {
     "id": "hp-22-83",
@@ -4128,7 +4211,7 @@
       "Merlot"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 450000,
@@ -4158,7 +4241,8 @@
     "pdfPage": 22,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-chateau-ploizeau-cuvee-excellence.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802451/ruoutot_products/c9katuj081lefg34d3vs.jpg",
+    "cloudinaryPublicId": "ruoutot_products/c9katuj081lefg34d3vs"
   },
   {
     "id": "hp-22-84",
@@ -4179,7 +4263,7 @@
       "Malbec"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2021",
     "price": 595000,
@@ -4209,7 +4293,8 @@
     "pdfPage": 22,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/clos-saint-martial-saint-emilion-grand-cru.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802452/ruoutot_products/tts4ufatvfqso6efp28v.jpg",
+    "cloudinaryPublicId": "ruoutot_products/tts4ufatvfqso6efp28v"
   },
   {
     "id": "hp-22-85",
@@ -4229,7 +4314,7 @@
       "Merlot"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 650000,
@@ -4259,7 +4344,8 @@
     "pdfPage": 22,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-1982-ug-bordeaux-750ml-red-wine.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802453/ruoutot_products/fymysab5o7acg9somjgy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/fymysab5o7acg9somjgy"
   },
   {
     "id": "hp-22-86",
@@ -4309,7 +4395,8 @@
     "pdfPage": 22,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/ruou-vang-chateau-ploizeau-bordeaux-superieur.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802455/ruoutot_products/uw38pffqfaprdtvlwzhn.jpg",
+    "cloudinaryPublicId": "ruoutot_products/uw38pffqfaprdtvlwzhn"
   },
   {
     "id": "hp-22-87",
@@ -4329,7 +4416,7 @@
       "Merlot"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 690000,
@@ -4359,7 +4446,8 @@
     "pdfPage": 22,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/chateau-la-borie-de-chassereau-bordeaux.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802456/ruoutot_products/wfuleigbicibprwkukeg.jpg",
+    "cloudinaryPublicId": "ruoutot_products/wfuleigbicibprwkukeg"
   },
   {
     "id": "hp-23-88",
@@ -4408,7 +4496,8 @@
     "pdfPage": 23,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-louis-samilia-cabernet-sauvignon.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802457/ruoutot_products/apssqcx6es3v17btsojf.jpg",
+    "cloudinaryPublicId": "ruoutot_products/apssqcx6es3v17btsojf"
   },
   {
     "id": "hp-23-89",
@@ -4449,7 +4538,7 @@
     "servingTemp": "16 - 18°C",
     "decanting": "Decant 30 - 45 phút",
     "glassType": "Ly Bordeaux dáng chuẩn",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 39,
     "badge": null,
     "inStock": true,
@@ -4457,7 +4546,8 @@
     "pdfPage": 23,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/morgane-cabernet-sauvignon-bordeaux.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802458/ruoutot_products/snslnhorymy7clw22xfw.jpg",
+    "cloudinaryPublicId": "ruoutot_products/snslnhorymy7clw22xfw"
   },
   {
     "id": "hp-23-90",
@@ -4477,7 +4567,7 @@
       "Merlot"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 880000,
@@ -4507,7 +4597,8 @@
     "pdfPage": 23,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-chateau-la-perrotte-bordeaux.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802459/ruoutot_products/z3aw6ya8juk5xcyqf4sb.jpg",
+    "cloudinaryPublicId": "ruoutot_products/z3aw6ya8juk5xcyqf4sb"
   },
   {
     "id": "hp-24-91",
@@ -4558,7 +4649,8 @@
     "pdfPage": 24,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/ruou-vang-do-chateau-m-gran-reserva.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802461/ruoutot_products/xce3w56usyse8te99a6f.jpg",
+    "cloudinaryPublicId": "ruoutot_products/xce3w56usyse8te99a6f"
   },
   {
     "id": "hp-24-92",
@@ -4607,7 +4699,8 @@
     "pdfPage": 24,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/chateau-fleur-lescure-saint-emilion-grand-cru.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802462/ruoutot_products/bbcq9osxzzzlm4jcq67d.jpg",
+    "cloudinaryPublicId": "ruoutot_products/bbcq9osxzzzlm4jcq67d"
   },
   {
     "id": "hp-24-93",
@@ -4626,7 +4719,7 @@
       "Blend truyền thống"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 1250000,
@@ -4656,7 +4749,8 @@
     "pdfPage": 24,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/les-tours-de-laroque-saint-emilion-grand-cru.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802464/ruoutot_products/pgicxj1tyoeo1p4bgqrs.jpg",
+    "cloudinaryPublicId": "ruoutot_products/pgicxj1tyoeo1p4bgqrs"
   },
   {
     "id": "hp-24-94",
@@ -4706,7 +4800,8 @@
     "pdfPage": 24,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/vang-phap-calvet-minervois-mosaifue.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802465/ruoutot_products/p0mrzfnnmigkg4de98ag.jpg",
+    "cloudinaryPublicId": "ruoutot_products/p0mrzfnnmigkg4de98ag"
   },
   {
     "id": "hp-24-95",
@@ -4755,7 +4850,8 @@
     "pdfPage": 24,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/domenech-ug-bordeaux.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802466/ruoutot_products/utuuix4g2llplkashwmc.jpg",
+    "cloudinaryPublicId": "ruoutot_products/utuuix4g2llplkashwmc"
   },
   {
     "id": "hp-25-96",
@@ -4776,7 +4872,7 @@
       "Cabernet Franc"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 1400000,
@@ -4806,7 +4902,8 @@
     "pdfPage": 25,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/vang-phap-louis-eschenauer-vdp-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802467/ruoutot_products/jxgduakt2fhvwldmxopu.jpg",
+    "cloudinaryPublicId": "ruoutot_products/jxgduakt2fhvwldmxopu"
   },
   {
     "id": "hp-25-97",
@@ -4856,7 +4953,8 @@
     "pdfPage": 25,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/jpchennet-syrah.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802416/ruoutot_products/muwgqownmauafpposair.jpg",
+    "cloudinaryPublicId": "ruoutot_products/muwgqownmauafpposair"
   },
   {
     "id": "hp-25-98",
@@ -4905,7 +5003,8 @@
     "pdfPage": 25,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-phap-noi-tieng-chateau-mouton-rothschild.jpg"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802468/ruoutot_products/eo7eor1l6l1mbdx1un2n.jpg",
+    "cloudinaryPublicId": "ruoutot_products/eo7eor1l6l1mbdx1un2n"
   },
   {
     "id": "hp-26-99",
@@ -4946,7 +5045,7 @@
     "servingTemp": "6 - 10°C",
     "decanting": "Ướp xô đá 20 phút trước khi dùng",
     "glassType": "Ly Champagne Flute hoặc ly vang trắng bầu hẹp",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 13,
     "badge": null,
     "inStock": true,
@@ -4954,7 +5053,8 @@
     "pdfPage": 26,
     "isFeatured": true,
     "isBestSeller": false,
-    "image": "/images/products/richard-ug-bordeaux.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802469/ruoutot_products/v9n5cdtewbkxxcrr3hyl.jpg",
+    "cloudinaryPublicId": "ruoutot_products/v9n5cdtewbkxxcrr3hyl"
   },
   {
     "id": "hp-26-100",
@@ -5003,7 +5103,8 @@
     "pdfPage": 26,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/la-fiole-du-pape-chateauneuf-du-pape.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802470/ruoutot_products/aiytu8pyzzgfkmcmoxmy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/aiytu8pyzzgfkmcmoxmy"
   },
   {
     "id": "hp-26-101",
@@ -5022,7 +5123,7 @@
       "Sauvignon Blanc"
     ],
     "alcohol": "12%",
-    "alcoholNumeric": 12.0,
+    "alcoholNumeric": 12,
     "volume": "750ml",
     "vintage": "2022",
     "price": 750000,
@@ -5052,7 +5153,8 @@
     "pdfPage": 26,
     "isFeatured": false,
     "isBestSeller": true,
-    "image": "/images/products/meillier-bordeaux-superieur-rouge.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802444/ruoutot_products/ab6laqlnk50zprlqaaxb.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ab6laqlnk50zprlqaaxb"
   },
   {
     "id": "hp-27-102",
@@ -5101,7 +5203,8 @@
     "pdfPage": 27,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/meillier-bordeaux-superieur-rouge.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802444/ruoutot_products/ab6laqlnk50zprlqaaxb.jpg",
+    "cloudinaryPublicId": "ruoutot_products/ab6laqlnk50zprlqaaxb"
   },
   {
     "id": "hp-27-103",
@@ -5120,7 +5223,7 @@
       "Chardonnay"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2022",
     "price": 800000,
@@ -5150,7 +5253,8 @@
     "pdfPage": 27,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-chile-casta-gran-reserva-cabernet-sauvignon-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802426/ruoutot_products/jimznwpcbxz2kvjljmnf.jpg",
+    "cloudinaryPublicId": "ruoutot_products/jimznwpcbxz2kvjljmnf"
   },
   {
     "id": "hp-27-104",
@@ -5201,7 +5305,8 @@
     "pdfPage": 27,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-vang-vitige-limited-17-do.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802384/ruoutot_products/bb94heoyk7hxj3ened5b.jpg",
+    "cloudinaryPublicId": "ruoutot_products/bb94heoyk7hxj3ened5b"
   },
   {
     "id": "hp-28-105",
@@ -5220,7 +5325,7 @@
       "South"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2022",
     "price": 350000,
@@ -5250,7 +5355,8 @@
     "pdfPage": 28,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-ruou-vang-la-chitarra-primitivo.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802385/ruoutot_products/gfzax0wy9vsgfx9webbr.jpg",
+    "cloudinaryPublicId": "ruoutot_products/gfzax0wy9vsgfx9webbr"
   },
   {
     "id": "hp-28-106",
@@ -5269,7 +5375,7 @@
       "ánh tím. Hương trái cây"
     ],
     "alcohol": "14%",
-    "alcoholNumeric": 14.0,
+    "alcoholNumeric": 14,
     "volume": "750ml",
     "vintage": "2021",
     "price": 350000,
@@ -5299,7 +5405,8 @@
     "pdfPage": 28,
     "isFeatured": true,
     "isBestSeller": true,
-    "image": "/images/products/avt-83-sangiovese-puglia-igt.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802387/ruoutot_products/pqc6nsoftsdxzxyiyggm.jpg",
+    "cloudinaryPublicId": "ruoutot_products/pqc6nsoftsdxzxyiyggm"
   },
   {
     "id": "hp-28-107",
@@ -5318,7 +5425,7 @@
       "xanh. Hương phức hợp từ"
     ],
     "alcohol": "12%",
-    "alcoholNumeric": 12.0,
+    "alcoholNumeric": 12,
     "volume": "750ml",
     "vintage": "2022",
     "price": 350000,
@@ -5348,7 +5455,8 @@
     "pdfPage": 28,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ruou-cocktail-y-dolce-vita-equivocado-750ml.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802388/ruoutot_products/hbmgncojxo6kr9t0yoqd.jpg",
+    "cloudinaryPublicId": "ruoutot_products/hbmgncojxo6kr9t0yoqd"
   },
   {
     "id": "hp-28-108",
@@ -5367,7 +5475,7 @@
       "tươi sáng. Hương đào và"
     ],
     "alcohol": "13%",
-    "alcoholNumeric": 13.0,
+    "alcoholNumeric": 13,
     "volume": "750ml",
     "vintage": "2021",
     "price": 350000,
@@ -5397,7 +5505,8 @@
     "pdfPage": 28,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/ancianos-classic-cabernet-sauvignon.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802427/ruoutot_products/qqjvrgafinuvzjmd63st.jpg",
+    "cloudinaryPublicId": "ruoutot_products/qqjvrgafinuvzjmd63st"
   },
   {
     "id": "hp-28-109",
@@ -5438,7 +5547,7 @@
     "servingTemp": "6 - 10°C",
     "decanting": "Ướp xô đá 20 phút trước khi dùng",
     "glassType": "Ly Champagne Flute hoặc ly vang trắng bầu hẹp",
-    "rating": 5.0,
+    "rating": 5,
     "reviewCount": 55,
     "badge": "Bán Chạy",
     "inStock": true,
@@ -5446,7 +5555,8 @@
     "pdfPage": 28,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/avatar-malvasia-nera.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802472/ruoutot_products/upwdeczeukiklz6m6mia.jpg",
+    "cloudinaryPublicId": "ruoutot_products/upwdeczeukiklz6m6mia"
   },
   {
     "id": "hp-28-110",
@@ -5495,6 +5605,7 @@
     "pdfPage": 28,
     "isFeatured": false,
     "isBestSeller": false,
-    "image": "/images/products/fontein-de-france-cabernet-sauvignon-14.webp"
+    "image": "https://res.cloudinary.com/daqwg8oql/image/upload/v1793802445/ruoutot_products/dnobpbpa26cuamwe9bvy.jpg",
+    "cloudinaryPublicId": "ruoutot_products/dnobpbpa26cuamwe9bvy"
   }
 ]
