@@ -10,6 +10,7 @@ const { ProductsController } = require('../src/products/products.controller');
 const { ProductsService } = require('../src/products/products.service');
 const { AppController } = require('../src/app.controller');
 const { CloudinaryService } = require('../src/cloudinary/cloudinary.service');
+const { setupSwagger } = require('../src/swagger/setup-swagger');
 const { v2: cloudinary } = require('cloudinary');
 
 test('Common images HTTP API validates files, supports folder IDs and generates Swagger', async () => {
@@ -31,7 +32,7 @@ test('Common images HTTP API validates files, supports folder IDs and generates 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('Test').setVersion('1').build());
-  SwaggerModule.setup('api/docs', app, document, { jsonDocumentUrl: 'api/docs-json' });
+  setupSwagger(app, document);
   await app.listen(0, '127.0.0.1');
   const base = await app.getUrl();
   const upload = (bytes, mime = 'image/png', folder) => {
@@ -70,7 +71,18 @@ test('Common images HTTP API validates files, supports folder IDs and generates 
     assert.ok(spec.components.schemas.CreateProductDto.properties.name);
     assert.ok(spec.paths['/api/products'].get.parameters.some(parameter => parameter.name === 'q'));
     assert.ok(spec.paths['/api/products/{id}/upload-image'].post.requestBody.content['multipart/form-data']);
-    assert.equal((await fetch(`${base}/api/docs/`)).status, 200);
+    for (const path of ['/api/docs', '/api/docs/']) {
+      const page = await fetch(`${base}${path}`);
+      assert.equal(page.status, 200);
+      assert.match(page.headers.get('cache-control'), /no-store/);
+      const html = await page.text();
+      const script = html.match(/src="([^"]*swagger-ui-init\.js\?v=[a-f0-9]{16})"/);
+      assert.ok(script, 'Swagger initializer must have a schema version');
+      const js = await fetch(new URL(script[1], `${base}${path}`));
+      assert.equal(js.status, 200);
+      assert.equal(js.headers.get('cloudflare-cdn-cache-control'), 'no-store');
+      assert.match(await js.text(), /"folder"/);
+    }
   } finally { await app.close(); }
 });
 

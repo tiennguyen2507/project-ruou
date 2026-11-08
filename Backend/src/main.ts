@@ -6,6 +6,7 @@ try {
   // Ignore if not permitted
 }
 
+import { setupSwagger } from './swagger/setup-swagger';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -54,7 +55,7 @@ async function bootstrap() {
     .setDescription('API dùng chung cho ảnh Cloudinary và quản lý sản phẩm.')
     .setVersion('1.0')
     .build());
-  SwaggerModule.setup('api/docs', app, document, { jsonDocumentUrl: 'api/docs-json' });
+  setupSwagger(app, document);
 
   const port = process.env.PORT || 5001;
   await app.listen(port, '0.0.0.0');
