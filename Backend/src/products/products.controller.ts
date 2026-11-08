@@ -16,12 +16,14 @@ import {
   UploadedFile,
   BadRequestException,
 } from '@nestjs/common';
+import { ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -111,6 +113,8 @@ export class ProductsController {
    * Automatically deletes old image on Cloudinary
    */
   @Post(':id/upload-image')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ schema: { type: 'object', required: ['file'], properties: { file: { type: 'string', format: 'binary' } } } })
   @UseInterceptors(FileInterceptor('file'))
   async uploadProductImage(
     @Param('id') id: string,
@@ -127,6 +131,8 @@ export class ProductsController {
    * Standalone upload to Cloudinary (returns secure_url and public_id)
    */
   @Post('upload-image')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ schema: { type: 'object', required: ['file'], properties: { file: { type: 'string', format: 'binary' } } } })
   @UseInterceptors(FileInterceptor('file'))
   async uploadStandaloneImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) {

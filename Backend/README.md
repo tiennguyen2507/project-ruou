@@ -159,3 +159,44 @@ npm run build
 npm run start:prod
 ```
 
+
+## 5. API ảnh dùng chung và Swagger
+
+API ảnh hoạt động độc lập với sản phẩm, có thể sử dụng từ các ứng dụng khác.
+Ảnh được lưu trên Cloudinary trong thư mục `common_images`; API trả metadata để
+ứng dụng gọi lưu URL và `public_id` vào dữ liệu của mình, không tạo bản ghi MongoDB riêng.
+
+Cấu hình trong `Backend/.env` (không đưa secret vào frontend):
+
+```env
+CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+```
+
+Sau khi chạy `npm install` và `npm run start:dev` trong `Backend`:
+
+- Swagger UI: http://localhost:5001/api/docs
+- OpenAPI JSON: http://localhost:5001/api/docs-json
+- `POST /api/images`: multipart form, trường `file` bắt buộc. JPEG, PNG, WebP, GIF; tối đa 5 MiB. Kiểm tra MIME và chữ ký file; Cloudinary kiểm tra giải mã ảnh.
+- `DELETE /api/images`: JSON `{ "publicId": "common_images/abc123" }`. Dùng nguyên `public_id` trả về khi upload, bao gồm thư mục, không dùng URL ảnh.
+
+```bash
+curl -X POST http://localhost:5001/api/images \
+  -F 'file=@/path/to/image.jpg'
+
+curl -X DELETE http://localhost:5001/api/images \
+  -H 'Content-Type: application/json' \
+  -d '{"publicId":"common_images/abc123"}'
+```
+
+Upload trả `201` với `{ success: true, data: { secure_url, public_id, format, bytes } }`.
+Xoá trả `200` với `{ success: true, data: { public_id, deleted: true } }` và yêu cầu
+Cloudinary vô hiệu hoá cache CDN. Ảnh đã xoá/không tồn tại trả `404`.
+Lỗi dữ liệu trả `400`, file quá lớn trả `413`, thiếu cấu hình trả `503`, lỗi Cloudinary trả `502`.
+Các endpoint này sử dụng cùng chính sách truy cập hiện tại của backend (chưa có xác thực).
+API ảnh sản phẩm hiện tại vẫn có trong nhóm Products trên Swagger.
+
+Kiểm tra API với Cloudinary giả lập (không cần MongoDB hoặc tài khoản Cloudinary):
+
+```bash
+npm run test:images
+```

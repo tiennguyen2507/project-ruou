@@ -6,6 +6,7 @@ try {
   // Ignore if not permitted
 }
 
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
@@ -48,10 +49,18 @@ async function bootstrap() {
     }),
   );
 
+  const document = SwaggerModule.createDocument(app, new DocumentBuilder()
+    .setTitle('Common API')
+    .setDescription('API dùng chung cho ảnh Cloudinary và quản lý sản phẩm.')
+    .setVersion('1.0')
+    .build());
+  SwaggerModule.setup('api/docs', app, document, { jsonDocumentUrl: 'api/docs-json' });
+
   const port = process.env.PORT || 5001;
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 NestJS Backend server is running at: http://localhost:${port}/api`);
+  logger.log(`Swagger UI: http://localhost:${port}/api/docs`);
   logger.log(`📦 Product endpoints:`);
   logger.log(`   - GET    /api/products           : Danh sách sản phẩm (tìm kiếm, lọc, phân trang)`);
   logger.log(`   - GET    /api/products/:id       : Chi tiết sản phẩm theo ID / SKU / Slug`);

@@ -1,0 +1,90 @@
+require('ts-node/register');
+require('reflect-metadata');
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { Module, ValidationPipe } = require('@nestjs/common');
+const { NestFactory } = require('@nestjs/core');
+const { SwaggerModule, DocumentBuilder } = require('@nestjs/swagger');
+const { ImagesController } = require('../src/cloudinary/images.controller');
+const { ProductsController } = require('../src/products/products.controller');
+const { ProductsService } = require('../src/products/products.service');
+const { AppController } = require('../src/app.controller');
+const { CloudinaryService } = require('../src/cloudinary/cloudinary.service');
+const { v2: cloudinary } = require('cloudinary');
+
+test('Common images HTTP API validates files, supports folder IDs and generates Swagger', async () => {
+  let uploaded = 0;
+  let removed;
+  const service = {
+    commonFolder: 'common_images',
+    uploadImage: async (file, folder) => {
+      uploaded++;
+      assert.equal(folder, 'common_images');
+      return { secure_url: 'https://example.com/image.png', public_id: `${folder}/abc`, format: 'png', bytes: file.size };
+    },
+    deleteImage: async (id) => { removed = id; return id !== 'missing'; },
+  };
+  class TestModule {}
+  Module({ controllers: [ImagesController, ProductsController, AppController], providers: [{ provide: CloudinaryService, useValue: service }, { provide: ProductsService, useValue: {} }] })(TestModule);
+  const app = await NestFactory.create(TestModule, { logger: false });
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('Test').setVersion('1').build());
+  SwaggerModule.setup('api/docs', app, document, { jsonDocumentUrl: 'api/docs-json' });
+  await app.listen(0, '127.0.0.1');
+  const base = await app.getUrl();
+  const upload = (bytes, mime = 'image/png') => {
+    const form = new FormData();
+    form.set('file', new Blob([bytes], { type: mime }), 'test.png');
+    return fetch(`${base}/api/images`, { method: 'POST', body: form });
+  };
+  const remove = (body) => fetch(`${base}/api/images`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  try {
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aV1sAAAAASUVORK5CYII=', 'base64');
+    const response = await upload(png);
+    assert.equal(response.status, 201);
+    assert.equal((await response.json()).data.public_id, 'common_images/abc');
+    assert.equal((await upload('fake png')).status, 400);
+    assert.equal((await upload('', 'image/png')).status, 400);
+    assert.equal((await upload('<svg/>', 'image/svg+xml')).status, 400);
+    assert.equal((await upload(Buffer.alloc(5 * 1024 * 1024 + 1))).status, 413);
+    assert.equal((await fetch(`${base}/api/images`, { method: 'POST', body: new FormData() })).status, 400);
+    assert.equal(uploaded, 1);
+    for (const body of [{}, { publicId: '' }, { publicId: '   ' }, { publicId: 123 }]) assert.equal((await remove(body)).status, 400);
+    assert.equal((await remove({ publicId: 'common_images/abc' })).status, 200);
+    assert.equal(removed, 'common_images/abc');
+    assert.equal((await remove({ publicId: 'missing' })).status, 404);
+    const spec = await (await fetch(`${base}/api/docs-json`)).json();
+    assert.ok(spec.paths['/api/images'].post.requestBody.content['multipart/form-data']);
+    assert.ok(spec.paths['/api/images'].delete.requestBody);
+    assert.ok(spec.components.schemas.CreateProductDto.properties.name);
+    assert.ok(spec.paths['/api/products'].get.parameters.some(parameter => parameter.name === 'q'));
+    assert.ok(spec.paths['/api/products/{id}/upload-image'].post.requestBody.content['multipart/form-data']);
+    assert.equal((await fetch(`${base}/api/docs/`)).status, 200);
+  } finally { await app.close(); }
+});
+
+test('Cloudinary service reports configuration, provider failures and deletion outcomes', async () => {
+  const oldUrl = process.env.CLOUDINARY_URL;
+  const originalDestroy = cloudinary.uploader.destroy;
+  const originalUpload = cloudinary.uploader.upload_stream;
+  delete process.env.CLOUDINARY_URL;
+  try {
+    const missing = new CloudinaryService({ get: () => '' });
+    await assert.rejects(missing.deleteImage('abc'), error => error.getStatus() === 503);
+    await assert.rejects(missing.uploadImage({ buffer: Buffer.from('x') }), error => error.getStatus() === 503);
+    const service = new CloudinaryService({ get: () => 'cloudinary://key:secret@test' });
+    cloudinary.uploader.destroy = async (id, options) => { assert.equal(id, 'folder/image'); assert.equal(options.invalidate, true); return { result: 'ok' }; };
+    assert.equal(await service.deleteImage('folder/image'), true);
+    cloudinary.uploader.destroy = async () => ({ result: 'not found' });
+    assert.equal(await service.deleteImage('missing'), false);
+    cloudinary.uploader.destroy = async () => { throw Error('provider secret'); };
+    await assert.rejects(service.deleteImage('abc'), error => error.getStatus() === 502 && !error.message.includes('secret'));
+    cloudinary.uploader.upload_stream = (options, callback) => ({ end: () => callback({ message: 'provider error' }) });
+    await assert.rejects(service.uploadImage({ buffer: Buffer.from('x') }), error => error.getStatus() === 502);
+  } finally {
+    cloudinary.uploader.destroy = originalDestroy;
+    cloudinary.uploader.upload_stream = originalUpload;
+    if (oldUrl === undefined) delete process.env.CLOUDINARY_URL; else process.env.CLOUDINARY_URL = oldUrl;
+  }
+});

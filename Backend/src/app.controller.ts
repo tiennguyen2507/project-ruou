@@ -14,6 +14,8 @@ export class AppController {
       endpoints: {
         root: '/',
         health: '/health hoặc /api/health',
+        docs: '/api/docs',
+        images: '/api/images',
         products: '/api/products',
         seed: '/api/products/seed',
       },
