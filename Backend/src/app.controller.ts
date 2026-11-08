@@ -16,6 +16,7 @@ export class AppController {
         health: '/health hoặc /api/health',
         docs: '/api/docs',
         images: '/api/images',
+        auth: '/api/auth/{site}/login',
         products: '/api/products',
         seed: '/api/products/seed',
       },

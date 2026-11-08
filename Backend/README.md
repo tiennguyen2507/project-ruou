@@ -200,3 +200,59 @@ Kiểm tra API với Cloudinary giả lập (không cần MongoDB hoặc tài kh
 ```bash
 npm run test:images
 ```
+
+
+## 6. Common JWT Auth theo site
+
+- `POST /api/auth/{site}/register`: đăng ký và nhận JWT.
+- `POST /api/auth/{site}/login`: đăng nhập bằng `email`, `password`.
+- `GET /api/auth/{site}/me`: hồ sơ người dùng, header `Authorization: Bearer <accessToken>`.
+
+Ví dụ `{site}` = `ruoutot` hoặc `my-shop`. Mỗi site có tập tài khoản riêng;
+cặp `(site, email)` là duy nhất. Token được ràng buộc với site bằng `aud` và
+claim `site`, kiểm tra chữ ký HS256, issuer và thời hạn 15 phút.
+`site` là mã bên gọi tự khai báo, không xác minh tên miền hay quyền sở hữu website.
+Email hỗ trợ Gmail và các nhà cung cấp khác; đây là đăng nhập mật khẩu,
+chưa có Google OAuth hoặc xác minh email/số điện thoại.
+
+Cấu hình trước khi sử dụng:
+
+- `JWT_SECRET`: khóa ngẫu nhiên tối thiểu 32 byte, lưu trong biến môi trường server.
+  Tạo bằng `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
+  Giữ cùng khóa trên các instance; đổi khóa sẽ làm token hiện tại mất hiệu lực.
+- `DB_mongo` hoặc `MONGODB_URI`: MongoDB bền vững và kết nối được.
+  Auth trả 503 khi BE chuyển sang MongoDB bộ nhớ dự phòng để tránh mất tài khoản khi restart.
+
+Body đăng ký:
+
+```json
+{
+  "email": "user@gmail.com",
+  "password": "MyPassword123!",
+  "name": "Nguyễn Văn An",
+  "phone": "0901234567",
+  "address": "123 Nguyễn Huệ, TP. Hồ Chí Minh"
+}
+```
+
+Body đăng nhập:
+
+```json
+{
+  "email": "user@gmail.com",
+  "password": "MyPassword123!"
+}
+```
+
+Đăng ký/đăng nhập trả `{ accessToken, tokenType: "Bearer", expiresIn: 900, user }`.
+`user` gồm `id`, `site`, `email`, `name`, `phone`, `address`; không trả mật khẩu/hash.
+Mật khẩu được băm bằng scrypt với salt ngẫu nhiên riêng cho từng tài khoản.
+Swagger có nút **Authorize** để nhập access token và thử `/me`.
+Token hết hạn cần đăng nhập lại; chưa có refresh token hoặc thu hồi token tức thì.
+
+Auth giới hạn 10 request/phút/IP cho từng endpoint, bộ đếm trong bộ nhớ mỗi instance.
+Khi chạy nhiều instance, cần giới hạn bổ sung tại gateway hoặc kho bộ đếm dùng chung.
+Các API sản phẩm/ảnh hiện tại giữ nguyên quyền truy cập; guard JWT được export để
+áp dụng vào endpoint cần đăng nhập trong các tính năng tiếp theo.
+
+Kiểm thử: `npm run test:auth` (MongoDB test riêng, không dùng DB production).

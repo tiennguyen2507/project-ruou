@@ -54,6 +54,7 @@ async function bootstrap() {
     .setTitle('Common API')
     .setDescription('API dùng chung cho ảnh Cloudinary và quản lý sản phẩm.')
     .setVersion('1.0')
+    .addBearerAuth()
     .build());
   setupSwagger(app, document);
 
