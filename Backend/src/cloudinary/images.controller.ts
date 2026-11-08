@@ -1,10 +1,18 @@
 import { Body, Controller, Delete, Post, UploadedFile, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, NotFoundException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags, ApiProperty } from '@nestjs/swagger';
-import { IsString, Matches, MaxLength } from 'class-validator';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags, ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsOptional, Matches, MaxLength } from 'class-validator';
 import { ImageSignatureValidator } from './image-signature.validator';
 import { CloudinaryService } from './cloudinary.service';
+
+export class UploadImageDto {
+  @ApiPropertyOptional({ example: 'banners', default: 'common_images', description: 'Thư mục lưu trên Cloudinary, hỗ trợ thư mục con như products/wine. Để trống dùng common_images.' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  folder?: string;
+}
 
 export class DeleteImageDto {
   @ApiProperty({ example: 'common_images/abc123', description: 'public_id trả về khi upload, bao gồm thư mục và không có đuôi file.' })
@@ -22,7 +30,7 @@ export class ImagesController {
   @Post()
   @ApiOperation({ summary: 'Upload ảnh dùng chung lên Cloudinary' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ schema: { type: 'object', required: ['file'], properties: { file: { type: 'string', format: 'binary' } } } })
+  @ApiBody({ schema: { type: 'object', required: ['file'], properties: { file: { type: 'string', format: 'binary' }, folder: { type: 'string', default: 'common_images', example: 'banners', maxLength: 255, description: 'Thư mục lưu trên Cloudinary (ví dụ products/wine). Để trống dùng common_images.' } } } })
   @ApiResponse({ status: 201, description: 'Ảnh đã lưu. data gồm secure_url, public_id, format, bytes.', schema: { example: { success: true, data: { secure_url: 'https://res.cloudinary.com/demo/image/upload/common_images/abc123.jpg', public_id: 'common_images/abc123', format: 'jpg', bytes: 12345 } } } })
   @ApiResponse({ status: 400, description: 'Thiếu file, file rỗng hoặc định dạng không hỗ trợ.' })
   @ApiResponse({ status: 413, description: 'Ảnh vượt quá 5 MiB.' })
@@ -33,8 +41,8 @@ export class ImagesController {
     new ImageSignatureValidator(),
     new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
     new FileTypeValidator({ fileType: /^image\/(jpeg|png|webp|gif)$/ }),
-  ] })) file: Express.Multer.File) {
-    return { success: true, data: await this.cloudinaryService.uploadImage(file, this.cloudinaryService.commonFolder) };
+  ] })) file: Express.Multer.File, @Body() dto: UploadImageDto) {
+    return { success: true, data: await this.cloudinaryService.uploadImage(file, dto.folder?.trim() || this.cloudinaryService.commonFolder) };
   }
 
   @Delete()

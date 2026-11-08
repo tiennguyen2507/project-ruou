@@ -15,11 +15,12 @@ const { v2: cloudinary } = require('cloudinary');
 test('Common images HTTP API validates files, supports folder IDs and generates Swagger', async () => {
   let uploaded = 0;
   let removed;
+  let uploadedFolder;
   const service = {
     commonFolder: 'common_images',
     uploadImage: async (file, folder) => {
       uploaded++;
-      assert.equal(folder, 'common_images');
+      uploadedFolder = folder;
       return { secure_url: 'https://example.com/image.png', public_id: `${folder}/abc`, format: 'png', bytes: file.size };
     },
     deleteImage: async (id) => { removed = id; return id !== 'missing'; },
@@ -33,8 +34,9 @@ test('Common images HTTP API validates files, supports folder IDs and generates 
   SwaggerModule.setup('api/docs', app, document, { jsonDocumentUrl: 'api/docs-json' });
   await app.listen(0, '127.0.0.1');
   const base = await app.getUrl();
-  const upload = (bytes, mime = 'image/png') => {
+  const upload = (bytes, mime = 'image/png', folder) => {
     const form = new FormData();
+    if (folder !== undefined) form.set('folder', folder);
     form.set('file', new Blob([bytes], { type: mime }), 'test.png');
     return fetch(`${base}/api/images`, { method: 'POST', body: form });
   };
@@ -50,12 +52,20 @@ test('Common images HTTP API validates files, supports folder IDs and generates 
     assert.equal((await upload(Buffer.alloc(5 * 1024 * 1024 + 1))).status, 413);
     assert.equal((await fetch(`${base}/api/images`, { method: 'POST', body: new FormData() })).status, 400);
     assert.equal(uploaded, 1);
+    assert.equal(uploadedFolder, 'common_images');
+    const custom = await upload(png, 'image/png', 'products/wine');
+    assert.equal(custom.status, 201);
+    assert.equal((await custom.json()).data.public_id, 'products/wine/abc');
+    assert.equal(uploadedFolder, 'products/wine');
+    assert.equal((await upload(png, 'image/png', '  ')).status, 201);
+    assert.equal(uploadedFolder, 'common_images');
+    assert.equal((await upload(png, 'image/png', 'x'.repeat(256))).status, 400);
     for (const body of [{}, { publicId: '' }, { publicId: '   ' }, { publicId: 123 }]) assert.equal((await remove(body)).status, 400);
     assert.equal((await remove({ publicId: 'common_images/abc' })).status, 200);
     assert.equal(removed, 'common_images/abc');
     assert.equal((await remove({ publicId: 'missing' })).status, 404);
     const spec = await (await fetch(`${base}/api/docs-json`)).json();
-    assert.ok(spec.paths['/api/images'].post.requestBody.content['multipart/form-data']);
+    assert.equal(spec.paths['/api/images'].post.requestBody.content['multipart/form-data'].schema.properties.folder.type, 'string');
     assert.ok(spec.paths['/api/images'].delete.requestBody);
     assert.ok(spec.components.schemas.CreateProductDto.properties.name);
     assert.ok(spec.paths['/api/products'].get.parameters.some(parameter => parameter.name === 'q'));
