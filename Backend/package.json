@@ -14,7 +14,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test:images": "node --test test/images.test.cjs",
-    "test:auth": "node --test test/auth.test.cjs"
+    "test:auth": "node --test test/auth.test.cjs",
+    "test:proxy": "node --test test/proxy-seeding.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.8",

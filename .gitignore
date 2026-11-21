@@ -37,3 +37,6 @@ Thumbs.db
 logs/
 *.log
 
+
+# Text notes & sensitive order files
+*.txt
