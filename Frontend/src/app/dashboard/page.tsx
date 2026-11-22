@@ -350,6 +350,26 @@ function ProxySeedingContent() {
   // Enabled tasks memo
   const enabledTasks = useMemo(() => tasks.filter((t) => t.enabled), [tasks]);
 
+  // Total runs calculated directly from actual tasks in the list
+  const totalRunsCount = useMemo(() => {
+    return tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
+  }, [tasks]);
+
+  // Handler: Bật chạy lại toàn bộ URL trong danh sách
+  const handleStartAll = async () => {
+    try {
+      const min = Number(minDelaySec) || 60;
+      const max = Number(maxDelaySec) || 180;
+      showToast("Đang kích hoạt chạy tất cả URL...");
+      const res = await startBackendAutoRun({ minDelaySec: min, maxDelaySec: max });
+      setIsAutoRunning(res.isRunning);
+      showToast("Đã kích hoạt chạy tất cả URL dưới Backend!");
+      await syncWithBackend();
+    } catch (err: any) {
+      showToast(err.message || "Lỗi khi bật chạy tất cả", "error");
+    }
+  };
+
   // Latest run from Backend
   const latestBackendRun = useMemo(() => {
     return history.length > 0 ? history[0] : null;
@@ -583,29 +603,47 @@ function ProxySeedingContent() {
         </div>
 
         {/* Action Buttons Footer */}
-        <div className="flex flex-wrap items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100">
+          <div className="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Mỗi URL trong danh sách chạy độc lập theo bộ đếm giờ riêng</span>
+          </div>
+
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Nút Dừng chạy (hiển thị khi tiến trình đang chạy ngầm) */}
+            {/* Nút Tạm dừng tất cả (khi có URL đang chạy ngầm) */}
             {isAutoRunning && (
               <button
                 type="button"
                 onClick={stopAutoRun}
                 className="flex items-center justify-center gap-1.5 bg-white hover:bg-red-50 text-red-600 hover:text-red-700 px-4 py-2.5 rounded-xl text-xs font-bold transition border border-red-200 shadow-2xs cursor-pointer"
-                title="Dừng tiến trình chạy ngầm Backend"
+                title="Tạm dừng toàn bộ các URL đang chạy ngầm Backend"
               >
                 <Pause className="w-3.5 h-3.5 fill-current" />
-                <span>Dừng chạy ({autoRunCount} lượt)</span>
+                <span>Tạm dừng tất cả ({totalRunsCount} lượt)</span>
               </button>
             )}
 
-            {/* Nút: Thêm vào danh sách để chạy dưới BE */}
+            {/* Nút Chạy tất cả (khi đang tạm dừng mà danh sách có URL) */}
+            {!isAutoRunning && tasks.length > 0 && (
+              <button
+                type="button"
+                onClick={handleStartAll}
+                className="flex items-center justify-center gap-1.5 bg-white hover:bg-emerald-50 text-emerald-700 hover:text-emerald-800 px-4 py-2.5 rounded-xl text-xs font-bold transition border border-emerald-200 shadow-2xs cursor-pointer"
+                title="Bật chạy lại tất cả URL trong danh sách"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Bật chạy tất cả ({tasks.length} URL)</span>
+              </button>
+            )}
+
+            {/* Nút: Thêm URL vào danh sách */}
             <button
               type="button"
               onClick={handleAddAndRunBackend}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-xs shadow-emerald-600/20 cursor-pointer"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-xs shadow-emerald-600/20 cursor-pointer"
             >
-              <Play className="w-4 h-4 fill-current" />
-              <span>Thêm vào danh sách để chạy dưới BE</span>
+              <Plus className="w-4 h-4" />
+              <span>Thêm URL vào danh sách</span>
             </button>
           </div>
         </div>
@@ -641,13 +679,13 @@ function ProxySeedingContent() {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="bg-gray-50/80 border-b border-gray-100 text-gray-500 font-semibold">
-                    <th className="py-2.5 px-3 w-12 text-center">Bật</th>
+                    <th className="py-2.5 px-3 min-w-[130px] text-center">Trạng Thái / Chạy BE</th>
                     <th className="py-2.5 px-3 min-w-[220px]">URL Cần Kiểm Tra</th>
                     <th className="py-2.5 px-3 min-w-[160px]">Proxy SOCKS5</th>
                     <th className="py-2.5 px-3 min-w-[160px]">Hẹn Giờ / Đếm Ngược</th>
-                    <th className="py-2.5 px-3 min-w-[110px]">Thống Kê</th>
+                    <th className="py-2.5 px-3 min-w-[100px] text-center">Thống Kê</th>
                     <th className="py-2.5 px-3 min-w-[140px]">Lần Chạy Cuối</th>
-                    <th className="py-2.5 px-3 w-20 text-right">Thao Tác</th>
+                    <th className="py-2.5 px-3 min-w-[90px] text-right">Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -673,19 +711,29 @@ function ProxySeedingContent() {
                             : ""
                         }`}
                       >
-                        {/* Toggle On/Off */}
+                        {/* Trạng Thái / Chạy BE riêng cho từng row */}
                         <td className="py-2.5 px-3 text-center">
                           <button
                             type="button"
                             onClick={() => handleToggleTask(task.id)}
-                            title={task.enabled ? "Tạm dừng URL này" : "Kích hoạt URL này"}
-                            className={`w-7 h-7 rounded-lg inline-flex items-center justify-center transition ${
+                            title={task.enabled ? "Bấm để tạm dừng URL này" : "Bấm để kích hoạt chạy ngầm URL này"}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer shadow-2xs ${
                               task.enabled
-                                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
-                                : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                                ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300"
+                                : "bg-gray-100 text-gray-500 hover:bg-emerald-50 hover:text-emerald-700 border border-gray-200"
                             }`}
                           >
-                            <Power className="w-3.5 h-3.5" />
+                            {task.enabled ? (
+                              <>
+                                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                                <span>Đang chạy</span>
+                              </>
+                            ) : (
+                              <>
+                                <Pause className="w-3 h-3 text-gray-400" />
+                                <span>Tạm dừng</span>
+                              </>
+                            )}
                           </button>
                         </td>
 
@@ -786,8 +834,8 @@ function ProxySeedingContent() {
                         </td>
 
                         {/* Stats */}
-                        <td className="py-2.5 px-3">
-                          <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-bold text-[11px]">
+                        <td className="py-2.5 px-3 text-center">
+                          <span className="bg-orange-50 text-[#ea580c] px-2.5 py-1 rounded-md font-bold text-xs border border-orange-200/60 font-mono">
                             {task.totalRuns || 0} lượt
                           </span>
                         </td>
@@ -819,12 +867,20 @@ function ProxySeedingContent() {
 
                         {/* Action buttons */}
                         <td className="py-2.5 px-3 text-right">
-                          <div className="flex items-center justify-end">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleRunTaskImmediately(task)}
+                              title="Chạy thử ngay 1 lượt cho URL này"
+                              className="p-1.5 text-gray-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition border border-gray-200 hover:border-emerald-300"
+                            >
+                              <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                            </button>
                             <button
                               type="button"
                               onClick={() => handleDeleteTask(task.id)}
                               title="Xóa URL khỏi danh sách"
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition border border-transparent hover:border-red-200"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>

@@ -121,7 +121,6 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       this.isRunning = configDoc.isRunning ?? false;
       this.minDelaySec = configDoc.minDelaySec ?? 60;
       this.maxDelaySec = configDoc.maxDelaySec ?? 180;
-      this.totalRuns = configDoc.totalRuns ?? 0;
       if (configDoc.defaultProxy) {
         this.defaultProxy = configDoc.defaultProxy;
       }
@@ -162,6 +161,9 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
           isExecuting: false,
         }));
       }
+
+      // Luôn tính totalRuns theo tổng lượt chạy thực tế của các tasks
+      this.totalRuns = this.tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
 
       const historyCount = await this.historyModel.countDocuments();
       this.logger.log(
@@ -265,7 +267,7 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       task.lastDevice = res.device?.name;
       task.lastFinalUrl = res.finalUrl;
 
-      this.totalRuns++;
+      this.totalRuns = this.tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
 
       // Lưu MongoDB
       this.taskModel
@@ -503,8 +505,19 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
     if (!task.enabled) {
       // Tắt task -> hủy timer độc lập của nó
       this.clearTaskTimer(id);
-    } else if (this.isRunning) {
-      // Bật task khi hệ thống đang chạy -> bắt đầu timer độc lập cho nó sau 2s
+      const anyEnabled = this.tasks.some((t) => t.enabled);
+      if (!anyEnabled) {
+        this.isRunning = false;
+        await this.configModel
+          .updateOne({ key: 'default' }, { $set: { isRunning: false } })
+          .catch(() => {});
+      }
+    } else {
+      // Bật task -> kích hoạt chạy độc lập ngay sau 2s
+      this.isRunning = true;
+      await this.configModel
+        .updateOne({ key: 'default' }, { $set: { isRunning: true } })
+        .catch(() => {});
       this.scheduleTask(id, 2);
     }
 
@@ -526,6 +539,10 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       await this.taskModel.deleteOne({ id }).catch((e) =>
         this.logger.error(`Lỗi xóa task Mongo: ${e.message}`),
       );
+      this.totalRuns = this.tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
+      await this.configModel
+        .updateOne({ key: 'default' }, { $set: { totalRuns: this.totalRuns } })
+        .catch(() => {});
       return true;
     }
     return false;
@@ -543,12 +560,14 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
    */
   getStatus(): AutoRunStatus {
     const enabledTasks = this.tasks.filter((t) => t.enabled);
+    const totalRuns = this.tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
+    this.totalRuns = totalRuns;
 
     return {
-      isRunning: this.isRunning,
+      isRunning: this.isRunning && enabledTasks.length > 0,
       minDelaySec: this.minDelaySec,
       maxDelaySec: this.maxDelaySec,
-      totalRuns: this.totalRuns,
+      totalRuns: totalRuns,
       tasksCount: this.tasks.length,
       enabledTasksCount: enabledTasks.length,
       defaultProxy: this.defaultProxy,
