@@ -10,7 +10,6 @@ import {
   Copy,
   Check,
   ExternalLink,
-  ShieldCheck,
   AlertCircle,
   CheckCircle2,
   ArrowRight,
@@ -439,33 +438,9 @@ function ProxySeedingContent() {
               {isAutoRunning ? <Timer className="w-5 h-5" /> : <Globe2 className="w-5 h-5" />}
             </div>
             <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-bold text-gray-900 text-sm sm:text-base">
-                  Cấu hình & Tự động chạy ngầm Backend (Auto Run 24/7)
-                </h2>
-                {isAutoRunning ? (
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">
-                      <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-                      Đang chạy ngầm Backend (24/7)
-                    </span>
-                    <button
-                      type="button"
-                      onClick={stopAutoRun}
-                      className="text-red-600 hover:text-red-700 hover:underline text-[11px] font-bold cursor-pointer"
-                    >
-                      (Dừng chạy)
-                    </button>
-                  </div>
-                ) : (
-                  <span className="bg-gray-100 text-gray-600 text-[11px] font-semibold px-2 py-0.5 rounded-full">
-                    Backend Worker: Đang tạm dừng
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Tiến trình chạy độc lập trên server NodeJS/NestJS, tự động luân phiên URL & Proxy kể cả khi tắt trình duyệt
-              </p>
+              <h2 className="font-bold text-gray-900 text-sm sm:text-base">
+                Cấu hình & Tự động chạy ngầm Backend (Auto Run 24/7)
+              </h2>
             </div>
           </div>
 
@@ -484,16 +459,6 @@ function ProxySeedingContent() {
               <span>URL cần kiểm tra (Target URL)</span>
               <span className="text-red-500">*</span>
             </label>
-            <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
-              <span>Gợi ý:</span>
-              <button
-                type="button"
-                onClick={() => setTargetUrl("https://shorten.asia/fyscDRRV")}
-                className="text-[#ea580c] hover:underline font-medium"
-              >
-                shorten.asia (ILA)
-              </button>
-            </div>
           </div>
 
           <div className="relative">
@@ -607,9 +572,6 @@ function ProxySeedingContent() {
               <Server className="w-3.5 h-3.5 text-gray-400" />
               <span>SOCKS5 Proxy (Tùy chọn)</span>
             </label>
-            <span className="text-[11px] text-emerald-600 font-medium">
-              Trống = Dùng Proxy Mặc định hệ thống
-            </span>
           </div>
           <input
             type="text"
@@ -620,13 +582,8 @@ function ProxySeedingContent() {
           />
         </div>
 
-        {/* Action Buttons & Anti-bot Note Footer */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
-          <div className="text-xs text-gray-400 flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Mô phỏng 100% User-Agent, Client Hints, Referer & Cookie Engine</span>
-          </div>
-
+        {/* Action Buttons Footer */}
+        <div className="flex flex-wrap items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Nút Dừng chạy (hiển thị khi tiến trình đang chạy ngầm) */}
             {isAutoRunning && (

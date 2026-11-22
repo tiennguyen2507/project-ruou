@@ -9,7 +9,6 @@ import {
   Clock,
   Menu,
   X,
-  ExternalLink,
   ChevronDown,
 } from "lucide-react";
 
@@ -221,31 +220,6 @@ export default function AdminLayout({
           );
         })}
       </nav>
-
-      {/* Bottom Footer Section */}
-      <div className="p-4 border-t border-gray-100 space-y-2 bg-gray-50/50">
-        <div className="flex items-center justify-between text-xs px-2 py-1.5 text-gray-500">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-medium text-emerald-700">Proxy API Ready</span>
-          </div>
-          <span className="text-[10px] bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-400 font-mono">
-            v1.0
-          </span>
-        </div>
-
-        <Link
-          href="/"
-          target="_blank"
-          className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-gray-600 hover:text-[#ea580c] bg-white hover:bg-orange-50/50 rounded-xl border border-gray-200 transition-colors shadow-2xs"
-        >
-          <span className="flex items-center gap-2">
-            <Wine className="w-3.5 h-3.5 text-red-700" />
-            <span>Xem Website RuouTot</span>
-          </span>
-          <ExternalLink className="w-3.5 h-3.5" />
-        </Link>
-      </div>
     </div>
   );
 
