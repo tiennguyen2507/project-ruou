@@ -3,14 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ProxySeedingModule } from './proxy-seeding/proxy-seeding.module';
-
 import { ProductsModule } from './products/products.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AppController } from './app.controller';
-import * as mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-
-let memoryServerInstance: MongoMemoryServer | null = null;
 
 @Module({
   controllers: [AppController],
@@ -24,61 +19,28 @@ let memoryServerInstance: MongoMemoryServer | null = null;
     // Global Cloudinary Module
     CloudinaryModule,
 
-    // Resilient MongoDB Connection via Mongoose
+    // Direct MongoDB Connection via Mongoose (Strictly from .env, no local fallback)
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const logger = new Logger('MongooseModule');
-        const configuredUri =
+        const uri =
           configService.get<string>('DB_mongo') ||
           configService.get<string>('MONGODB_URI');
         const dbName = configService.get<string>('DB_NAME') || 'ruou_db';
 
-        let targetUri = configuredUri;
-        let isUsingFallback = false;
-
-        // Verify remote Atlas connection before handing to NestJS MongooseModule
-        if (configuredUri) {
-          try {
-            logger.log(`Kiểm tra kết nối tới MongoDB Atlas...`);
-            const testConn = await mongoose.createConnection(configuredUri, {
-              dbName,
-              serverSelectionTimeoutMS: 4000,
-            }).asPromise();
-            await testConn.close();
-            logger.log(`✅ Kết nối thành công tới MongoDB Atlas (${dbName})!`);
-          } catch (err: any) {
-            logger.warn(
-              `⚠️ Kết nối tới MongoDB Atlas thất bại: ${err.message}. ` +
-                `(Nguyên nhân: Mật khẩu chưa chính xác hoặc user chưa được cấp quyền trong Database Access của Atlas).`,
-            );
-            logger.log(
-              `🔄 Đang khởi tạo MongoDB cục bộ dự phòng để NestJS Backend khởi động và phục vụ ngay lập tức...`,
-            );
-            isUsingFallback = true;
-          }
-        } else {
-          isUsingFallback = true;
-        }
-
-        configService.set('AUTH_DB_PERSISTENT', !isUsingFallback);
-
-        if (isUsingFallback) {
-          if (!memoryServerInstance) {
-            memoryServerInstance = await MongoMemoryServer.create({
-              instance: { dbName },
-            });
-          }
-          targetUri = memoryServerInstance.getUri();
-          logger.log(`🚀 Đang chạy trên MongoDB dự phòng tại: ${targetUri}`);
-        }
+        const maskedUri = uri ? uri.replace(/:[^:@]+@/, ':***@') : 'UNDEFINED';
+        logger.log(`🔗 Đang kết nối trực tiếp tới MongoDB từ .env: ${maskedUri} (Database: ${dbName})`);
 
         return {
-          uri: targetUri,
+          uri,
           dbName,
           connectionFactory: (connection) => {
             connection.on('connected', () => {
-              logger.log(`Mongoose đã kết nối tới database '${dbName}'!`);
+              logger.log(`✅ Mongoose đã kết nối trực tiếp thành công tới MongoDB Atlas (${dbName})!`);
+            });
+            connection.on('error', (err) => {
+              logger.error(`❌ Lỗi kết nối MongoDB Atlas: ${err.message}`);
             });
             return connection;
           },
@@ -91,7 +53,6 @@ let memoryServerInstance: MongoMemoryServer | null = null;
     ProductsModule,
     AuthModule,
     ProxySeedingModule,
-
   ],
 })
 export class AppModule {}
