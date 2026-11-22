@@ -35,6 +35,10 @@ export interface AutoRunTask {
   lastDevice?: string;
   lastFinalUrl?: string;
   createdAt: string;
+  // Các trường hẹn giờ độc lập cho từng URL (không chờ nhau)
+  nextRunAt?: string | null;
+  currentDelaySec?: number | null;
+  isExecuting?: boolean;
 }
 
 export interface AutoRunStatus {
@@ -42,13 +46,8 @@ export interface AutoRunStatus {
   minDelaySec: number;
   maxDelaySec: number;
   totalRuns: number;
-  currentTaskIndex: number;
-  currentDelaySec: number | null;
-  nextRunAt: string | null;
-  activeRunningTaskId: string | null;
   tasksCount: number;
   enabledTasksCount: number;
-  nextTask: AutoRunTask | null;
   defaultProxy?: string;
 }
 
@@ -75,13 +74,10 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
   private minDelaySec = 60;
   private maxDelaySec = 180;
   private totalRuns = 0;
-  private currentTaskIndex = 0;
   private defaultProxy = 'socks5h://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324';
-  private currentDelaySec: number | null = null;
-  private nextRunAt: string | null = null;
-  private activeRunningTaskId: string | null = null;
-  private timerRef: NodeJS.Timeout | null = null;
 
+  // Quản lý bộ đếm thời gian độc lập cho từng task riêng biệt (không chờ nhau)
+  private taskTimers: Map<string, NodeJS.Timeout> = new Map();
   private tasks: AutoRunTask[] = [];
 
   constructor(
@@ -126,7 +122,6 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       this.minDelaySec = configDoc.minDelaySec ?? 60;
       this.maxDelaySec = configDoc.maxDelaySec ?? 180;
       this.totalRuns = configDoc.totalRuns ?? 0;
-      this.currentTaskIndex = configDoc.currentTaskIndex ?? 0;
       if (configDoc.defaultProxy) {
         this.defaultProxy = configDoc.defaultProxy;
       }
@@ -141,6 +136,9 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
           enabled: true,
           totalRuns: 0,
           createdAt: new Date().toISOString(),
+          nextRunAt: null,
+          currentDelaySec: null,
+          isExecuting: false,
         };
         await this.taskModel.create(initialTask);
         this.tasks = [initialTask];
@@ -159,20 +157,23 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
           lastDevice: t.lastDevice,
           lastFinalUrl: t.lastFinalUrl,
           createdAt: t.createdAt ? new Date(t.createdAt).toISOString() : new Date().toISOString(),
+          nextRunAt: null,
+          currentDelaySec: null,
+          isExecuting: false,
         }));
       }
 
       const historyCount = await this.historyModel.countDocuments();
       this.logger.log(
-        `[ProxyAutoRunner] ✅ Khởi tạo từ MongoDB thành công. Số tasks: ${this.tasks.length}, Lịch sử: ${historyCount} bản ghi, Trạng thái: ${
+        `[ProxyAutoRunner] ✅ Khởi tạo từ MongoDB. Tasks: ${this.tasks.length}, Lịch sử: ${historyCount} bản ghi, Trạng thái: ${
           this.isRunning ? 'Đang chạy' : 'Tạm dừng'
         }`,
       );
 
-      // Nếu trước đó đang chạy, tự động khôi phục chạy ngầm
+      // Nếu trước đó đang chạy, tự động kích hoạt lịch chạy độc lập cho từng URL
       if (this.isRunning) {
-        this.logger.log('[ProxyAutoRunner] 🔄 Tự động khôi phục tiến trình chạy ngầm từ MongoDB...');
-        this.scheduleNext(5);
+        this.logger.log('[ProxyAutoRunner] 🔄 Khôi phục chạy ngầm độc lập cho từng URL...');
+        this.startAllEnabledTasks();
       }
     } catch (err: any) {
       this.logger.error(`[ProxyAutoRunner] Lỗi khi nạp dữ liệu từ MongoDB: ${err.message}`);
@@ -180,7 +181,382 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Ghi nhận 1 bản ghi vào lịch sử Backend lưu trong MongoDB (tự động xóa sau 3 ngày nhờ TTL index)
+   * Khởi động lịch chạy độc lập cho toàn bộ URL đang bật
+   */
+  private startAllEnabledTasks() {
+    const enabledTasks = this.tasks.filter((t) => t.enabled);
+    enabledTasks.forEach((task, index) => {
+      // Giãn cách khởi động ban đầu nhẹ (ví dụ 1s, 4s, 7s...) để tránh xung đột socket cùng 1 mili-giây
+      const initialDelay = index === 0 ? 1 : Math.min(index * 3 + 1, this.maxDelaySec);
+      this.scheduleTask(task.id, initialDelay);
+    });
+  }
+
+  /**
+   * Đặt lịch chạy tiếp theo cho 1 task CỤ THỂ (hoàn toàn độc lập, không liên quan task khác)
+   */
+  private scheduleTask(taskId: string, customDelaySec?: number) {
+    if (!this.isRunning) return;
+
+    const task = this.tasks.find((t) => t.id === taskId);
+    if (!task || !task.enabled) return;
+
+    // Xóa timer cũ nếu còn
+    const existingTimer = this.taskTimers.get(taskId);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+      this.taskTimers.delete(taskId);
+    }
+
+    const delay =
+      customDelaySec !== undefined
+        ? customDelaySec
+        : randomInt(this.minDelaySec, Math.max(this.minDelaySec + 1, this.maxDelaySec + 1));
+
+    task.currentDelaySec = delay;
+    task.nextRunAt = new Date(Date.now() + delay * 1000).toISOString();
+
+    this.logger.debug(
+      `[ProxyAutoRunner] URL [${task.targetUrl}] sẽ chạy độc lập sau ${delay}s (lúc ${task.nextRunAt})`,
+    );
+
+    const timer = setTimeout(async () => {
+      await this.executeTask(taskId);
+    }, delay * 1000);
+
+    this.taskTimers.set(taskId, timer);
+  }
+
+  /**
+   * Thực thi 1 task cụ thể và tự động lên lịch chạy tiếp theo cho chính task đó
+   */
+  private async executeTask(taskId: string) {
+    if (!this.isRunning) return;
+
+    const task = this.tasks.find((t) => t.id === taskId);
+    if (!task || !task.enabled) {
+      this.clearTaskTimer(taskId);
+      return;
+    }
+
+    task.isExecuting = true;
+    const proxyToUse = task.proxyUrl?.trim() || this.defaultProxy;
+    this.logger.log(
+      `[ProxyAutoRunner] ⚡ Đang chạy URL riêng biệt: ${task.targetUrl} | Proxy: ${proxyToUse || 'Mặc định'}`,
+    );
+
+    try {
+      const res: ProxySeedingResult = await this.seedingService.check({
+        url: task.targetUrl,
+        proxy: proxyToUse || undefined,
+      });
+
+      let affSid: string | undefined;
+      try {
+        const u = new URL(res.finalUrl);
+        affSid = u.searchParams.get('aff_sid') || undefined;
+      } catch {}
+
+      task.totalRuns = (task.totalRuns || 0) + 1;
+      task.lastRun = new Date().toISOString();
+      task.lastStatus = res.status;
+      task.lastSuccess = res.success;
+      task.lastIp = res.proxyLocation?.ip;
+      task.lastDevice = res.device?.name;
+      task.lastFinalUrl = res.finalUrl;
+
+      this.totalRuns++;
+
+      // Lưu MongoDB
+      this.taskModel
+        .updateOne(
+          { id: task.id },
+          {
+            $set: {
+              totalRuns: task.totalRuns,
+              lastRun: task.lastRun,
+              lastStatus: task.lastStatus,
+              lastSuccess: task.lastSuccess,
+              lastIp: task.lastIp,
+              lastDevice: task.lastDevice,
+              lastFinalUrl: task.lastFinalUrl,
+            },
+          },
+        )
+        .catch((e) => this.logger.error(`Lỗi cập nhật task Mongo: ${e.message}`));
+
+      this.configModel
+        .updateOne({ key: 'default' }, { $set: { totalRuns: this.totalRuns } })
+        .catch((e) => this.logger.error(`Lỗi cập nhật runs Mongo: ${e.message}`));
+
+      await this.recordHistory({
+        targetUrl: res.targetUrl,
+        finalUrl: res.finalUrl,
+        ip: res.proxyLocation?.ip || 'Không rõ IP',
+        location: res.proxyLocation?.details || 'Viet Nam',
+        status: res.status,
+        device: res.device?.name || 'Desktop Browser',
+        redirectType: res.meta?.redirectType || 'x-redirect-url',
+        success: res.success,
+        affSid,
+      });
+
+      this.logger.log(
+        `[ProxyAutoRunner] ✅ URL xong [${task.targetUrl}] (Lượt #${task.totalRuns}): HTTP ${res.status} | IP: ${res.proxyLocation?.ip || '--'}`,
+      );
+    } catch (err: any) {
+      this.logger.error(`[ProxyAutoRunner] ❌ Lỗi task (${task.targetUrl}): ${err.message}`);
+    } finally {
+      task.isExecuting = false;
+      // Task này tiếp tục lên lịch cho lượt chạy tiếp theo của chính nó (hoàn toàn tách biệt)
+      if (this.isRunning && task.enabled) {
+        this.scheduleTask(taskId);
+      }
+    }
+  }
+
+  /**
+   * Hủy timer của 1 task
+   */
+  private clearTaskTimer(taskId: string) {
+    const timer = this.taskTimers.get(taskId);
+    if (timer) {
+      clearTimeout(timer);
+      this.taskTimers.delete(taskId);
+    }
+    const task = this.tasks.find((t) => t.id === taskId);
+    if (task) {
+      task.nextRunAt = null;
+      task.currentDelaySec = null;
+      task.isExecuting = false;
+    }
+  }
+
+  /**
+   * Bắt đầu chạy ngầm ở Backend (toàn bộ URL chạy độc lập, song song theo timer riêng)
+   */
+  async start(
+    minDelaySec?: number,
+    maxDelaySec?: number,
+    immediateTask?: { targetUrl?: string; proxyUrl?: string },
+  ): Promise<AutoRunStatus> {
+    if (minDelaySec !== undefined && minDelaySec > 0) {
+      this.minDelaySec = minDelaySec;
+    }
+    if (maxDelaySec !== undefined && maxDelaySec >= this.minDelaySec) {
+      this.maxDelaySec = maxDelaySec;
+    }
+
+    if (immediateTask?.proxyUrl?.trim()) {
+      this.defaultProxy = immediateTask.proxyUrl.trim();
+    }
+
+    if (immediateTask?.targetUrl) {
+      const cleanUrl = immediateTask.targetUrl.trim();
+      const cleanProxy = (immediateTask.proxyUrl || '').trim();
+
+      const existingIndex = this.tasks.findIndex(
+        (t) => t.targetUrl === cleanUrl && (t.proxyUrl || '') === cleanProxy,
+      );
+
+      if (existingIndex === -1) {
+        const newTask: AutoRunTask = {
+          id: 'task-' + Date.now(),
+          targetUrl: cleanUrl,
+          proxyUrl: cleanProxy || this.defaultProxy,
+          enabled: true,
+          totalRuns: 0,
+          createdAt: new Date().toISOString(),
+          nextRunAt: null,
+          currentDelaySec: null,
+          isExecuting: false,
+        };
+        this.tasks.unshift(newTask);
+        await this.taskModel.create(newTask).catch((e) =>
+          this.logger.error(`Lỗi tạo task: ${e.message}`),
+        );
+      } else {
+        this.tasks[existingIndex].enabled = true;
+        await this.taskModel
+          .updateOne({ id: this.tasks[existingIndex].id }, { $set: { enabled: true } })
+          .catch(() => {});
+      }
+    }
+
+    const enabledCount = this.tasks.filter((t) => t.enabled).length;
+    if (enabledCount === 0) {
+      throw new BadRequestException('Vui lòng thêm hoặc bật ít nhất 1 URL trong danh sách chạy tự động.');
+    }
+
+    this.isRunning = true;
+
+    await this.configModel
+      .updateOne(
+        { key: 'default' },
+        {
+          $set: {
+            isRunning: true,
+            minDelaySec: this.minDelaySec,
+            maxDelaySec: this.maxDelaySec,
+            defaultProxy: this.defaultProxy,
+          },
+        },
+        { upsert: true },
+      )
+      .catch((e) => this.logger.error(`Lỗi cập nhật config: ${e.message}`));
+
+    this.logger.log(
+      `[ProxyAutoRunner] BẮT ĐẦU CHẠY NGẦM ĐỘC LẬP: ${enabledCount} URL [${this.minDelaySec}s - ${this.maxDelaySec}s]`,
+    );
+
+    // Kích hoạt tất cả các URL chạy độc lập
+    this.startAllEnabledTasks();
+
+    return this.getStatus();
+  }
+
+  /**
+   * Dừng toàn bộ tiến trình chạy ngầm
+   */
+  async stop(): Promise<AutoRunStatus> {
+    this.isRunning = false;
+
+    // Dừng tất cả các timer độc lập
+    for (const [id] of this.taskTimers) {
+      this.clearTaskTimer(id);
+    }
+    this.taskTimers.clear();
+
+    for (const task of this.tasks) {
+      task.nextRunAt = null;
+      task.currentDelaySec = null;
+      task.isExecuting = false;
+    }
+
+    await this.configModel
+      .updateOne({ key: 'default' }, { $set: { isRunning: false } })
+      .catch((e) => this.logger.error(`Lỗi dừng config: ${e.message}`));
+
+    this.logger.log('[ProxyAutoRunner] ĐÃ DỪNG TOÀN BỘ TIẾN TRÌNH CHẠY NGẦM.');
+    return this.getStatus();
+  }
+
+  /**
+   * Thêm task mới
+   */
+  async addTask(targetUrl: string, proxyUrl?: string): Promise<AutoRunTask> {
+    const cleanUrl = targetUrl.trim();
+    if (!cleanUrl) {
+      throw new BadRequestException('URL không được để trống.');
+    }
+
+    const cleanProxy = (proxyUrl || '').trim();
+
+    const existing = this.tasks.find(
+      (t) => t.targetUrl === cleanUrl && (t.proxyUrl || '') === cleanProxy,
+    );
+    if (existing) {
+      throw new BadRequestException('URL và Proxy này đã tồn tại trong danh sách.');
+    }
+
+    const newTask: AutoRunTask = {
+      id: 'task-' + Date.now(),
+      targetUrl: cleanUrl,
+      proxyUrl: cleanProxy || this.defaultProxy,
+      enabled: true,
+      totalRuns: 0,
+      createdAt: new Date().toISOString(),
+      nextRunAt: null,
+      currentDelaySec: null,
+      isExecuting: false,
+    };
+
+    await this.taskModel.create(newTask);
+    this.tasks.unshift(newTask);
+
+    if (cleanProxy) {
+      this.defaultProxy = cleanProxy;
+      await this.configModel
+        .updateOne({ key: 'default' }, { $set: { defaultProxy: cleanProxy } })
+        .catch(() => {});
+    }
+
+    // Nếu hệ thống đang chạy ngầm, kích hoạt ngay lập tức timer độc lập cho task mới này (sau 2s)
+    if (this.isRunning) {
+      this.scheduleTask(newTask.id, 2);
+    }
+
+    return newTask;
+  }
+
+  /**
+   * Bật/Tắt 1 task
+   */
+  async toggleTask(id: string): Promise<AutoRunTask> {
+    const task = this.tasks.find((t) => t.id === id);
+    if (!task) {
+      throw new BadRequestException('Không tìm thấy task với ID đã cho.');
+    }
+
+    task.enabled = !task.enabled;
+
+    if (!task.enabled) {
+      // Tắt task -> hủy timer độc lập của nó
+      this.clearTaskTimer(id);
+    } else if (this.isRunning) {
+      // Bật task khi hệ thống đang chạy -> bắt đầu timer độc lập cho nó sau 2s
+      this.scheduleTask(id, 2);
+    }
+
+    await this.taskModel
+      .updateOne({ id }, { $set: { enabled: task.enabled } })
+      .catch((e) => this.logger.error(`Lỗi toggle task: ${e.message}`));
+
+    return task;
+  }
+
+  /**
+   * Xóa task
+   */
+  async deleteTask(id: string): Promise<boolean> {
+    this.clearTaskTimer(id);
+    const prevLen = this.tasks.length;
+    this.tasks = this.tasks.filter((t) => t.id !== id);
+    if (this.tasks.length !== prevLen) {
+      await this.taskModel.deleteOne({ id }).catch((e) =>
+        this.logger.error(`Lỗi xóa task Mongo: ${e.message}`),
+      );
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Lấy danh sách tasks kèm theo trạng thái đếm ngược riêng của từng task
+   */
+  getTasks(): AutoRunTask[] {
+    return this.tasks;
+  }
+
+  /**
+   * Lấy trạng thái hiện tại
+   */
+  getStatus(): AutoRunStatus {
+    const enabledTasks = this.tasks.filter((t) => t.enabled);
+
+    return {
+      isRunning: this.isRunning,
+      minDelaySec: this.minDelaySec,
+      maxDelaySec: this.maxDelaySec,
+      totalRuns: this.totalRuns,
+      tasksCount: this.tasks.length,
+      enabledTasksCount: enabledTasks.length,
+      defaultProxy: this.defaultProxy,
+    };
+  }
+
+  /**
+   * Ghi nhận 1 bản ghi vào lịch sử Backend
    */
   async recordHistory(
     item: Omit<HistoryItem, 'id' | 'timestamp' | 'createdAt'> &
@@ -209,338 +585,6 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
     }
 
     return historyItem;
-  }
-
-  /**
-   * Bắt đầu chạy ngầm ở Backend (lưu trạng thái vào MongoDB)
-   */
-  async start(
-    minDelaySec?: number,
-    maxDelaySec?: number,
-    immediateTask?: { targetUrl?: string; proxyUrl?: string },
-  ): Promise<AutoRunStatus> {
-    if (minDelaySec !== undefined && minDelaySec > 0) {
-      this.minDelaySec = minDelaySec;
-    }
-    if (maxDelaySec !== undefined && maxDelaySec >= this.minDelaySec) {
-      this.maxDelaySec = maxDelaySec;
-    }
-
-    // Nếu người dùng cung cấp proxyUrl, cập nhật defaultProxy
-    if (immediateTask?.proxyUrl?.trim()) {
-      this.defaultProxy = immediateTask.proxyUrl.trim();
-    }
-
-    // Nếu người dùng truyền URL hiện tại từ form, tự động thêm hoặc kích hoạt lại
-    if (immediateTask?.targetUrl) {
-      const cleanUrl = immediateTask.targetUrl.trim();
-      const cleanProxy = (immediateTask.proxyUrl || '').trim();
-
-      const existingIndex = this.tasks.findIndex(
-        (t) => t.targetUrl === cleanUrl && (t.proxyUrl || '') === cleanProxy,
-      );
-
-      if (existingIndex === -1) {
-        const newTask: AutoRunTask = {
-          id: 'task-' + Date.now(),
-          targetUrl: cleanUrl,
-          proxyUrl: cleanProxy || this.defaultProxy,
-          enabled: true,
-          totalRuns: 0,
-          createdAt: new Date().toISOString(),
-        };
-        this.tasks.unshift(newTask);
-        await this.taskModel.create(newTask).catch((e) =>
-          this.logger.error(`Lỗi tạo task: ${e.message}`),
-        );
-      } else {
-        this.tasks[existingIndex].enabled = true;
-        await this.taskModel
-          .updateOne({ id: this.tasks[existingIndex].id }, { $set: { enabled: true } })
-          .catch(() => {});
-      }
-    }
-
-    const enabledCount = this.tasks.filter((t) => t.enabled).length;
-    if (enabledCount === 0) {
-      throw new BadRequestException('Vui lòng thêm hoặc bật ít nhất 1 URL trong danh sách chạy tự động.');
-    }
-
-    this.isRunning = true;
-
-    // Lưu trạng thái vào MongoDB
-    await this.configModel
-      .updateOne(
-        { key: 'default' },
-        {
-          $set: {
-            isRunning: true,
-            minDelaySec: this.minDelaySec,
-            maxDelaySec: this.maxDelaySec,
-            defaultProxy: this.defaultProxy,
-          },
-        },
-        { upsert: true },
-      )
-      .catch((e) => this.logger.error(`Lỗi cập nhật config: ${e.message}`));
-
-    this.logger.log(
-      `[ProxyAutoRunner] BẮT ĐẦU CHẠY NGẦM BACKEND: ${enabledCount} URL [${this.minDelaySec}s - ${this.maxDelaySec}s]`,
-    );
-
-    // Kích hoạt lượt chạy đầu tiên ngay lập tức (sau 1s)
-    this.scheduleNext(1);
-
-    return this.getStatus();
-  }
-
-  /**
-   * Dừng chạy ngầm ở Backend (cập nhật MongoDB)
-   */
-  async stop(): Promise<AutoRunStatus> {
-    this.isRunning = false;
-    this.nextRunAt = null;
-    this.currentDelaySec = null;
-    this.activeRunningTaskId = null;
-
-    if (this.timerRef) {
-      clearTimeout(this.timerRef);
-      this.timerRef = null;
-    }
-
-    await this.configModel
-      .updateOne({ key: 'default' }, { $set: { isRunning: false } })
-      .catch((e) => this.logger.error(`Lỗi dừng config: ${e.message}`));
-
-    this.logger.log('[ProxyAutoRunner] ĐÃ DỪNG CHẠY NGẦM BACKEND.');
-    return this.getStatus();
-  }
-
-  /**
-   * Đặt lịch lượt chạy tiếp theo
-   */
-  private scheduleNext(customDelaySec?: number) {
-    if (!this.isRunning) return;
-
-    if (this.timerRef) {
-      clearTimeout(this.timerRef);
-      this.timerRef = null;
-    }
-
-    const delay =
-      customDelaySec !== undefined
-        ? customDelaySec
-        : randomInt(this.minDelaySec, Math.max(this.minDelaySec + 1, this.maxDelaySec + 1));
-
-    this.currentDelaySec = delay;
-    this.nextRunAt = new Date(Date.now() + delay * 1000).toISOString();
-
-    this.logger.debug(`[ProxyAutoRunner] Lượt chạy tiếp theo sau ${delay} giây (lúc ${this.nextRunAt})`);
-
-    this.timerRef = setTimeout(async () => {
-      await this.executeNextTask();
-    }, delay * 1000);
-  }
-
-  /**
-   * Thực thi URL tiếp theo trong danh sách
-   */
-  private async executeNextTask() {
-    if (!this.isRunning) return;
-
-    const enabledTasks = this.tasks.filter((t) => t.enabled);
-    if (enabledTasks.length === 0) {
-      this.logger.warn('[ProxyAutoRunner] Không còn URL nào đang bật. Tự động tạm dừng.');
-      await this.stop();
-      return;
-    }
-
-    const taskIndex = this.currentTaskIndex % enabledTasks.length;
-    const task = enabledTasks[taskIndex];
-    this.currentTaskIndex = (taskIndex + 1) % enabledTasks.length;
-
-    this.activeRunningTaskId = task.id;
-    const proxyToUse = task.proxyUrl?.trim() || this.defaultProxy;
-    this.logger.log(
-      `[ProxyAutoRunner] Đang chạy kiểm tra URL: ${task.targetUrl} | Proxy: ${proxyToUse || 'Không có'}`,
-    );
-
-    try {
-      const res: ProxySeedingResult = await this.seedingService.check({
-        url: task.targetUrl,
-        proxy: proxyToUse || undefined,
-      });
-
-      // Trích xuất aff_sid nếu có
-      let affSid: string | undefined;
-      try {
-        const u = new URL(res.finalUrl);
-        affSid = u.searchParams.get('aff_sid') || undefined;
-      } catch {}
-
-      // Cập nhật thông tin task trong bộ nhớ
-      task.totalRuns = (task.totalRuns || 0) + 1;
-      task.lastRun = new Date().toISOString();
-      task.lastStatus = res.status;
-      task.lastSuccess = res.success;
-      task.lastIp = res.proxyLocation?.ip;
-      task.lastDevice = res.device?.name;
-      task.lastFinalUrl = res.finalUrl;
-
-      this.totalRuns++;
-
-      // Cập nhật MongoDB bất đồng bộ
-      this.taskModel
-        .updateOne(
-          { id: task.id },
-          {
-            $set: {
-              totalRuns: task.totalRuns,
-              lastRun: task.lastRun,
-              lastStatus: task.lastStatus,
-              lastSuccess: task.lastSuccess,
-              lastIp: task.lastIp,
-              lastDevice: task.lastDevice,
-              lastFinalUrl: task.lastFinalUrl,
-            },
-          },
-        )
-        .catch((e) => this.logger.error(`Lỗi cập nhật task Mongo: ${e.message}`));
-
-      this.configModel
-        .updateOne(
-          { key: 'default' },
-          { $set: { totalRuns: this.totalRuns, currentTaskIndex: this.currentTaskIndex } },
-        )
-        .catch((e) => this.logger.error(`Lỗi cập nhật runs Mongo: ${e.message}`));
-
-      // Ghi lại lịch sử MongoDB (tự động xóa sau 3 ngày nhờ TTL)
-      await this.recordHistory({
-        targetUrl: res.targetUrl,
-        finalUrl: res.finalUrl,
-        ip: res.proxyLocation?.ip || 'Không rõ IP',
-        location: res.proxyLocation?.details || 'Viet Nam',
-        status: res.status,
-        device: res.device?.name || 'Desktop Browser',
-        redirectType: res.meta?.redirectType || 'x-redirect-url',
-        success: res.success,
-        affSid,
-      });
-
-      this.logger.log(
-        `[ProxyAutoRunner] ✅ Hoàn thành lượt #${this.totalRuns}: HTTP ${res.status} | IP: ${res.proxyLocation?.ip || '--'} | Device: ${res.device?.name}`,
-      );
-    } catch (err: any) {
-      this.logger.error(`[ProxyAutoRunner] ❌ Lỗi khi chạy task (${task.targetUrl}): ${err.message}`);
-    } finally {
-      this.activeRunningTaskId = null;
-      if (this.isRunning) {
-        this.scheduleNext();
-      }
-    }
-  }
-
-  /**
-   * Thêm task mới vào MongoDB và bộ nhớ
-   */
-  async addTask(targetUrl: string, proxyUrl?: string): Promise<AutoRunTask> {
-    const cleanUrl = targetUrl.trim();
-    if (!cleanUrl) {
-      throw new BadRequestException('URL không được để trống.');
-    }
-
-    const cleanProxy = (proxyUrl || '').trim();
-
-    const existing = this.tasks.find(
-      (t) => t.targetUrl === cleanUrl && (t.proxyUrl || '') === cleanProxy,
-    );
-    if (existing) {
-      throw new BadRequestException('URL và Proxy này đã tồn tại trong danh sách.');
-    }
-
-    const newTask: AutoRunTask = {
-      id: 'task-' + Date.now(),
-      targetUrl: cleanUrl,
-      proxyUrl: cleanProxy || this.defaultProxy,
-      enabled: true,
-      totalRuns: 0,
-      createdAt: new Date().toISOString(),
-    };
-
-    await this.taskModel.create(newTask);
-    this.tasks.unshift(newTask);
-
-    if (cleanProxy) {
-      this.defaultProxy = cleanProxy;
-      await this.configModel
-        .updateOne({ key: 'default' }, { $set: { defaultProxy: cleanProxy } })
-        .catch(() => {});
-    }
-
-    return newTask;
-  }
-
-  /**
-   * Bật/Tắt task trong MongoDB và bộ nhớ
-   */
-  async toggleTask(id: string): Promise<AutoRunTask> {
-    const task = this.tasks.find((t) => t.id === id);
-    if (!task) {
-      throw new BadRequestException('Không tìm thấy task với ID đã cho.');
-    }
-    task.enabled = !task.enabled;
-    await this.taskModel
-      .updateOne({ id }, { $set: { enabled: task.enabled } })
-      .catch((e) => this.logger.error(`Lỗi toggle task: ${e.message}`));
-    return task;
-  }
-
-  /**
-   * Xóa task khỏi MongoDB và bộ nhớ
-   */
-  async deleteTask(id: string): Promise<boolean> {
-    const prevLen = this.tasks.length;
-    this.tasks = this.tasks.filter((t) => t.id !== id);
-    if (this.tasks.length !== prevLen) {
-      await this.taskModel.deleteOne({ id }).catch((e) =>
-        this.logger.error(`Lỗi xóa task Mongo: ${e.message}`),
-      );
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Lấy danh sách tasks
-   */
-  getTasks(): AutoRunTask[] {
-    return this.tasks;
-  }
-
-  /**
-   * Lấy trạng thái hiện tại
-   */
-  getStatus(): AutoRunStatus {
-    const enabledTasks = this.tasks.filter((t) => t.enabled);
-    const nextTask =
-      enabledTasks.length > 0
-        ? enabledTasks[this.currentTaskIndex % enabledTasks.length]
-        : null;
-
-    return {
-      isRunning: this.isRunning,
-      minDelaySec: this.minDelaySec,
-      maxDelaySec: this.maxDelaySec,
-      totalRuns: this.totalRuns,
-      currentTaskIndex: this.currentTaskIndex,
-      currentDelaySec: this.currentDelaySec,
-      nextRunAt: this.nextRunAt,
-      activeRunningTaskId: this.activeRunningTaskId,
-      tasksCount: this.tasks.length,
-      enabledTasksCount: enabledTasks.length,
-      nextTask,
-      defaultProxy: this.defaultProxy,
-    };
   }
 
   /**
@@ -597,7 +641,6 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       minDelaySec: this.minDelaySec,
       maxDelaySec: this.maxDelaySec,
       totalRuns: this.totalRuns,
-      currentTaskIndex: this.currentTaskIndex,
       defaultProxy: this.defaultProxy,
     };
   }

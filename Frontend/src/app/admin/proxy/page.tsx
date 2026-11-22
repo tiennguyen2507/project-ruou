@@ -69,6 +69,7 @@ function ProxySeedingContent() {
   const [minDelaySec, setMinDelaySec] = useState<number | string>(60);
   const [maxDelaySec, setMaxDelaySec] = useState<number | string>(180);
   const delayInitializedRef = useRef(false);
+  const [nowTime, setNowTime] = useState<number>(Date.now());
   const [countdown, setCountdown] = useState<number | null>(null);
   const [currentDelay, setCurrentDelay] = useState<number | null>(null);
   const [autoRunCount, setAutoRunCount] = useState<number>(0);
@@ -141,14 +142,13 @@ function ProxySeedingContent() {
     return () => clearInterval(interval);
   }, []);
 
-  // Smooth local countdown tick every 1s
+  // Smooth local timer tick every 1s for independent URL countdowns
   useEffect(() => {
-    if (!isAutoRunning || countdown === null || countdown <= 0) return;
     const timer = setInterval(() => {
-      setCountdown((prev) => (prev !== null && prev > 1 ? prev - 1 : 0));
+      setNowTime(Date.now());
     }, 1000);
     return () => clearInterval(timer);
-  }, [isAutoRunning, countdown]);
+  }, []);
 
   // Update target URL if search param changes
   useEffect(() => {
@@ -665,8 +665,8 @@ function ProxySeedingContent() {
                 {enabledTasks.length} / {tasks.length} URL đang bật
               </span>
             </div>
-            <p className="text-[11px] text-gray-400">
-              Hệ thống sẽ luân phiên xoay vòng các URL được bật theo khoảng thời gian delay ngẫu nhiên
+            <p className="text-[11px] text-emerald-600 font-medium">
+              ⚡ Mỗi URL hoạt động hoàn toàn độc lập với bộ hẹn giờ riêng biệt, tự động xoay proxy không chờ nhau
             </p>
           </div>
 
@@ -695,31 +695,12 @@ function ProxySeedingContent() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {tasks.map((task) => {
-                    const isRunningThis = activeTaskRunningId === task.id;
-                    const isNextToRun = isAutoRunning && nextTargetTask?.id === task.id;
-                    const taskIndexInEnabled = enabledTasks.findIndex((t) => t.id === task.id);
-                    const nextIndex = enabledTasks.findIndex((t) => t.id === nextTargetTask?.id);
-
-                    // Ước tính vị trí hàng đợi và số giây
-                    let queueOrderText = "";
-                    let estimatedWaitSec: number | null = null;
-                    if (
-                      isAutoRunning &&
-                      task.enabled &&
-                      enabledTasks.length > 0 &&
-                      nextIndex !== -1 &&
-                      taskIndexInEnabled !== -1
-                    ) {
-                      const hops =
-                        (taskIndexInEnabled - nextIndex + enabledTasks.length) %
-                        enabledTasks.length;
-                      if (hops === 0) {
-                        estimatedWaitSec = countdown;
-                      } else {
-                        estimatedWaitSec =
-                          (countdown || 0) + hops * (currentDelay || Number(minDelaySec) || 60);
-                        queueOrderText = `Lượt #${hops + 1}`;
-                      }
+                    const isExecutingThis = Boolean(task.isExecuting);
+                    // Đếm ngược độc lập cho từng URL riêng biệt
+                    let taskCountdown: number | null = null;
+                    if (isAutoRunning && task.enabled && task.nextRunAt) {
+                      const diff = Math.round((new Date(task.nextRunAt).getTime() - nowTime) / 1000);
+                      taskCountdown = Math.max(0, diff);
                     }
 
                     return (
@@ -728,10 +709,10 @@ function ProxySeedingContent() {
                         className={`hover:bg-gray-50/60 transition ${
                           !task.enabled ? "opacity-50 bg-gray-50/30" : ""
                         } ${
-                          isRunningThis
+                          isExecutingThis
                             ? "bg-emerald-50/70 border-l-4 border-l-emerald-600"
-                            : isNextToRun
-                            ? "bg-emerald-50/30 border-l-4 border-l-emerald-400"
+                            : isAutoRunning && task.enabled
+                            ? "hover:bg-emerald-50/20"
                             : ""
                         }`}
                       >
@@ -757,11 +738,11 @@ function ProxySeedingContent() {
                             <span className="font-mono text-gray-800 font-medium truncate">
                               {task.targetUrl}
                             </span>
-                            {/* Countdown badge directly next to URL if next to run */}
-                            {isNextToRun && countdown !== null && (
+                            {/* Countdown badge riêng biệt từng URL */}
+                            {isAutoRunning && task.enabled && taskCountdown !== null && !isExecutingThis && (
                               <span className="bg-emerald-100 text-emerald-800 font-mono font-bold text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200 shrink-0">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                                <span>{countdown}s</span>
+                                <span>{taskCountdown}s</span>
                               </span>
                             )}
                             <button
@@ -813,33 +794,28 @@ function ProxySeedingContent() {
                           </div>
                         </td>
 
-                        {/* Hẹn Giờ / Đếm Ngược Countdown Seconds */}
+                        {/* Hẹn Giờ / Đếm Ngược Countdown Seconds TỪNG URL RIÊNG BIỆT (KHÔNG CHỜ NHAU) */}
                         <td className="py-2.5 px-3">
-                          {isRunningThis ? (
+                          {isExecutingThis ? (
                             <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-2 py-1 rounded-lg text-[11px] animate-pulse">
                               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
                               <span>Đang gửi request...</span>
                             </span>
-                          ) : isNextToRun && countdown !== null ? (
+                          ) : isAutoRunning && task.enabled && taskCountdown !== null ? (
                             <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-lg font-bold text-xs shadow-2xs">
                               <Timer
                                 className="w-3.5 h-3.5 text-emerald-600 animate-spin"
                                 style={{ animationDuration: "3s" }}
                               />
                               <span>Kế tiếp sau:</span>
-                              <span className="font-mono text-emerald-700 font-black text-xs bg-white px-1.5 py-0.2 rounded border border-emerald-200 shadow-2xs">
-                                {countdown}s
+                              <span className="font-mono text-emerald-700 font-black text-xs bg-white px-1.5 py-0.5 rounded border border-emerald-200 shadow-2xs">
+                                {taskCountdown}s
                               </span>
                             </div>
                           ) : isAutoRunning && task.enabled ? (
-                            <div className="inline-flex items-center gap-1.5 text-gray-600 bg-gray-50 border border-gray-200 px-2 py-1 rounded-lg text-[11px]">
-                              <Clock className="w-3 h-3 text-gray-400" />
-                              <span>{queueOrderText || "Chờ lượt"}</span>
-                              {estimatedWaitSec !== null && (
-                                <span className="text-gray-400 font-mono text-[10px]">
-                                  (~{estimatedWaitSec}s)
-                                </span>
-                              )}
+                            <div className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50/50 border border-emerald-200 px-2 py-1 rounded-lg text-[11px]">
+                              <Clock className="w-3 h-3 text-emerald-500 animate-pulse" />
+                              <span>Đang xếp lịch...</span>
                             </div>
                           ) : !task.enabled ? (
                             <span className="text-gray-400 bg-gray-100 px-2 py-0.5 rounded text-[11px]">

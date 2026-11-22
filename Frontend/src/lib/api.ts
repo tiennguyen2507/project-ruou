@@ -260,6 +260,9 @@ export interface BackendAutoRunTask {
   lastDevice?: string;
   lastFinalUrl?: string;
   createdAt: string;
+  nextRunAt?: string | null;
+  currentDelaySec?: number | null;
+  isExecuting?: boolean;
 }
 
 export interface BackendAutoRunStatus {

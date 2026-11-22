@@ -37,6 +37,12 @@ export class ProxyAutoTask {
 
   @Prop({ default: null })
   lastFinalUrl?: string;
+
+  @Prop({ default: null })
+  nextRunAt?: string;
+
+  @Prop({ default: null })
+  currentDelaySec?: number;
 }
 
 export const ProxyAutoTaskSchema = SchemaFactory.createForClass(ProxyAutoTask);
