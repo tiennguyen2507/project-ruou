@@ -21,8 +21,8 @@ import {
 export class ProxySeedingDto {
   @ApiPropertyOptional({
     description:
-      'SOCKS5 proxy URL (vd: socks5h://user:password@host:port hoặc socks5://host:port). Nếu bỏ trống sẽ lấy từ cấu hình môi trường (HOMEPX_* hoặc PROXY_SEEDING_PROXY).',
-    example: 'socks5h://elenaharr289:mdu0nja4mta4@180.93.1.107:1080',
+      'SOCKS5 proxy URL (hỗ trợ socks5:// hoặc socks5h://user:password@host:port). Để trống sẽ tự động sử dụng Proxy Mặc định lưu trong MongoDB.',
+    example: 'socks5://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324',
   })
   @IsOptional()
   @IsString()
@@ -31,7 +31,7 @@ export class ProxySeedingDto {
 
   @ApiPropertyOptional({
     description:
-      'URL cần kiểm tra chuyển hướng (redirect) qua proxy. Mặc định là link rút gọn affiliate cấu hình trong PROXY_SEEDING_URL hoặc https://shorten.asia/fyscDRRV.',
+      'URL cần kiểm tra chuyển hướng (redirect) qua proxy. Mặc định là https://shorten.asia/fyscDRRV.',
     example: 'https://shorten.asia/fyscDRRV',
   })
   @IsOptional()

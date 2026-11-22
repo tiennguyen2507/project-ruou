@@ -50,12 +50,22 @@ async function bootstrap() {
     }),
   );
 
-  const document = SwaggerModule.createDocument(app, new DocumentBuilder()
-    .setTitle('Common API')
-    .setDescription('API dùng chung cho ảnh Cloudinary và quản lý sản phẩm.')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build());
+  const document = SwaggerModule.createDocument(
+    app,
+    new DocumentBuilder()
+      .setTitle('Common API & Proxy Seeding System')
+      .setDescription(
+        'Tài liệu Swagger API hệ thống:\n' +
+        '- **Proxy Seeding & Background Runner**: Kiểm tra chuỗi redirect qua SOCKS5 / SOCKS5H, giả lập trình duyệt và thiết bị thật, quản lý URL tự động ngầm chạy độc lập từng timer (MongoDB), tự động xóa lịch sử sau 3 ngày.\n' +
+        '- **Quản lý Sản phẩm**: Tìm kiếm, lọc phân trang, import 111 sản phẩm rượu vang.\n' +
+        '- **Cloudinary**: Upload & quản lý ảnh media.',
+      )
+      .setVersion('2.0')
+      .addTag('Proxy Seeding', 'Kiểm tra link chuyển hướng, tra cứu vị trí IP, cấu hình proxy mặc định và quản lý danh sách URL tự động chạy ngầm độc lập')
+      .addTag('Products', 'Quản lý danh sách sản phẩm, tồn kho và danh mục rượu vang')
+      .addBearerAuth()
+      .build(),
+  );
   setupSwagger(app, document);
 
   const port = process.env.PORT || 5001;
