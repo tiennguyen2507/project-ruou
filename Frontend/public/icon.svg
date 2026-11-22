@@ -1,30 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="wineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#b30000"/>
-      <stop offset="50%" stop-color="#720b18"/>
-      <stop offset="100%" stop-color="#4a0606"/>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
     </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffe28a"/>
-      <stop offset="50%" stop-color="#d4af37"/>
-      <stop offset="100%" stop-color="#aa820a"/>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="topLayerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <linearGradient id="midLayerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="botLayerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdba74"/>
+      <stop offset="100%" stop-color="#ea580c"/>
     </linearGradient>
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.5"/>
     </filter>
   </defs>
-  
-  <!-- Rounded Shield Base -->
-  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#wineGrad)" stroke="url(#goldGrad)" stroke-width="16" filter="url(#shadow)"/>
-  
-  <!-- Inner Gold Filigree Border -->
-  <rect x="48" y="48" width="416" height="416" rx="88" fill="none" stroke="url(#goldGrad)" stroke-width="4" stroke-opacity="0.6" stroke-dasharray="8 6"/>
 
-  <!-- Serif Letter 'R' for RƯỢU TỐT -->
-  <text x="256" y="340" font-family="'Playfair Display', Georgia, 'Times New Roman', serif" font-size="300" font-weight="900" text-anchor="middle" fill="url(#goldGrad)" filter="url(#shadow)">R</text>
+  <!-- Squircle Base -->
+  <rect x="20" y="20" width="472" height="472" rx="110" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="8" filter="url(#shadow)"/>
 
-  <!-- Crown / Star Accent on Top -->
-  <polygon points="256,92 266,118 294,118 272,134 280,160 256,144 232,160 240,134 218,118 246,118" fill="url(#goldGrad)"/>
+  <!-- Layer 3 (Bottom) -->
+  <g transform="translate(256, 335)">
+    <polygon points="-120,0 0,-58 120,0 0,58" fill="url(#botLayerGrad)"/>
+    <polygon points="-120,0 0,58 0,78 -120,20" fill="#1e3a8a"/>
+    <polygon points="0,58 120,0 120,20 0,78" fill="#1d4ed8"/>
+  </g>
+
+  <!-- Layer 2 (Middle) -->
+  <g transform="translate(256, 275)">
+    <polygon points="-135,0 0,-65 135,0 0,65" fill="url(#midLayerGrad)"/>
+    <polygon points="-135,0 0,65 0,85 -135,20" fill="#0369a1"/>
+    <polygon points="0,65 135,0 135,20 0,85" fill="#0284c7"/>
+  </g>
+
+  <!-- Layer 1 (Top) -->
+  <g transform="translate(256, 215)">
+    <polygon points="-150,0 0,-72 150,0 0,72" fill="url(#topLayerGrad)"/>
+    <polygon points="-150,0 0,72 0,92 -150,20" fill="#0f766e"/>
+    <polygon points="0,72 150,0 150,20 0,92" fill="#0d9488"/>
+  </g>
+
+  <!-- Live Pulse Spark -->
+  <circle cx="370" cy="160" r="32" fill="#ea580c" opacity="0.3"/>
+  <circle cx="370" cy="160" r="18" fill="url(#sparkGrad)"/>
+  <circle cx="370" cy="160" r="8" fill="#fff"/>
+
+  <!-- API Typography -->
+  <text x="256" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="900" text-anchor="middle" fill="#ffffff" letter-spacing="2">API</text>
 </svg>
-

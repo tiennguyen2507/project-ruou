@@ -14,7 +14,7 @@ export function formatNumber(amount: number): string {
 }
 
 /**
- * Returns the public Frontend Website URL (e.g. https://project-ruou.vercel.app)
+ * Returns the public Frontend Website URL (e.g. https://api-common.vercel.app)
  * Used for SEO, canonical links, OpenGraph, sitemap, and Google Rich Snippets.
  */
 export function getSiteUrl(): string {
@@ -35,5 +35,5 @@ export function getSiteUrl(): string {
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
-  return "https://project-ruou.vercel.app";
+  return "https://api-common.vercel.app";
 }
