@@ -37,6 +37,9 @@ Thumbs.db
 logs/
 *.log
 
+# Runtime state data
+Backend/src/data/*.json
+!Backend/src/data/.gitkeep
 
 # Text notes & sensitive order files
 *.txt
