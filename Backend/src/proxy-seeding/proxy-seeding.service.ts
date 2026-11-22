@@ -6,11 +6,17 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 import { spawn } from 'node:child_process';
 import { randomInt } from 'node:crypto';
 import { once } from 'node:events';
+import {
+  ProxyAutoConfig,
+  ProxyAutoConfigDocument,
+} from './schemas/proxy-auto-config.schema';
 
 export class ProxySeedingDto {
   @ApiPropertyOptional({
@@ -259,7 +265,11 @@ export const ACCEPT_LANGUAGES = [
 export class ProxySeedingService {
   private readonly logger = new Logger(ProxySeedingService.name);
 
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    @InjectModel(ProxyAutoConfig.name)
+    private readonly configModel: Model<ProxyAutoConfigDocument>,
+  ) {}
 
   /**
    * Kiểm tra proxy và chuyển hướng URL:
@@ -267,7 +277,17 @@ export class ProxySeedingService {
    * 2. Gửi request qua proxy với giả lập trình duyệt, lấy URL cuối cùng sau redirect
    */
   async check(input: ProxySeedingDto = {}): Promise<ProxySeedingResult> {
-    const curlConfig = this.resolveProxyCurlConfig(input.proxy);
+    let proxyStr = input.proxy?.trim();
+    if (!proxyStr) {
+      try {
+        const cfg = await this.configModel.findOne({ key: 'default' }).lean();
+        if (cfg?.defaultProxy?.trim()) {
+          proxyStr = cfg.defaultProxy.trim();
+        }
+      } catch {}
+    }
+
+    const curlConfig = this.resolveProxyCurlConfig(proxyStr);
     const targetUrl = this.resolveTargetUrl(input.url);
 
     // 1. Kiểm tra vị trí proxy
@@ -316,7 +336,7 @@ export class ProxySeedingService {
 
     if (!proxyStr) {
       throw new ServiceUnavailableException(
-        'SOCKS5 proxy is not configured (missing proxy parameter or HOMEPX_* / PROXY_SEEDING_PROXY env variables)',
+        'Chưa cấu hình Proxy SOCKS5. Vui lòng nhập Proxy trong ô SOCKS5 Proxy trên Dashboard hoặc trong danh sách chạy tự động.',
       );
     }
 

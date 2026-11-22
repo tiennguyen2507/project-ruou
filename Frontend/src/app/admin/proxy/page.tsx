@@ -608,14 +608,14 @@ function ProxySeedingContent() {
               <span>SOCKS5 Proxy (Tùy chọn)</span>
             </label>
             <span className="text-[11px] text-emerald-600 font-medium">
-              Trống = Dùng Server .env
+              Trống = Dùng Proxy Mặc định hệ thống
             </span>
           </div>
           <input
             type="text"
             value={proxyUrl}
             onChange={(e) => setProxyUrl(e.target.value)}
-            placeholder="Mặc định: Server .env (hoặc nhập socks5h://...)"
+            placeholder="Mặc định: Proxy lưu trên hệ thống (hoặc nhập socks5h://...)"
             className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#ea580c] font-mono"
           />
         </div>
@@ -790,7 +790,7 @@ function ProxySeedingContent() {
                             ) : (
                               <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
                                 <Server className="w-3 h-3 text-emerald-600 shrink-0" />
-                                <span>Server .env (HomeProxy)</span>
+                                <span>Proxy Mặc định hệ thống</span>
                               </span>
                             )}
                             <button

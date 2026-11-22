@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { MongooseModule } from '@nestjs/mongoose';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import {
   ProxyAutoRunnerService,
@@ -28,6 +29,18 @@ import {
   ProxySeedingResult,
   ProxySeedingService,
 } from './proxy-seeding.service';
+import {
+  ProxyAutoTask as ProxyAutoTaskEntity,
+  ProxyAutoTaskSchema,
+} from './schemas/proxy-auto-task.schema';
+import {
+  ProxyAutoConfig,
+  ProxyAutoConfigSchema,
+} from './schemas/proxy-auto-config.schema';
+import {
+  ProxyHistory as ProxyHistoryEntity,
+  ProxyHistorySchema,
+} from './schemas/proxy-history.schema';
 
 export {
   ProxySeedingDto,
@@ -64,8 +77,8 @@ export class StartAutoRunDto {
   targetUrl?: string;
 
   @ApiPropertyOptional({
-    description: 'SOCKS5 Proxy (nếu có, để trống = Server .env)',
-    example: 'socks5h://...',
+    description: 'SOCKS5 Proxy (nếu có, để trống = dùng Proxy mặc định)',
+    example: 'socks5h://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324',
   })
   @IsOptional()
   @IsString()
@@ -80,10 +93,33 @@ export class AddTaskDto {
   @IsString()
   targetUrl: string;
 
-  @ApiPropertyOptional({ description: 'SOCKS5 Proxy tùy chọn', example: 'socks5h://...' })
+  @ApiPropertyOptional({
+    description: 'SOCKS5 Proxy tùy chọn',
+    example: 'socks5h://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324',
+  })
   @IsOptional()
   @IsString()
   proxyUrl?: string;
+}
+
+export class UpdateConfigDto {
+  @ApiPropertyOptional({
+    description: 'SOCKS5 Proxy mặc định hệ thống',
+    example: 'socks5h://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324',
+  })
+  @IsOptional()
+  @IsString()
+  defaultProxy?: string;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối thiểu (giây)', example: 60 })
+  @IsOptional()
+  @IsNumber()
+  minDelaySec?: number;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối đa (giây)', example: 180 })
+  @IsOptional()
+  @IsNumber()
+  maxDelaySec?: number;
 }
 
 @ApiTags('Proxy Seeding')
@@ -118,7 +154,7 @@ export class ProxySeedingController {
         affSid = u.searchParams.get('aff_sid') || undefined;
       } catch {}
 
-      this.autoRunner.recordHistory({
+      await this.autoRunner.recordHistory({
         targetUrl: res.targetUrl,
         finalUrl: res.finalUrl,
         ip: res.proxyLocation?.ip || 'Không rõ IP',
@@ -156,7 +192,7 @@ export class ProxySeedingController {
 
   @Get('auto-run/tasks')
   @ApiOperation({
-    summary: 'Lấy danh sách các URL chạy tự động ở Backend',
+    summary: 'Lấy danh sách các URL chạy tự động ở Backend (từ MongoDB)',
   })
   getAutoRunTasks() {
     return this.autoRunner.getTasks();
@@ -165,7 +201,7 @@ export class ProxySeedingController {
   @Post('auto-run/start')
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Bắt đầu tiến trình chạy tự động ngầm ở Backend',
+    summary: 'Bắt đầu tiến trình chạy tự động ngầm ở Backend (lưu MongoDB)',
   })
   startAutoRun(@Body() body: StartAutoRunDto) {
     return this.autoRunner.start(
@@ -178,7 +214,7 @@ export class ProxySeedingController {
   @Post('auto-run/stop')
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Dừng tiến trình chạy tự động ngầm ở Backend',
+    summary: 'Dừng tiến trình chạy tự động ngầm ở Backend (cập nhật MongoDB)',
   })
   stopAutoRun() {
     return this.autoRunner.stop();
@@ -187,7 +223,7 @@ export class ProxySeedingController {
   @Post('auto-run/tasks')
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Thêm URL và Proxy mới vào hàng đợi chạy tự động ngầm',
+    summary: 'Thêm URL và Proxy mới vào hàng đợi chạy tự động ngầm (lưu MongoDB)',
   })
   addTask(@Body() body: AddTaskDto) {
     return this.autoRunner.addTask(body.targetUrl, body.proxyUrl);
@@ -195,7 +231,7 @@ export class ProxySeedingController {
 
   @Patch('auto-run/tasks/:id/toggle')
   @ApiOperation({
-    summary: 'Bật / Tắt trạng thái chạy của 1 URL trong danh sách',
+    summary: 'Bật / Tắt trạng thái chạy của 1 URL trong danh sách (lưu MongoDB)',
   })
   toggleTask(@Param('id') id: string) {
     return this.autoRunner.toggleTask(id);
@@ -203,15 +239,16 @@ export class ProxySeedingController {
 
   @Delete('auto-run/tasks/:id')
   @ApiOperation({
-    summary: 'Xóa 1 URL khỏi hàng đợi chạy tự động ngầm',
+    summary: 'Xóa 1 URL khỏi hàng đợi chạy tự động ngầm (xóa trong MongoDB)',
   })
-  deleteTask(@Param('id') id: string) {
-    return { success: this.autoRunner.deleteTask(id) };
+  async deleteTask(@Param('id') id: string) {
+    const success = await this.autoRunner.deleteTask(id);
+    return { success };
   }
 
   @Get('history')
   @ApiOperation({
-    summary: 'Lấy lịch sử chạy proxy từ Backend (kể cả khi chạy ngầm)',
+    summary: 'Lấy lịch sử chạy proxy từ MongoDB (tự động xóa sau 3 ngày)',
   })
   getHistory() {
     return this.autoRunner.getHistory();
@@ -219,14 +256,38 @@ export class ProxySeedingController {
 
   @Delete('history')
   @ApiOperation({
-    summary: 'Xóa toàn bộ lịch sử chạy proxy trên Backend',
+    summary: 'Xóa toàn bộ lịch sử chạy proxy trên MongoDB',
   })
-  clearHistory() {
-    return { success: this.autoRunner.clearHistory() };
+  async clearHistory() {
+    const success = await this.autoRunner.clearHistory();
+    return { success };
+  }
+
+  @Get('config')
+  @ApiOperation({
+    summary: 'Lấy cấu hình chung và proxy mặc định từ MongoDB',
+  })
+  getConfig() {
+    return this.autoRunner.getConfig();
+  }
+
+  @Patch('config')
+  @ApiOperation({
+    summary: 'Cập nhật cấu hình chung và proxy mặc định trong MongoDB',
+  })
+  updateConfig(@Body() body: UpdateConfigDto) {
+    return this.autoRunner.updateConfig(body);
   }
 }
 
 @Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: ProxyAutoTaskEntity.name, schema: ProxyAutoTaskSchema },
+      { name: ProxyAutoConfig.name, schema: ProxyAutoConfigSchema },
+      { name: ProxyHistoryEntity.name, schema: ProxyHistorySchema },
+    ]),
+  ],
   controllers: [ProxySeedingController],
   providers: [ProxySeedingService, ProxyAutoRunnerService],
   exports: [ProxySeedingService, ProxyAutoRunnerService],
