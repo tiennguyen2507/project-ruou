@@ -8,11 +8,35 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['ruoutot.net', 'images.unsplash.com', 'res.cloudinary.com'],
+    domains: ['images.unsplash.com', 'res.cloudinary.com'],
   },
   webpack: (config) => {
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
     return config;
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: false,
+      },
+      {
+        source: '/admin',
+        destination: '/dashboard',
+        permanent: false,
+      },
+      {
+        source: '/admin/proxy',
+        destination: '/dashboard',
+        permanent: false,
+      },
+      {
+        source: '/admin/proxy/history',
+        destination: '/dashboard/history',
+        permanent: false,
+      },
+    ];
   },
 };
 
