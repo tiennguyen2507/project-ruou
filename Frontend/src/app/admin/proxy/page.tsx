@@ -565,19 +565,19 @@ function ProxySeedingContent() {
           </div>
         </div>
 
-        {/* Row 3: SOCKS5 Proxy (Tùy chọn) - ĐƯỢC ĐƯA XUỐNG DƯỚI */}
+        {/* Row 3: SOCKS5 Proxy - Ví dụ */}
         <div className="pt-3 border-t border-gray-100 space-y-1.5">
           <div className="flex items-center justify-between text-xs">
-            <label className="font-semibold text-gray-700 flex items-center gap-1.5">
+            <label className="font-semibold text-gray-700 flex flex-wrap items-center gap-1.5">
               <Server className="w-3.5 h-3.5 text-gray-400" />
-              <span>SOCKS5 Proxy (Tùy chọn)</span>
+              <span>SOCKS5 Proxy (Ví dụ: socks5://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324)</span>
             </label>
           </div>
           <input
             type="text"
             value={proxyUrl}
             onChange={(e) => setProxyUrl(e.target.value)}
-            placeholder="Mặc định: Proxy lưu trên hệ thống (hoặc nhập socks5h://...)"
+            placeholder="Ví dụ: socks5://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324"
             className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#ea580c] font-mono"
           />
         </div>
