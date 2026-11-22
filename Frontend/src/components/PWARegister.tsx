@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
 
+const PWA_DISMISSED_KEY = "api_common_pwa_dismissed";
+
 export default function PWARegister() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -20,12 +22,36 @@ export default function PWARegister() {
         });
     }
 
-    // Capture install prompt event for Android & Desktop Chrome
+    // Kiểm tra xem người dùng đã từng tắt hoặc cài đặt trước đó chưa
+    try {
+      const isDismissed = localStorage.getItem(PWA_DISMISSED_KEY);
+      if (isDismissed === "true") {
+        return; // Đã tắt rồi thì không bao giờ hiện lại nữa
+      }
+    } catch {}
+
+    // Lắng nghe sự kiện trước khi hiển thị prompt cài đặt
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      // Show prompt banner after 3 seconds
-      setTimeout(() => setShowInstallBanner(true), 3000);
+
+      // Kiểm tra lại localStorage trước khi hiện banner
+      try {
+        if (localStorage.getItem(PWA_DISMISSED_KEY) === "true") {
+          return;
+        }
+      } catch {}
+
+      // Hiện banner sau 3 giây (chỉ 1 lần duy nhất)
+      setTimeout(() => {
+        try {
+          if (localStorage.getItem(PWA_DISMISSED_KEY) !== "true") {
+            setShowInstallBanner(true);
+          }
+        } catch {
+          setShowInstallBanner(true);
+        }
+      }, 3000);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -35,8 +61,18 @@ export default function PWARegister() {
     };
   }, []);
 
+  const handleDismiss = () => {
+    try {
+      localStorage.setItem(PWA_DISMISSED_KEY, "true");
+    } catch {}
+    setShowInstallBanner(false);
+  };
+
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
+    try {
+      localStorage.setItem(PWA_DISMISSED_KEY, "true");
+    } catch {}
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
@@ -71,9 +107,9 @@ export default function PWARegister() {
           </button>
           <button
             type="button"
-            onClick={() => setShowInstallBanner(false)}
-            className="p-1 text-gray-400 hover:text-white rounded-lg transition"
-            title="Đóng"
+            onClick={handleDismiss}
+            className="p-1 text-gray-400 hover:text-white rounded-lg transition cursor-pointer"
+            title="Đóng và không hiển thị lại"
           >
             <X className="w-4 h-4" />
           </button>
