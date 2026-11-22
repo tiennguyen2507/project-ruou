@@ -620,64 +620,6 @@ function ProxySeedingContent() {
           />
         </div>
 
-        {/* Live Countdown & Stats Banner (Visible when Auto is Running) */}
-        {isAutoRunning && (
-          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs animate-fade-in">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-mono font-black flex items-center justify-center text-sm shadow-2xs">
-                {countdown !== null ? countdown : "--"}
-              </div>
-              <div>
-                <div className="font-bold text-emerald-950 text-sm">
-                  Lượt chạy kế tiếp sau:{" "}
-                  <span className="font-mono text-emerald-700 text-base font-black">
-                    {countdown}s
-                  </span>
-                </div>
-                <div className="text-emerald-700 text-[11px] flex flex-wrap items-center gap-1.5 mt-0.5">
-                  <span>Khoảng random: {currentDelay ? `${currentDelay}s` : `${minDelaySec}s - ${maxDelaySec}s`}</span>
-                  {nextTargetTask && (
-                    <>
-                      <span>•</span>
-                      <span>URL kế tiếp:</span>
-                      <span className="font-mono font-bold text-emerald-900 truncate max-w-xs">
-                        {nextTargetTask.targetUrl}
-                      </span>
-                      <span className="text-emerald-800 font-semibold">
-                        ({nextTargetTask.proxyUrl ? "Proxy riêng" : "Server .env"})
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 self-end sm:self-auto">
-              <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-emerald-200 text-emerald-800 font-bold shadow-2xs text-xs">
-                <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Đã thực hiện: {autoRunCount} lượt</span>
-              </div>
-              <button
-                type="button"
-                onClick={stopAutoRun}
-                className="flex items-center gap-1.5 bg-white hover:bg-red-50 text-red-600 hover:text-red-700 px-3 py-1.5 rounded-lg border border-red-200 text-xs font-bold transition shadow-2xs"
-                title="Dừng tiến trình chạy ngầm Backend"
-              >
-                <Pause className="w-3.5 h-3.5 fill-current" />
-                <span>Dừng chạy</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Error Notice */}
-        {error && (
-          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
         {/* Action Buttons & Anti-bot Note Footer */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
           <div className="text-xs text-gray-400 flex items-center gap-1.5">
@@ -686,11 +628,24 @@ function ProxySeedingContent() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Duy nhất 1 nút: Thêm vào danh sách để chạy dưới BE */}
+            {/* Nút Dừng chạy (hiển thị khi tiến trình đang chạy ngầm) */}
+            {isAutoRunning && (
+              <button
+                type="button"
+                onClick={stopAutoRun}
+                className="flex items-center justify-center gap-1.5 bg-white hover:bg-red-50 text-red-600 hover:text-red-700 px-4 py-2.5 rounded-xl text-xs font-bold transition border border-red-200 shadow-2xs cursor-pointer"
+                title="Dừng tiến trình chạy ngầm Backend"
+              >
+                <Pause className="w-3.5 h-3.5 fill-current" />
+                <span>Dừng chạy ({autoRunCount} lượt)</span>
+              </button>
+            )}
+
+            {/* Nút: Thêm vào danh sách để chạy dưới BE */}
             <button
               type="button"
               onClick={handleAddAndRunBackend}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-xs shadow-emerald-600/20"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-xs shadow-emerald-600/20 cursor-pointer"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Thêm vào danh sách để chạy dưới BE</span>
@@ -826,17 +781,36 @@ function ProxySeedingContent() {
 
                         {/* Proxy */}
                         <td className="py-2.5 px-3">
-                          {task.proxyUrl ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-mono text-gray-700 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 truncate max-w-[200px]">
-                              <Server className="w-3 h-3 text-gray-400 shrink-0" />
-                              <span className="truncate">{task.proxyUrl}</span>
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                              <Server className="w-3 h-3 text-emerald-600 shrink-0" />
-                              <span>Server .env (HomeProxy)</span>
-                            </span>
-                          )}
+                          <div className="flex items-center gap-1.5 max-w-[240px]">
+                            {task.proxyUrl ? (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-mono text-gray-700 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 truncate">
+                                <Server className="w-3 h-3 text-gray-400 shrink-0" />
+                                <span className="truncate">{task.proxyUrl}</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
+                                <Server className="w-3 h-3 text-emerald-600 shrink-0" />
+                                <span>Server .env (HomeProxy)</span>
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                copyToClipboard(
+                                  task.proxyUrl || proxyUrl || "socks5h://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324",
+                                  `task-proxy-${task.id}`
+                                )
+                              }
+                              className="text-gray-400 hover:text-gray-600 shrink-0 cursor-pointer p-1 hover:bg-gray-100 rounded transition"
+                              title="Sao chép cấu hình Proxy"
+                            >
+                              {copiedKey === `task-proxy-${task.id}` ? (
+                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
                         </td>
 
                         {/* Hẹn Giờ / Đếm Ngược Countdown Seconds */}
