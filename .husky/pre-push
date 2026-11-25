@@ -1,0 +1,2 @@
+echo "🚀 [Husky pre-push] Validating builds for Backend & Frontend before push..."
+npm run check
