@@ -40,6 +40,7 @@ logs/
 # Runtime state data
 Backend/src/data/*.json
 !Backend/src/data/.gitkeep
+Backend/data/
 
 # Text notes & sensitive order files
 *.txt

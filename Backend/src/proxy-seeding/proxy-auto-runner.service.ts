@@ -8,6 +8,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { randomInt } from 'node:crypto';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { ProxySeedingResult, ProxySeedingService } from './proxy-seeding.service';
 import {
   ProxyAutoTask as ProxyAutoTaskEntity,
@@ -39,6 +41,8 @@ export interface AutoRunTask {
   nextRunAt?: string | null;
   currentDelaySec?: number | null;
   isExecuting?: boolean;
+  minDelaySec?: number;
+  maxDelaySec?: number;
 }
 
 export interface AutoRunStatus {
@@ -79,6 +83,52 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
   // Quản lý bộ đếm thời gian độc lập cho từng task riêng biệt (không chờ nhau)
   private taskTimers: Map<string, NodeJS.Timeout> = new Map();
   private tasks: AutoRunTask[] = [];
+  private readonly cacheFilePath = path.join(process.cwd(), 'data', 'proxy-tasks-cache.json');
+
+  private saveToLocalCache() {
+    try {
+      const dir = path.dirname(this.cacheFilePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const data = {
+        isRunning: this.isRunning,
+        minDelaySec: this.minDelaySec,
+        maxDelaySec: this.maxDelaySec,
+        defaultProxy: this.defaultProxy,
+        tasks: this.tasks,
+      };
+      fs.writeFileSync(this.cacheFilePath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (e: any) {
+      this.logger.debug(`Không thể ghi cache local: ${e.message}`);
+    }
+  }
+
+  private loadFromLocalCache(): boolean {
+    try {
+      if (fs.existsSync(this.cacheFilePath)) {
+        const raw = fs.readFileSync(this.cacheFilePath, 'utf-8');
+        const data = JSON.parse(raw);
+        if (Array.isArray(data.tasks) && data.tasks.length > 0) {
+          this.tasks = data.tasks;
+          if (data.isRunning !== undefined) this.isRunning = data.isRunning;
+          if (data.minDelaySec) this.minDelaySec = data.minDelaySec;
+          if (data.maxDelaySec) this.maxDelaySec = data.maxDelaySec;
+          if (data.defaultProxy) this.defaultProxy = data.defaultProxy;
+          this.totalRuns = this.tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
+          this.logger.log(
+            `[ProxyAutoRunner] 💾 Đã khôi phục ${this.tasks.length} tasks từ cache local (${
+              this.isRunning ? 'Đang chạy' : 'Tạm dừng'
+            }).`,
+          );
+          return true;
+        }
+      }
+    } catch (e: any) {
+      this.logger.debug(`Không thể đọc cache local: ${e.message}`);
+    }
+    return false;
+  }
 
   constructor(
     private readonly seedingService: ProxySeedingService,
@@ -177,8 +227,35 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
         this.logger.log('[ProxyAutoRunner] 🔄 Khôi phục chạy ngầm độc lập cho từng URL...');
         this.startAllEnabledTasks();
       }
+      this.saveToLocalCache();
     } catch (err: any) {
-      this.logger.error(`[ProxyAutoRunner] Lỗi khi nạp dữ liệu từ MongoDB: ${err.message}`);
+      this.logger.warn(
+        `[ProxyAutoRunner] ⚠️ Lỗi kết nối MongoDB (${err.message}). Đang kiểm tra cache local...`,
+      );
+      const loaded = this.loadFromLocalCache();
+      if (!loaded && this.tasks.length === 0) {
+        this.tasks = [
+          {
+            id: 'task-default-1',
+            targetUrl: 'https://shorten.asia/fyscDRRV',
+            proxyUrl: this.defaultProxy,
+            enabled: true,
+            totalRuns: 0,
+            createdAt: new Date().toISOString(),
+            nextRunAt: null,
+            currentDelaySec: null,
+            isExecuting: false,
+            minDelaySec: 60,
+            maxDelaySec: 180,
+          },
+        ];
+        this.saveToLocalCache();
+      }
+
+      if (this.isRunning) {
+        this.logger.log('[ProxyAutoRunner] 🔄 Khôi phục chạy ngầm độc lập cho từng URL từ cache...');
+        this.startAllEnabledTasks();
+      }
     }
   }
 
@@ -210,10 +287,14 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       this.taskTimers.delete(taskId);
     }
 
+    const rawMin = Number(task.minDelaySec) || Number(this.minDelaySec) || 60;
+    const rawMax = Number(task.maxDelaySec) || Number(this.maxDelaySec) || 180;
+    const min = Math.min(rawMin, rawMax);
+    const max = Math.max(rawMin, rawMax);
     const delay =
       customDelaySec !== undefined
         ? customDelaySec
-        : randomInt(this.minDelaySec, Math.max(this.minDelaySec + 1, this.maxDelaySec + 1));
+        : randomInt(min, Math.max(min + 1, max + 1));
 
     task.currentDelaySec = delay;
     task.nextRunAt = new Date(Date.now() + delay * 1000).toISOString();
@@ -392,7 +473,7 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
 
     this.isRunning = true;
 
-    await this.configModel
+    this.configModel
       .updateOne(
         { key: 'default' },
         {
@@ -405,7 +486,7 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
         },
         { upsert: true },
       )
-      .catch((e) => this.logger.error(`Lỗi cập nhật config: ${e.message}`));
+      .catch((e) => this.logger.warn(`Lỗi cập nhật config Mongo: ${e.message}`));
 
     this.logger.log(
       `[ProxyAutoRunner] BẮT ĐẦU CHẠY NGẦM ĐỘC LẬP: ${enabledCount} URL [${this.minDelaySec}s - ${this.maxDelaySec}s]`,
@@ -435,9 +516,9 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       task.isExecuting = false;
     }
 
-    await this.configModel
+    this.configModel
       .updateOne({ key: 'default' }, { $set: { isRunning: false } })
-      .catch((e) => this.logger.error(`Lỗi dừng config: ${e.message}`));
+      .catch((e) => this.logger.warn(`Lỗi dừng config Mongo: ${e.message}`));
 
     this.logger.log('[ProxyAutoRunner] ĐÃ DỪNG TOÀN BỘ TIẾN TRÌNH CHẠY NGẦM.');
     return this.getStatus();
@@ -446,7 +527,12 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
   /**
    * Thêm task mới
    */
-  async addTask(targetUrl: string, proxyUrl?: string): Promise<AutoRunTask> {
+  async addTask(
+    targetUrl: string,
+    proxyUrl?: string,
+    minDelaySec?: number,
+    maxDelaySec?: number,
+  ): Promise<AutoRunTask> {
     const cleanUrl = targetUrl.trim();
     if (!cleanUrl) {
       throw new BadRequestException('URL không được để trống.');
@@ -471,14 +557,18 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       nextRunAt: null,
       currentDelaySec: null,
       isExecuting: false,
+      minDelaySec: minDelaySec && minDelaySec > 0 ? minDelaySec : undefined,
+      maxDelaySec: maxDelaySec && maxDelaySec > 0 ? maxDelaySec : undefined,
     };
 
-    await this.taskModel.create(newTask);
     this.tasks.unshift(newTask);
+    this.taskModel
+      .create(newTask)
+      .catch((e) => this.logger.warn(`Lỗi lưu task Mongo (lưu tạm memory): ${e.message}`));
 
     if (cleanProxy) {
       this.defaultProxy = cleanProxy;
-      await this.configModel
+      this.configModel
         .updateOne({ key: 'default' }, { $set: { defaultProxy: cleanProxy } })
         .catch(() => {});
     }
@@ -488,6 +578,7 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       this.scheduleTask(newTask.id, 2);
     }
 
+    this.saveToLocalCache();
     return newTask;
   }
 
@@ -508,23 +599,106 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       const anyEnabled = this.tasks.some((t) => t.enabled);
       if (!anyEnabled) {
         this.isRunning = false;
-        await this.configModel
+        this.configModel
           .updateOne({ key: 'default' }, { $set: { isRunning: false } })
           .catch(() => {});
       }
     } else {
       // Bật task -> kích hoạt chạy độc lập ngay sau 2s
       this.isRunning = true;
-      await this.configModel
+      this.configModel
         .updateOne({ key: 'default' }, { $set: { isRunning: true } })
         .catch(() => {});
       this.scheduleTask(id, 2);
     }
 
-    await this.taskModel
+    this.taskModel
       .updateOne({ id }, { $set: { enabled: task.enabled } })
-      .catch((e) => this.logger.error(`Lỗi toggle task: ${e.message}`));
+      .catch((e) => this.logger.warn(`Lỗi toggle task Mongo: ${e.message}`));
 
+    this.saveToLocalCache();
+    return task;
+  }
+
+  /**
+   * Chỉnh sửa thông tin 1 task (targetUrl, proxyUrl, enabled)
+   */
+  async updateTask(
+    id: string,
+    data: {
+      targetUrl?: string;
+      proxyUrl?: string;
+      enabled?: boolean;
+      minDelaySec?: number;
+      maxDelaySec?: number;
+    },
+  ): Promise<AutoRunTask> {
+    const task = this.tasks.find((t) => t.id === id);
+    if (!task) {
+      throw new BadRequestException('Không tìm thấy task với ID đã cho.');
+    }
+
+    const updates: Partial<AutoRunTask> = {};
+
+    if (data.targetUrl !== undefined) {
+      const cleanUrl = data.targetUrl.trim();
+      if (!cleanUrl) {
+        throw new BadRequestException('URL không được để trống.');
+      }
+      task.targetUrl = cleanUrl;
+      updates.targetUrl = cleanUrl;
+    }
+
+    if (data.proxyUrl !== undefined) {
+      const cleanProxy = data.proxyUrl.trim();
+      task.proxyUrl = cleanProxy;
+      updates.proxyUrl = cleanProxy;
+    }
+
+    if (data.minDelaySec !== undefined) {
+      task.minDelaySec = data.minDelaySec > 0 ? data.minDelaySec : undefined;
+      updates.minDelaySec = task.minDelaySec;
+    }
+
+    if (data.maxDelaySec !== undefined) {
+      task.maxDelaySec = data.maxDelaySec > 0 ? data.maxDelaySec : undefined;
+      updates.maxDelaySec = task.maxDelaySec;
+    }
+
+    if (data.enabled !== undefined && data.enabled !== task.enabled) {
+      task.enabled = data.enabled;
+      updates.enabled = data.enabled;
+
+      if (!task.enabled) {
+        this.clearTaskTimer(id);
+        const anyEnabled = this.tasks.some((t) => t.enabled);
+        if (!anyEnabled) {
+          this.isRunning = false;
+          this.configModel
+            .updateOne({ key: 'default' }, { $set: { isRunning: false } })
+            .catch(() => {});
+        }
+      } else {
+        this.isRunning = true;
+        this.configModel
+          .updateOne({ key: 'default' }, { $set: { isRunning: true } })
+          .catch(() => {});
+        this.scheduleTask(id, 2);
+      }
+    } else if (
+      this.isRunning &&
+      task.enabled &&
+      (data.minDelaySec !== undefined || data.maxDelaySec !== undefined)
+    ) {
+      // Khi cập nhật Min/Max giây của task đang chạy, lập tức áp dụng chu kỳ delay mới
+      this.scheduleTask(id);
+    }
+
+    this.taskModel
+      .updateOne({ id }, { $set: updates })
+      .catch((e) => this.logger.warn(`Lỗi cập nhật task Mongo: ${e.message}`));
+
+    this.saveToLocalCache();
     return task;
   }
 
@@ -536,13 +710,14 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
     const prevLen = this.tasks.length;
     this.tasks = this.tasks.filter((t) => t.id !== id);
     if (this.tasks.length !== prevLen) {
-      await this.taskModel.deleteOne({ id }).catch((e) =>
-        this.logger.error(`Lỗi xóa task Mongo: ${e.message}`),
+      this.taskModel.deleteOne({ id }).catch((e) =>
+        this.logger.warn(`Lỗi xóa task Mongo: ${e.message}`),
       );
       this.totalRuns = this.tasks.reduce((sum, t) => sum + (t.totalRuns || 0), 0);
-      await this.configModel
+      this.configModel
         .updateOne({ key: 'default' }, { $set: { totalRuns: this.totalRuns } })
         .catch(() => {});
+      this.saveToLocalCache();
       return true;
     }
     return false;

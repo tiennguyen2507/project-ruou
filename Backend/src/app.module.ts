@@ -35,6 +35,9 @@ import { AppController } from './app.controller';
         return {
           uri,
           dbName,
+          lazyConnection: true,
+          serverSelectionTimeoutMS: 5000,
+          bufferCommands: false,
           connectionFactory: (connection) => {
             connection.on('connected', () => {
               logger.log(`✅ Mongoose đã kết nối trực tiếp thành công tới MongoDB Atlas (${dbName})!`);

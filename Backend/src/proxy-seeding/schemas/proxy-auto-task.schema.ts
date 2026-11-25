@@ -43,6 +43,12 @@ export class ProxyAutoTask {
 
   @Prop({ default: null })
   currentDelaySec?: number;
+
+  @Prop({ default: null })
+  minDelaySec?: number;
+
+  @Prop({ default: null })
+  maxDelaySec?: number;
 }
 
 export const ProxyAutoTaskSchema = SchemaFactory.createForClass(ProxyAutoTask);

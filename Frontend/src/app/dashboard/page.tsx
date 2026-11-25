@@ -27,6 +27,8 @@ import {
   Trash2,
   Layers,
   Power,
+  Pencil,
+  X,
 } from "lucide-react";
 import {
   runProxySeeding,
@@ -37,6 +39,7 @@ import {
   stopBackendAutoRun,
   addBackendAutoRunTask,
   toggleBackendAutoRunTask,
+  updateBackendAutoRunTask,
   deleteBackendAutoRunTask,
   getBackendProxyHistory,
   BackendAutoRunTask,
@@ -47,6 +50,29 @@ import {
   getProxyHistory,
   saveProxyHistory,
 } from "@/lib/proxyHistory";
+
+function formatVietnamTime(isoString?: string | null): string {
+  if (!isoString) return "";
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return isoString;
+    return (
+      d.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }) +
+      " • " +
+      d.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+      })
+    );
+  } catch {
+    return isoString;
+  }
+}
 
 const DEFAULT_TARGET = "https://shorten.asia/fyscDRRV";
 
@@ -304,6 +330,138 @@ function ProxySeedingContent() {
     }
   };
 
+  // Edit task state & handlers
+  const [editingTask, setEditingTask] = useState<BackendAutoRunTask | null>(null);
+  const [editTargetUrl, setEditTargetUrl] = useState("");
+  const [editProxyUrl, setEditProxyUrl] = useState("");
+  const [editMinDelay, setEditMinDelay] = useState<number | string>(60);
+  const [editMaxDelay, setEditMaxDelay] = useState<number | string>(180);
+  const [editSaving, setEditSaving] = useState(false);
+
+  const handleOpenEdit = (task: BackendAutoRunTask) => {
+    setEditingTask(task);
+    setEditTargetUrl(task.targetUrl);
+    setEditProxyUrl(task.proxyUrl || "");
+    setEditMinDelay(task.minDelaySec !== undefined ? task.minDelaySec : (Number(minDelaySec) || 60));
+    setEditMaxDelay(task.maxDelaySec !== undefined ? task.maxDelaySec : (Number(maxDelaySec) || 180));
+  };
+
+  const handleCloseEdit = () => {
+    setEditingTask(null);
+    setEditTargetUrl("");
+    setEditProxyUrl("");
+    setEditMinDelay(60);
+    setEditMaxDelay(180);
+  };
+
+  const handleSaveEdit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!editingTask) return;
+
+    const trimmedUrl = editTargetUrl.trim();
+    if (!trimmedUrl) {
+      showToast("URL không được để trống", "error");
+      return;
+    }
+
+    const min = Number(editMinDelay) || 60;
+    const max = Number(editMaxDelay) || 180;
+    if (min <= 0 || max <= 0 || max < min) {
+      showToast("Vui lòng nhập khoảng giây hợp lệ (Min <= Max)", "error");
+      return;
+    }
+
+    try {
+      setEditSaving(true);
+      const updated = await updateBackendAutoRunTask(editingTask.id, {
+        targetUrl: trimmedUrl,
+        proxyUrl: editProxyUrl.trim(),
+        minDelaySec: min,
+        maxDelaySec: max,
+      });
+      // Cập nhật ngay trong local state để UI phản hồi tức thì
+      setTasks((prev) =>
+        prev.map((t) => (t.id === editingTask.id ? { ...t, ...updated } : t))
+      );
+      showToast("Cập nhật URL & Cấu hình thành công");
+      handleCloseEdit();
+      await syncWithBackend();
+    } catch (err: any) {
+      showToast(err.message || "Lỗi cập nhật URL & Proxy", "error");
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  // Create task modal state & handlers
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createTargetUrl, setCreateTargetUrl] = useState("");
+  const [createProxyUrl, setCreateProxyUrl] = useState("");
+  const [createMinDelay, setCreateMinDelay] = useState<number | string>(60);
+  const [createMaxDelay, setCreateMaxDelay] = useState<number | string>(180);
+  const [createSaving, setCreateSaving] = useState(false);
+
+  const handleOpenCreate = () => {
+    setCreateTargetUrl(targetUrl || "");
+    setCreateProxyUrl(proxyUrl || "");
+    setCreateMinDelay(Number(minDelaySec) || 60);
+    setCreateMaxDelay(Number(maxDelaySec) || 180);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreate = () => {
+    setIsCreateModalOpen(false);
+    setCreateTargetUrl("");
+    setCreateProxyUrl("");
+    setCreateMinDelay(60);
+    setCreateMaxDelay(180);
+  };
+
+  const handleSaveCreate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const trimmedUrl = createTargetUrl.trim();
+    if (!trimmedUrl) {
+      showToast("URL không được để trống", "error");
+      return;
+    }
+
+    const min = Number(createMinDelay) || 60;
+    const max = Number(createMaxDelay) || 180;
+    if (min <= 0 || max <= 0 || max < min) {
+      showToast("Vui lòng nhập khoảng giây hợp lệ (Min <= Max)", "error");
+      return;
+    }
+
+    try {
+      setCreateSaving(true);
+      await addBackendAutoRunTask({
+        targetUrl: trimmedUrl,
+        proxyUrl: createProxyUrl.trim() || undefined,
+        minDelaySec: min,
+        maxDelaySec: max,
+      });
+      showToast("Đã thêm URL vào danh sách chạy tự động!");
+      handleCloseCreate();
+      await syncWithBackend();
+    } catch (err: any) {
+      showToast(err.message || "Lỗi khi thêm URL vào danh sách", "error");
+    } finally {
+      setCreateSaving(false);
+    }
+  };
+
+  // Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (editingTask) handleCloseEdit();
+        if (isCreateModalOpen) handleCloseCreate();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [editingTask, isCreateModalOpen]);
+
   // Run single task immediately
   const handleRunTaskImmediately = async (task: BackendAutoRunTask) => {
     try {
@@ -439,14 +597,14 @@ function ProxySeedingContent() {
 
       {/* UNIFIED PROXY & AUTO RUN CONFIGURATION CARD */}
       <div
-        className={`rounded-2xl border p-5 sm:p-6 transition-all shadow-xs space-y-5 ${
+        className={`rounded-2xl border p-5 sm:p-6 transition-all shadow-xs space-y-4 ${
           isAutoRunning
             ? "bg-gradient-to-br from-emerald-950/5 via-white to-emerald-50/30 border-emerald-500/80 ring-2 ring-emerald-500/20"
             : "bg-white border-gray-200/80"
         }`}
       >
-        {/* Card Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+        {/* Card Header & Global Controls */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
@@ -458,164 +616,29 @@ function ProxySeedingContent() {
               {isAutoRunning ? <Timer className="w-5 h-5" /> : <Globe2 className="w-5 h-5" />}
             </div>
             <div>
-              <h2 className="font-bold text-gray-900 text-sm sm:text-base">
-                Cấu hình & Tự động chạy ngầm Backend (Auto Run 24/7)
-              </h2>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-            <span className="bg-orange-50 text-[#ea580c] border border-orange-200/80 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-2xs">
-              <Layers className="w-3.5 h-3.5" />
-              <span>{enabledTasks.length}/{tasks.length} URL kích hoạt</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Row 1: Target URL (Full Width) */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <label className="font-semibold text-gray-700 flex items-center gap-1.5">
-              <span>URL cần kiểm tra (Target URL)</span>
-              <span className="text-red-500">*</span>
-            </label>
-          </div>
-
-          <div className="relative">
-            <input
-              type="text"
-              value={targetUrl}
-              onChange={(e) => setTargetUrl(e.target.value)}
-              placeholder="https://shorten.asia/..."
-              className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#ea580c] font-mono"
-            />
-          </div>
-        </div>
-
-        {/* Row 2: Thời gian hẹn giờ / Giãn cách (Delay Cadence & Presets) */}
-        <div className="pt-3 border-t border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            {/* Min Seconds */}
-            <div className="md:col-span-3 space-y-1">
-              <label className="text-xs font-semibold text-gray-700 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-[#ea580c]" />
-                <span>Thời gian tối thiểu (Min)</span>
-                <span className="text-[#ea580c]">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="1"
-                  value={minDelaySec}
-                  onChange={(e) => setMinDelaySec(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#ea580c] font-mono"
-                  placeholder="Ví dụ: 60"
-                />
-                <span className="absolute right-3 top-2 text-xs text-gray-400 font-semibold">
-                  giây
+              <div className="flex items-center gap-2">
+                <h2 className="font-bold text-gray-900 text-sm sm:text-base">
+                  Cấu hình & Tự động chạy ngầm Backend (Auto Run 24/7)
+                </h2>
+                <span className="bg-orange-50 text-[#ea580c] border border-orange-200/80 text-[11px] font-bold px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
+                  <Layers className="w-3 h-3" />
+                  <span>{enabledTasks.length}/{tasks.length} URL kích hoạt</span>
                 </span>
               </div>
-            </div>
-
-            {/* Max Seconds */}
-            <div className="md:col-span-3 space-y-1">
-              <label className="text-xs font-semibold text-gray-700 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-[#ea580c]" />
-                <span>Thời gian tối đa (Max)</span>
-                <span className="text-[#ea580c]">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="1"
-                  value={maxDelaySec}
-                  onChange={(e) => setMaxDelaySec(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#ea580c] font-mono"
-                  placeholder="Ví dụ: 180"
-                />
-                <span className="absolute right-3 top-2 text-xs text-gray-400 font-semibold">
-                  giây
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Presets */}
-            <div className="md:col-span-6 space-y-1">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-gray-600">
-                  Khoảng ngẫu nhiên (Click chọn nhanh):
-                </label>
-                {isAutoRunning && (
-                  <button
-                    type="button"
-                    onClick={() => handleApplyDelay()}
-                    className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <Check className="w-3 h-3" />
-                    <span>Lưu số giây mới</span>
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap items-center gap-1.5">
-                {[
-                  { label: "30s - 60s", min: 30, max: 60 },
-                  { label: "60s - 180s (Khuyên dùng)", min: 60, max: 180 },
-                  { label: "120s - 240s", min: 120, max: 240 },
-                  { label: "5p - 10p", min: 300, max: 600 },
-                ].map((preset) => {
-                  const isSelected =
-                    Number(minDelaySec) === preset.min && Number(maxDelaySec) === preset.max;
-                  return (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => setDelayPreset(preset.min, preset.max)}
-                      className={`text-xs px-2.5 py-1.5 rounded-lg border transition cursor-pointer font-medium ${
-                        isSelected
-                          ? "bg-[#ea580c] text-white border-[#ea580c] shadow-2xs font-bold"
-                          : "bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-[#ea580c] border-gray-200"
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  );
-                })}
-              </div>
+              <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${isAutoRunning ? "bg-emerald-500 animate-ping" : "bg-gray-300"}`}></span>
+                <span>Mỗi URL trong danh sách chạy độc lập theo bộ đếm giờ riêng</span>
+              </p>
             </div>
           </div>
-        </div>
 
-        {/* Row 3: SOCKS5 Proxy - Ví dụ */}
-        <div className="pt-3 border-t border-gray-100 space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <label className="font-semibold text-gray-700 flex flex-wrap items-center gap-1.5">
-              <Server className="w-3.5 h-3.5 text-gray-400" />
-              <span>SOCKS5 Proxy (Ví dụ: socks5://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324)</span>
-            </label>
-          </div>
-          <input
-            type="text"
-            value={proxyUrl}
-            onChange={(e) => setProxyUrl(e.target.value)}
-            placeholder="Ví dụ: socks5://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324"
-            className="w-full px-3.5 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#ea580c] font-mono"
-          />
-        </div>
-
-        {/* Action Buttons Footer */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100">
-          <div className="text-xs text-gray-500 font-medium flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Mỗi URL trong danh sách chạy độc lập theo bộ đếm giờ riêng</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5 self-end sm:self-auto shrink-0">
             {/* Nút Tạm dừng tất cả (khi có URL đang chạy ngầm) */}
             {isAutoRunning && (
               <button
                 type="button"
                 onClick={stopAutoRun}
-                className="flex items-center justify-center gap-1.5 bg-white hover:bg-red-50 text-red-600 hover:text-red-700 px-4 py-2.5 rounded-xl text-xs font-bold transition border border-red-200 shadow-2xs cursor-pointer"
+                className="flex items-center justify-center gap-1.5 bg-white hover:bg-red-50 text-red-600 hover:text-red-700 px-3.5 py-2 rounded-xl text-xs font-bold transition border border-red-200 shadow-2xs cursor-pointer"
                 title="Tạm dừng toàn bộ các URL đang chạy ngầm Backend"
               >
                 <Pause className="w-3.5 h-3.5 fill-current" />
@@ -628,7 +651,7 @@ function ProxySeedingContent() {
               <button
                 type="button"
                 onClick={handleStartAll}
-                className="flex items-center justify-center gap-1.5 bg-white hover:bg-emerald-50 text-emerald-700 hover:text-emerald-800 px-4 py-2.5 rounded-xl text-xs font-bold transition border border-emerald-200 shadow-2xs cursor-pointer"
+                className="flex items-center justify-center gap-1.5 bg-white hover:bg-emerald-50 text-emerald-700 hover:text-emerald-800 px-3.5 py-2 rounded-xl text-xs font-bold transition border border-emerald-200 shadow-2xs cursor-pointer"
                 title="Bật chạy lại tất cả URL trong danh sách"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -639,8 +662,8 @@ function ProxySeedingContent() {
             {/* Nút: Thêm URL vào danh sách */}
             <button
               type="button"
-              onClick={handleAddAndRunBackend}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-xs shadow-emerald-600/20 cursor-pointer"
+              onClick={handleOpenCreate}
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-xs shadow-emerald-600/20 cursor-pointer active:scale-95"
             >
               <Plus className="w-4 h-4" />
               <span>Thêm URL vào danh sách</span>
@@ -659,6 +682,15 @@ function ProxySeedingContent() {
               <span className="bg-orange-100 text-[#ea580c] text-[11px] font-black px-2 py-0.5 rounded-full">
                 {enabledTasks.length} / {tasks.length} URL đang bật
               </span>
+              <button
+                type="button"
+                onClick={handleOpenCreate}
+                className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 text-[11px] font-bold px-2.5 py-1 rounded-lg transition cursor-pointer shadow-2xs ml-1"
+                title="Mở form thêm URL mới"
+              >
+                <Plus className="w-3 h-3" />
+                <span>Thêm URL</span>
+              </button>
             </div>
             <p className="text-[11px] text-emerald-600 font-medium">
               ⚡ Mỗi URL hoạt động hoàn toàn độc lập với bộ hẹn giờ riêng biệt, tự động xoay proxy không chờ nhau
@@ -670,9 +702,14 @@ function ProxySeedingContent() {
               <p className="text-xs text-gray-500 font-medium">
                 Chưa có URL nào trong danh sách chạy tự động.
               </p>
-              <p className="text-[11px] text-gray-400 mt-1">
-                Nhập URL ở trên rồi nhấn <span className="font-bold text-[#ea580c]">"+ Thêm vào List Auto"</span> hoặc <span className="font-bold text-emerald-600">"Bắt Đầu Chạy Tự Động"</span> để thêm tự động.
-              </p>
+              <button
+                type="button"
+                onClick={handleOpenCreate}
+                className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-2xs transition cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Thêm URL mới ngay</span>
+              </button>
             </div>
           ) : (
             <div className="overflow-x-auto rounded-xl border border-gray-200/80 bg-white">
@@ -801,36 +838,46 @@ function ProxySeedingContent() {
 
                         {/* Hẹn Giờ / Đếm Ngược Countdown Seconds TỪNG URL RIÊNG BIỆT (KHÔNG CHỜ NHAU) */}
                         <td className="py-2.5 px-3">
-                          {isExecutingThis ? (
-                            <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-2 py-1 rounded-lg text-[11px] animate-pulse">
-                              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-                              <span>Đang gửi request...</span>
-                            </span>
-                          ) : isAutoRunning && task.enabled && taskCountdown !== null ? (
-                            <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-lg font-bold text-xs shadow-2xs">
-                              <Timer
-                                className="w-3.5 h-3.5 text-emerald-600 animate-spin"
-                                style={{ animationDuration: "3s" }}
-                              />
-                              <span>Kế tiếp sau:</span>
-                              <span className="font-mono text-emerald-700 font-black text-xs bg-white px-1.5 py-0.5 rounded border border-emerald-200 shadow-2xs">
-                                {taskCountdown}s
+                          <div className="space-y-1">
+                            {/* Cadence badge hiển thị min - max giây cài đặt riêng cho task */}
+                            <div className="flex items-center gap-1">
+                              <span className="text-[10px] font-mono font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">
+                                ⏱ {task.minDelaySec || 60}s - {task.maxDelaySec || 180}s
                               </span>
                             </div>
-                          ) : isAutoRunning && task.enabled ? (
-                            <div className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50/50 border border-emerald-200 px-2 py-1 rounded-lg text-[11px]">
-                              <Clock className="w-3 h-3 text-emerald-500 animate-pulse" />
-                              <span>Đang xếp lịch...</span>
-                            </div>
-                          ) : !task.enabled ? (
-                            <span className="text-gray-400 bg-gray-100 px-2 py-0.5 rounded text-[11px]">
-                              Đã tắt
-                            </span>
-                          ) : (
-                            <span className="text-gray-500 bg-gray-100 px-2 py-0.5 rounded text-[11px]">
-                              Tạm dừng
-                            </span>
-                          )}
+
+                            {/* Live status / Countdown */}
+                            {isExecutingThis ? (
+                              <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-2 py-0.5 rounded-lg text-[11px] animate-pulse">
+                                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+                                <span>Đang gửi request...</span>
+                              </span>
+                            ) : isAutoRunning && task.enabled && taskCountdown !== null ? (
+                              <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-lg font-bold text-xs shadow-2xs">
+                                <Timer
+                                  className="w-3.5 h-3.5 text-emerald-600 animate-spin"
+                                  style={{ animationDuration: "3s" }}
+                                />
+                                <span>Kế tiếp sau:</span>
+                                <span className="font-mono text-emerald-700 font-black text-xs bg-white px-1.5 py-0.5 rounded border border-emerald-200 shadow-2xs">
+                                  {taskCountdown > 0 ? `${taskCountdown}s` : "Đang chạy..."}
+                                </span>
+                              </div>
+                            ) : isAutoRunning && task.enabled ? (
+                              <div className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50/50 border border-emerald-200 px-2 py-0.5 rounded-lg text-[11px]">
+                                <Clock className="w-3 h-3 text-emerald-500 animate-pulse" />
+                                <span>Đang xếp lịch...</span>
+                              </div>
+                            ) : !task.enabled ? (
+                              <span className="text-gray-400 bg-gray-100 px-2 py-0.5 rounded text-[11px]">
+                                Đã tắt
+                              </span>
+                            ) : (
+                              <span className="text-gray-500 bg-gray-100 px-2 py-0.5 rounded text-[11px]">
+                                Tạm dừng
+                              </span>
+                            )}
+                          </div>
                         </td>
 
                         {/* Stats */}
@@ -858,7 +905,9 @@ function ProxySeedingContent() {
                                   {task.lastIp || ""}
                                 </span>
                               </div>
-                              <div className="text-[10px] text-gray-400">{task.lastRun}</div>
+                              <div className="text-[10px] text-gray-400 font-mono">
+                                {formatVietnamTime(task.lastRun)}
+                              </div>
                             </div>
                           ) : (
                             <span className="text-gray-400 text-[11px]">Chưa chạy</span>
@@ -870,9 +919,17 @@ function ProxySeedingContent() {
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               type="button"
+                              onClick={() => handleOpenEdit(task)}
+                              title="Chỉnh sửa URL & Proxy"
+                              className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition border border-gray-200 hover:border-blue-300 cursor-pointer"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
                               onClick={() => handleRunTaskImmediately(task)}
                               title="Chạy thử ngay 1 lượt cho URL này"
-                              className="p-1.5 text-gray-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition border border-gray-200 hover:border-emerald-300"
+                              className="p-1.5 text-gray-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition border border-gray-200 hover:border-emerald-300 cursor-pointer"
                             >
                               <Zap className="w-3.5 h-3.5 text-emerald-600" />
                             </button>
@@ -880,7 +937,7 @@ function ProxySeedingContent() {
                               type="button"
                               onClick={() => handleDeleteTask(task.id)}
                               title="Xóa URL khỏi danh sách"
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition border border-transparent hover:border-red-200"
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition border border-transparent hover:border-red-200 cursor-pointer"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -1120,6 +1177,411 @@ function ProxySeedingContent() {
           </div>
         )}
       </div>
+
+      {/* CREATE TASK MODAL */}
+      {isCreateModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          onClick={handleCloseCreate}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-lg w-full overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/70">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
+                  <Plus className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">
+                    Thêm URL & Cấu Hình Tự Động
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Tự động nhận bộ hẹn giờ riêng và chạy ngầm 24/7 dưới Backend
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCloseCreate}
+                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCreate} className="p-6 space-y-4">
+              {/* URL Target */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                  <Globe2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>URL Cần Kiểm Tra (Target URL)</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="url"
+                  required
+                  autoFocus
+                  value={createTargetUrl}
+                  onChange={(e) => setCreateTargetUrl(e.target.value)}
+                  placeholder="https://shorten.asia/..."
+                  className="w-full text-xs font-mono px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition bg-gray-50/40 focus:bg-white text-gray-900"
+                />
+                <p className="text-[11px] text-gray-400">
+                  URL đích hoặc liên kết affiliate cần chạy seeding tự động.
+                </p>
+              </div>
+
+              {/* Thời Gian Hẹn Giờ Giãn Cách (Delay Cadence & Presets) */}
+              <div className="space-y-2 bg-gray-50/80 p-3.5 rounded-xl border border-gray-200/80">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Thời Gian Hẹn Giờ Giãn Cách (Delay)</span>
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <span className="text-[11px] text-gray-400">Random giữa Min & Max</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Min Seconds */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-gray-600">
+                      Tối thiểu (Min)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        value={createMinDelay}
+                        onChange={(e) =>
+                          setCreateMinDelay(e.target.value === "" ? "" : Number(e.target.value))
+                        }
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                        placeholder="60"
+                      />
+                      <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
+                        giây
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Max Seconds */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-gray-600">
+                      Tối đa (Max)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        value={createMaxDelay}
+                        onChange={(e) =>
+                          setCreateMaxDelay(e.target.value === "" ? "" : Number(e.target.value))
+                        }
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                        placeholder="180"
+                      />
+                      <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
+                        giây
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Presets */}
+                <div className="pt-1.5 space-y-1.5">
+                  <div className="text-[11px] font-semibold text-gray-500">
+                    Chọn nhanh khoảng thời gian:
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {[
+                      { label: "30s - 60s", min: 30, max: 60 },
+                      { label: "60s - 180s (Khuyên dùng)", min: 60, max: 180 },
+                      { label: "120s - 240s", min: 120, max: 240 },
+                      { label: "5p - 10p", min: 300, max: 600 },
+                    ].map((preset) => {
+                      const isSelected =
+                        Number(createMinDelay) === preset.min &&
+                        Number(createMaxDelay) === preset.max;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => {
+                            setCreateMinDelay(preset.min);
+                            setCreateMaxDelay(preset.max);
+                          }}
+                          className={`text-[11px] px-2 py-1 rounded-md border transition cursor-pointer font-medium ${
+                            isSelected
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs font-bold"
+                              : "bg-white hover:bg-emerald-50 text-gray-700 hover:text-emerald-700 border-gray-200"
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Proxy URL */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                  <Server className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>SOCKS5 Proxy Riêng Cho URL Này</span>
+                  <span className="text-gray-400 font-normal">(Tùy chọn)</span>
+                </label>
+                <input
+                  type="text"
+                  value={createProxyUrl}
+                  onChange={(e) => setCreateProxyUrl(e.target.value)}
+                  placeholder="socks5h://user:pass@host:port (để trống dùng proxy mặc định)"
+                  className="w-full text-xs font-mono px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition bg-gray-50/40 focus:bg-white text-gray-900"
+                />
+                <p className="text-[11px] text-gray-400">
+                  Để trống nếu bạn muốn URL này dùng Proxy SOCKS5 mặc định của hệ thống.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={handleCloseCreate}
+                  disabled={createSaving}
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={createSaving}
+                  className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 rounded-xl shadow-xs transition inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {createSaving ? (
+                    <>
+                      <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Đang thêm...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Thêm Vào Danh Sách</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT TASK MODAL */}
+      {editingTask && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          onClick={handleCloseEdit}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-lg w-full overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/70">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-blue-100 text-blue-700 rounded-xl">
+                  <Pencil className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">
+                    Chỉnh Sửa URL & Cấu Hình Tự Động
+                  </h3>
+                  <p className="text-[11px] text-gray-500 font-mono">
+                    ID: {editingTask.id} • {editingTask.totalRuns || 0} lượt chạy
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCloseEdit}
+                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="p-6 space-y-4">
+              {/* URL Target */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                  <Globe2 className="w-3.5 h-3.5 text-blue-600" />
+                  <span>URL Cần Kiểm Tra (Target URL)</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="url"
+                  required
+                  value={editTargetUrl}
+                  onChange={(e) => setEditTargetUrl(e.target.value)}
+                  placeholder="https://shorten.asia/..."
+                  className="w-full text-xs font-mono px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50/40 focus:bg-white text-gray-900"
+                />
+                <p className="text-[11px] text-gray-400">
+                  URL đích hoặc liên kết affiliate cần chạy seeding tự động.
+                </p>
+              </div>
+
+              {/* Thời Gian Hẹn Giờ Giãn Cách (Delay Cadence & Presets) */}
+              <div className="space-y-2 bg-gray-50/80 p-3.5 rounded-xl border border-gray-200/80">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Thời Gian Hẹn Giờ Giãn Cách (Delay)</span>
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <span className="text-[11px] text-gray-400">Random giữa Min & Max</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Min Seconds */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-gray-600">
+                      Tối thiểu (Min)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        value={editMinDelay}
+                        onChange={(e) =>
+                          setEditMinDelay(e.target.value === "" ? "" : Number(e.target.value))
+                        }
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        placeholder="60"
+                      />
+                      <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
+                        giây
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Max Seconds */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-gray-600">
+                      Tối đa (Max)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        value={editMaxDelay}
+                        onChange={(e) =>
+                          setEditMaxDelay(e.target.value === "" ? "" : Number(e.target.value))
+                        }
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        placeholder="180"
+                      />
+                      <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
+                        giây
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Presets */}
+                <div className="pt-1.5 space-y-1.5">
+                  <div className="text-[11px] font-semibold text-gray-500">
+                    Chọn nhanh khoảng thời gian:
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {[
+                      { label: "30s - 60s", min: 30, max: 60 },
+                      { label: "60s - 180s (Khuyên dùng)", min: 60, max: 180 },
+                      { label: "120s - 240s", min: 120, max: 240 },
+                      { label: "5p - 10p", min: 300, max: 600 },
+                    ].map((preset) => {
+                      const isSelected =
+                        Number(editMinDelay) === preset.min &&
+                        Number(editMaxDelay) === preset.max;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => {
+                            setEditMinDelay(preset.min);
+                            setEditMaxDelay(preset.max);
+                          }}
+                          className={`text-[11px] px-2 py-1 rounded-md border transition cursor-pointer font-medium ${
+                            isSelected
+                              ? "bg-blue-600 text-white border-blue-600 shadow-2xs font-bold"
+                              : "bg-white hover:bg-blue-50 text-gray-700 hover:text-blue-700 border-gray-200"
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Proxy URL */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                  <Server className="w-3.5 h-3.5 text-blue-600" />
+                  <span>SOCKS5 Proxy Riêng Cho URL Này</span>
+                  <span className="text-gray-400 font-normal">(Tùy chọn)</span>
+                </label>
+                <input
+                  type="text"
+                  value={editProxyUrl}
+                  onChange={(e) => setEditProxyUrl(e.target.value)}
+                  placeholder="socks5h://user:pass@host:port (để trống dùng proxy mặc định)"
+                  className="w-full text-xs font-mono px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50/40 focus:bg-white text-gray-900"
+                />
+                <p className="text-[11px] text-gray-400">
+                  Để trống nếu bạn muốn URL này dùng Proxy SOCKS5 mặc định của hệ thống.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={handleCloseEdit}
+                  disabled={editSaving}
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving}
+                  className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-xl shadow-xs transition inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {editSaving ? (
+                    <>
+                      <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Đang lưu...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Lưu Thay Đổi</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

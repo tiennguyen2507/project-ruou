@@ -270,6 +270,8 @@ export interface BackendAutoRunTask {
   nextRunAt?: string | null;
   currentDelaySec?: number | null;
   isExecuting?: boolean;
+  minDelaySec?: number;
+  maxDelaySec?: number;
 }
 
 export interface BackendAutoRunStatus {
@@ -337,6 +339,8 @@ export async function stopBackendAutoRun(): Promise<BackendAutoRunStatus> {
 export async function addBackendAutoRunTask(params: {
   targetUrl: string;
   proxyUrl?: string;
+  minDelaySec?: number;
+  maxDelaySec?: number;
 }): Promise<BackendAutoRunTask> {
   const res = await fetch(`${API_BASE}/proxy-seeding/auto-run/tasks`, {
     method: 'POST',
@@ -356,6 +360,28 @@ export async function toggleBackendAutoRunTask(id: string): Promise<BackendAutoR
   });
   if (!res.ok) {
     throw new Error('Không thể cập nhật trạng thái URL');
+  }
+  return res.json();
+}
+
+export async function updateBackendAutoRunTask(
+  id: string,
+  params: {
+    targetUrl?: string;
+    proxyUrl?: string;
+    enabled?: boolean;
+    minDelaySec?: number;
+    maxDelaySec?: number;
+  },
+): Promise<BackendAutoRunTask> {
+  const res = await fetch(`${API_BASE}/proxy-seeding/auto-run/tasks/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(err.message || 'Không thể cập nhật URL');
   }
   return res.json();
 }

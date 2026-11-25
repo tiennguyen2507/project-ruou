@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import {
@@ -20,7 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { MongooseModule } from '@nestjs/mongoose';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import {
   ProxyAutoRunnerService,
   AutoRunStatus,
@@ -203,6 +204,12 @@ export class AutoRunTaskDto {
 
   @ApiPropertyOptional({ description: 'Task có đang trong quá trình gửi request không', example: false })
   isExecuting?: boolean;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối thiểu riêng của URL này (giây)', example: 30 })
+  minDelaySec?: number;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối đa riêng của URL này (giây)', example: 60 })
+  maxDelaySec?: number;
 }
 
 export class AutoRunStatusDto {
@@ -346,6 +353,52 @@ export class AddTaskDto {
   @IsOptional()
   @IsString()
   proxyUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối thiểu (giây)', example: 30 })
+  @IsOptional()
+  @IsNumber()
+  minDelaySec?: number;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối đa (giây)', example: 60 })
+  @IsOptional()
+  @IsNumber()
+  maxDelaySec?: number;
+}
+
+export class UpdateTaskDto {
+  @ApiPropertyOptional({
+    description: 'URL mới cần kiểm tra',
+    example: 'https://shorten.asia/fyscDRRV',
+  })
+  @IsOptional()
+  @IsString()
+  targetUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'SOCKS5 Proxy tùy chọn cho URL này (để trống sẽ dùng Proxy mặc định)',
+    example: 'socks5://valerierunol82:mza2mdazmdq5na==@103.216.74.218:4324',
+  })
+  @IsOptional()
+  @IsString()
+  proxyUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'Trạng thái kích hoạt chạy của URL này',
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  enabled?: boolean;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối thiểu (giây)', example: 30 })
+  @IsOptional()
+  @IsNumber()
+  minDelaySec?: number;
+
+  @ApiPropertyOptional({ description: 'Thời gian delay tối đa (giây)', example: 60 })
+  @IsOptional()
+  @IsNumber()
+  maxDelaySec?: number;
 }
 
 export class UpdateConfigDto {
@@ -514,7 +567,7 @@ export class ProxySeedingController {
   })
   @ApiResponse({ status: 400, description: 'URL không hợp lệ hoặc đã tồn tại trong danh sách.' })
   addTask(@Body() body: AddTaskDto) {
-    return this.autoRunner.addTask(body.targetUrl, body.proxyUrl);
+    return this.autoRunner.addTask(body.targetUrl, body.proxyUrl, body.minDelaySec, body.maxDelaySec);
   }
 
   @Patch('auto-run/tasks/:id/toggle')
@@ -536,6 +589,27 @@ export class ProxySeedingController {
   @ApiResponse({ status: 400, description: 'Không tìm thấy task với ID đã cho.' })
   toggleTask(@Param('id') id: string) {
     return this.autoRunner.toggleTask(id);
+  }
+
+  @Put('auto-run/tasks/:id')
+  @ApiOperation({
+    summary: 'Chỉnh sửa thông tin URL và Proxy của 1 task (lưu MongoDB)',
+    description: 'Cập nhật URL đích, SOCKS5 proxy hoặc trạng thái bật/tắt trong MongoDB.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID của task cần chỉnh sửa',
+    example: 'task-1795320951082',
+  })
+  @ApiBody({ type: UpdateTaskDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Cập nhật task thành công.',
+    type: AutoRunTaskDto,
+  })
+  @ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ hoặc không tìm thấy task.' })
+  updateTask(@Param('id') id: string, @Body() body: UpdateTaskDto) {
+    return this.autoRunner.updateTask(id, body);
   }
 
   @Delete('auto-run/tasks/:id')
