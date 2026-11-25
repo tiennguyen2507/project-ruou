@@ -78,14 +78,14 @@ export function TaskTable({
         <div className="overflow-x-auto rounded-xl border border-gray-200/80 bg-white">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-gray-50/80 border-b border-gray-100 text-gray-500 font-semibold">
-                <th className="py-2.5 px-3 min-w-[130px] text-center">Trạng Thái / Chạy BE</th>
-                <th className="py-2.5 px-3 min-w-[220px]">URL Cần Kiểm Tra</th>
-                <th className="py-2.5 px-3 min-w-[160px]">Proxy SOCKS5</th>
-                <th className="py-2.5 px-3 min-w-[160px]">Hẹn Giờ / Đếm Ngược</th>
-                <th className="py-2.5 px-3 min-w-[100px] text-center">Thống Kê</th>
-                <th className="py-2.5 px-3 min-w-[140px]">Lần Chạy Cuối</th>
-                <th className="py-2.5 px-3 min-w-[90px] text-right">Thao Tác</th>
+              <tr className="bg-gray-50/80 border-b border-gray-100 text-gray-500 font-semibold text-[11px] uppercase tracking-wider">
+                <th className="py-3 px-3 w-[120px] text-center">Trạng Thái</th>
+                <th className="py-3 px-3 min-w-[280px]">URL Cần Kiểm Tra</th>
+                <th className="py-3 px-3 min-w-[180px]">Proxy SOCKS5</th>
+                <th className="py-3 px-3 min-w-[170px]">Hẹn Giờ / Đếm Ngược</th>
+                <th className="py-3 px-3 min-w-[90px] text-center">Thống Kê</th>
+                <th className="py-3 px-3 min-w-[140px]">Lần Chạy Cuối</th>
+                <th className="py-3 px-3 min-w-[110px] text-center">Thao Tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
