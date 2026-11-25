@@ -19,25 +19,24 @@ export function SeedingResultCard({
   if (!latestBackendRun) return null;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-3 sm:p-3.5 space-y-2 animate-fade-in">
-      {/* Top summary row */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              latestBackendRun.success ? "bg-emerald-500 animate-pulse" : "bg-red-500"
-            }`}
-          />
-          <span className="font-bold text-gray-800 text-xs sm:text-sm">
-            Kết Quả Lượt Gần Nhất
-          </span>
-          <span
-            className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded ${
-              latestBackendRun.success
-                ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                : "bg-red-100 text-red-800 border border-red-200"
-            }`}
-          >
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-3 sm:p-3.5 space-y-2 animate-fade-in">
+            {/* Top summary row */}
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span
+            className={`w-2 h-2 rounded-full ${latestBackendRun.success ? "bg-emerald-500 animate-pulse" : "bg-red-500"
+                    }`}
+                />
+                <span className="font-bold text-gray-800 text-xs sm:text-sm">
+                  Kết Quả Lượt Gần Nhất
+                </span>
+                <span
+                  className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded ${
+                    latestBackendRun.success
+                      ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                      : "bg-red-100 text-red-800 border border-red-200"
+                  }`}
+                >
             HTTP {latestBackendRun.status || 200}
           </span>
 
@@ -119,6 +118,6 @@ export function SeedingResultCard({
           </div>
         </div>
       )}
-    </div>
-  );
+      </div>
+      );
 }

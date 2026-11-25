@@ -58,24 +58,7 @@ export function TaskTableRow({
           : ""
       }`}
     >
-      {/* 1. Status Toggle */}
-      <td className="py-3 px-3 text-center align-middle">
-        <button
-          type="button"
-          onClick={() => onToggleTask(task.id)}
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer shadow-2xs ${
-            task.enabled
-              ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300"
-              : "bg-gray-100 text-gray-500 hover:bg-gray-200 border border-gray-200"
-          }`}
-          title={task.enabled ? "Click để tạm dừng URL này" : "Click để kích hoạt URL này"}
-        >
-          <Power className={`w-3 h-3 ${task.enabled ? "text-emerald-600" : "text-gray-400"}`} />
-          <span>{task.enabled ? "Đang Bật" : "Tạm Tắt"}</span>
-        </button>
-      </td>
-
-      {/* 2. Target URL */}
+      {/* 1. Target URL */}
       <td className="py-3 px-3 align-middle">
         <div className="flex items-center gap-2 max-w-sm lg:max-w-md xl:max-w-lg">
           <span
@@ -227,9 +210,24 @@ export function TaskTableRow({
         )}
       </td>
 
-      {/* 7. Action buttons */}
+      {/* 6. Action buttons */}
       <td className="py-3 px-3 text-center align-middle">
         <div className="flex items-center justify-center gap-1.5">
+          {/* Toggle Bật / Tắt */}
+          <button
+            type="button"
+            onClick={() => onToggleTask(task.id)}
+            title={task.enabled ? "Đang Bật - Click để tạm dừng" : "Đang Tắt - Click để kích hoạt"}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition border shadow-2xs cursor-pointer ${
+              task.enabled
+                ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-300"
+                : "bg-gray-100 text-gray-500 hover:bg-gray-200 border-gray-200"
+            }`}
+          >
+            <Power className={`w-3 h-3 ${task.enabled ? "text-emerald-600" : "text-gray-400"}`} />
+            <span>{task.enabled ? "Bật" : "Tắt"}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => onOpenEdit(task)}
