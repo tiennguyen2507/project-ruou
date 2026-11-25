@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Plus, X, Globe2, Clock, Server, RotateCw } from "lucide-react";
+import { Plus, X, Globe2, Clock, Server, RotateCw, Sparkles } from "lucide-react";
+import { convertRawProxyToSocks5 } from "@/lib/parseProxy";
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -32,6 +33,29 @@ export function CreateTaskModal({
   isSaving,
   onSubmit,
 }: CreateTaskModalProps) {
+  const handleConvertHomeProxy = async () => {
+    if (proxyUrl.trim()) {
+      onProxyUrlChange(convertRawProxyToSocks5(proxyUrl));
+      return;
+    }
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        const text = await navigator.clipboard.readText();
+        if (text && text.trim()) {
+          onProxyUrlChange(convertRawProxyToSocks5(text));
+        }
+      }
+    } catch {}
+  };
+
+  const handleProxyInputChange = (val: string) => {
+    if (val.includes(":") && !val.includes("://") && val.split(":").length >= 4) {
+      onProxyUrlChange(convertRawProxyToSocks5(val));
+    } else {
+      onProxyUrlChange(val);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -180,20 +204,46 @@ export function CreateTaskModal({
 
           {/* Proxy URL */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-              <Server className="w-3.5 h-3.5 text-emerald-600" />
-              <span>SOCKS5 Proxy Riêng Cho URL Này</span>
-              <span className="text-gray-400 font-normal">(Tùy chọn)</span>
-            </label>
-            <input
-              type="text"
-              value={proxyUrl}
-              onChange={(e) => onProxyUrlChange(e.target.value)}
-              placeholder="socks5h://user:pass@host:port (để trống dùng proxy mặc định)"
-              className="w-full text-xs font-mono px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition bg-gray-50/40 focus:bg-white text-gray-900"
-            />
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5 text-emerald-600" />
+                <span>SOCKS5 Proxy Riêng Cho URL Này</span>
+                <span className="text-gray-400 font-normal">(Tùy chọn)</span>
+              </label>
+
+              <button
+                type="button"
+                onClick={handleConvertHomeProxy}
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-lg transition cursor-pointer shadow-2xs"
+                title="Chuyển đổi hoặc dán định dạng HomeProxy (IP:Port:User:Pass)"
+              >
+                <Sparkles className="w-3 h-3 text-emerald-600" />
+                <span>Dán từ HomeProxy</span>
+              </button>
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                value={proxyUrl}
+                onChange={(e) => handleProxyInputChange(e.target.value)}
+                placeholder="socks5://user:pass@host:port (hoặc dán IP:Port:User:Pass)"
+                className="w-full text-xs font-mono px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition bg-gray-50/40 focus:bg-white text-gray-900 pr-9"
+              />
+              {proxyUrl && !proxyUrl.startsWith("socks5://") && proxyUrl.includes(":") && (
+                <button
+                  type="button"
+                  onClick={handleConvertHomeProxy}
+                  className="absolute right-2 top-2 p-1 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-md transition cursor-pointer"
+                  title="Chuyển ngay sang link SOCKS5"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
             <p className="text-[11px] text-gray-400">
-              Để trống nếu bạn muốn URL này dùng Proxy SOCKS5 mặc định của hệ thống.
+              ⚡ Hỗ trợ dán trực tiếp định dạng HomeProxy: <span className="font-mono text-gray-600">IP:Port:User:Pass</span> sẽ tự động chuyển thành link <span className="font-mono text-gray-600">socks5://</span>.
             </p>
           </div>
 
