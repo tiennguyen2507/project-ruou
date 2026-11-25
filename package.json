@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "typecheck:backend": "npm --prefix Backend run build",
-    "typecheck:frontend": "npm --prefix Frontend run build",
+    "typecheck:frontend": "NEXT_DIST_DIR=.next-build npm --prefix Frontend run build",
     "check": "npm run typecheck:backend && npm run typecheck:frontend",
     "build": "npm run check"
   },

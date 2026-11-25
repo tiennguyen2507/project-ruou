@@ -6,6 +6,7 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   reactStrictMode: true,
   images: {
     domains: ['images.unsplash.com', 'res.cloudinary.com'],
