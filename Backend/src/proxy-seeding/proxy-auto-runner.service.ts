@@ -83,7 +83,9 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
   // Quản lý bộ đếm thời gian độc lập cho từng task riêng biệt (không chờ nhau)
   private taskTimers: Map<string, NodeJS.Timeout> = new Map();
   private tasks: AutoRunTask[] = [];
+  private historyItems: HistoryItem[] = [];
   private readonly cacheFilePath = path.join(process.cwd(), 'data', 'proxy-tasks-cache.json');
+  private readonly historyCacheFilePath = path.join(process.cwd(), 'data', 'proxy-history-cache.json');
 
   private saveToLocalCache() {
     try {
@@ -102,6 +104,41 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
     } catch (e: any) {
       this.logger.debug(`Không thể ghi cache local: ${e.message}`);
     }
+  }
+
+  private saveHistoryToLocalCache() {
+    try {
+      const dir = path.dirname(this.historyCacheFilePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(
+        this.historyCacheFilePath,
+        JSON.stringify(this.historyItems.slice(0, 200), null, 2),
+        'utf-8',
+      );
+    } catch (e: any) {
+      this.logger.debug(`Không thể ghi cache lịch sử: ${e.message}`);
+    }
+  }
+
+  private loadHistoryFromLocalCache(): boolean {
+    try {
+      if (fs.existsSync(this.historyCacheFilePath)) {
+        const raw = fs.readFileSync(this.historyCacheFilePath, 'utf-8');
+        const data = JSON.parse(raw);
+        if (Array.isArray(data) && data.length > 0) {
+          this.historyItems = data;
+          this.logger.log(
+            `[ProxyAutoRunner] 💾 Đã khôi phục ${this.historyItems.length} bản ghi lịch sử từ cache local.`,
+          );
+          return true;
+        }
+      }
+    } catch (e: any) {
+      this.logger.debug(`Không thể đọc cache lịch sử: ${e.message}`);
+    }
+    return false;
   }
 
   private loadFromLocalCache(): boolean {
@@ -141,6 +178,7 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   async onModuleInit() {
+    this.loadHistoryFromLocalCache();
     await this.initializeMongoData();
   }
 
@@ -774,17 +812,25 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
       affSid: item.affSid,
     };
 
-    try {
-      await this.historyModel.create(historyItem);
-    } catch (err: any) {
-      this.logger.error(`[ProxyAutoRunner] Lỗi khi lưu lịch sử vào MongoDB: ${err.message}`);
+    // Luôn lưu vào bộ nhớ cache local trước để đảm bảo không bao giờ mất lịch sử
+    this.historyItems.unshift(historyItem);
+    if (this.historyItems.length > 200) {
+      this.historyItems = this.historyItems.slice(0, 200);
     }
+    this.saveHistoryToLocalCache();
+
+    // Thử lưu vào MongoDB trong nền nếu đang kết nối
+    this.historyModel.create(historyItem).catch((err: any) => {
+      this.logger.debug(
+        `[ProxyAutoRunner] Chưa đồng bộ được vào MongoDB Atlas (${err.message}), đã lưu an toàn vào cache local.`,
+      );
+    });
 
     return historyItem;
   }
 
   /**
-   * Lấy lịch sử từ MongoDB (tối đa 100 bản ghi mới nhất)
+   * Lấy lịch sử từ MongoDB hoặc Fallback sang cache local (tối đa 100 bản ghi mới nhất)
    */
   async getHistory(): Promise<HistoryItem[]> {
     try {
@@ -795,37 +841,44 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
         .lean()
         .exec();
 
-      return docs.map((d: any) => ({
-        id: d.id,
-        targetUrl: d.targetUrl,
-        finalUrl: d.finalUrl,
-        ip: d.ip,
-        location: d.location,
-        status: d.status,
-        device: d.device,
-        redirectType: d.redirectType,
-        timestamp: d.timestamp,
-        createdAt: d.createdAt,
-        success: d.success,
-        affSid: d.affSid,
-      }));
+      if (docs && docs.length > 0) {
+        return docs.map((d: any) => ({
+          id: d.id,
+          targetUrl: d.targetUrl,
+          finalUrl: d.finalUrl,
+          ip: d.ip,
+          location: d.location,
+          status: d.status,
+          device: d.device,
+          redirectType: d.redirectType,
+          timestamp: d.timestamp,
+          createdAt: d.createdAt,
+          success: d.success,
+          affSid: d.affSid,
+        }));
+      }
     } catch (err: any) {
-      this.logger.error(`Lỗi lấy lịch sử từ MongoDB: ${err.message}`);
-      return [];
+      this.logger.debug(
+        `[ProxyAutoRunner] MongoDB Atlas offline hoặc chưa kết nối (${err.message}), trả về lịch sử từ cache local.`,
+      );
     }
+
+    // Fallback: trả về lịch sử từ cache local nếu MongoDB offline hoặc rỗng
+    return this.historyItems;
   }
 
   /**
-   * Xóa lịch sử trong MongoDB
+   * Xóa lịch sử trong cả cache local và MongoDB
    */
   async clearHistory(): Promise<boolean> {
+    this.historyItems = [];
+    this.saveHistoryToLocalCache();
     try {
       await this.historyModel.deleteMany({}).exec();
-      return true;
     } catch (err: any) {
-      this.logger.error(`Lỗi xóa lịch sử MongoDB: ${err.message}`);
-      return false;
+      this.logger.debug(`Lỗi xóa lịch sử MongoDB: ${err.message}`);
     }
+    return true;
   }
 
   /**
