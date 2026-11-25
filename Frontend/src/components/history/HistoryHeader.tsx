@@ -15,7 +15,7 @@ export function HistoryHeader({ hasHistory, onClearHistory }: HistoryHeaderProps
       <div>
         <div className="flex items-center gap-2 mb-2">
           <Link
-            href="/dashboard"
+            href="/dashboard/proxy"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#ea580c] transition bg-white px-2.5 py-1 rounded-lg border border-gray-200 shadow-2xs"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -45,7 +45,7 @@ export function HistoryHeader({ hasHistory, onClearHistory }: HistoryHeaderProps
         )}
 
         <Link
-          href="/dashboard"
+          href="/dashboard/proxy"
           className="flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-2xs"
         >
           <Play className="w-3.5 h-3.5 fill-current" />

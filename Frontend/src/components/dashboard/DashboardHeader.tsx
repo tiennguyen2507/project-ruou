@@ -23,7 +23,7 @@ export function DashboardHeader({ historyCount }: DashboardHeaderProps) {
 
       <div className="flex items-center gap-3">
         <Link
-          href="/dashboard/history"
+          href="/dashboard/proxy/history"
           className="flex items-center gap-2 bg-white hover:bg-orange-50 text-gray-700 hover:text-[#ea580c] px-3.5 py-2 rounded-xl text-xs font-bold border border-gray-200 transition shadow-2xs"
         >
           <Clock className="w-4 h-4 text-[#ea580c]" />

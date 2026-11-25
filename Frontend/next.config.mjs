@@ -19,22 +19,27 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/dashboard',
+        destination: '/dashboard/proxy/history',
+        permanent: false,
+      },
+      {
+        source: '/dashboard/history',
+        destination: '/dashboard/proxy/history',
         permanent: false,
       },
       {
         source: '/admin',
-        destination: '/dashboard',
+        destination: '/dashboard/proxy',
         permanent: false,
       },
       {
         source: '/admin/proxy',
-        destination: '/dashboard',
+        destination: '/dashboard/proxy',
         permanent: false,
       },
       {
         source: '/admin/proxy/history',
-        destination: '/dashboard/history',
+        destination: '/dashboard/proxy/history',
         permanent: false,
       },
     ];
