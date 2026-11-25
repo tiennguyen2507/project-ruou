@@ -209,6 +209,8 @@ export class ProxyAutoRunnerService implements OnModuleInit, OnModuleDestroy {
           nextRunAt: null,
           currentDelaySec: null,
           isExecuting: false,
+          minDelaySec: t.minDelaySec ?? 60,
+          maxDelaySec: t.maxDelaySec ?? 180,
         }));
       }
 

@@ -1234,21 +1234,14 @@ function ProxySeedingContent() {
               </div>
 
               {/* Thời Gian Hẹn Giờ Giãn Cách (Delay Cadence & Presets) */}
-              <div className="space-y-2 bg-gray-50/80 p-3.5 rounded-xl border border-gray-200/80">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Thời Gian Hẹn Giờ Giãn Cách (Delay)</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <span className="text-[11px] text-gray-400">Random giữa Min & Max</span>
-                </div>
-
+              <div className="space-y-2.5 bg-orange-50/40 p-4 rounded-xl border border-orange-200/60">
                 <div className="grid grid-cols-2 gap-3">
                   {/* Min Seconds */}
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-600">
-                      Tối thiểu (Min)
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-[#ea580c]" />
+                      <span>Thời gian tối thiểu (Min)</span>
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -1259,8 +1252,8 @@ function ProxySeedingContent() {
                         onChange={(e) =>
                           setCreateMinDelay(e.target.value === "" ? "" : Number(e.target.value))
                         }
-                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-                        placeholder="60"
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#ea580c] bg-white text-gray-900"
+                        placeholder="30"
                       />
                       <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
                         giây
@@ -1269,9 +1262,11 @@ function ProxySeedingContent() {
                   </div>
 
                   {/* Max Seconds */}
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-600">
-                      Tối đa (Max)
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-[#ea580c]" />
+                      <span>Thời gian tối đa (Max)</span>
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -1282,8 +1277,8 @@ function ProxySeedingContent() {
                         onChange={(e) =>
                           setCreateMaxDelay(e.target.value === "" ? "" : Number(e.target.value))
                         }
-                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-                        placeholder="180"
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#ea580c] bg-white text-gray-900"
+                        placeholder="60"
                       />
                       <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
                         giây
@@ -1293,9 +1288,9 @@ function ProxySeedingContent() {
                 </div>
 
                 {/* Quick Presets */}
-                <div className="pt-1.5 space-y-1.5">
-                  <div className="text-[11px] font-semibold text-gray-500">
-                    Chọn nhanh khoảng thời gian:
+                <div className="pt-1 space-y-1.5">
+                  <div className="text-xs font-semibold text-gray-600">
+                    Khoảng ngẫu nhiên (Click chọn nhanh):
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5">
                     {[
@@ -1315,10 +1310,10 @@ function ProxySeedingContent() {
                             setCreateMinDelay(preset.min);
                             setCreateMaxDelay(preset.max);
                           }}
-                          className={`text-[11px] px-2 py-1 rounded-md border transition cursor-pointer font-medium ${
+                          className={`text-xs px-2.5 py-1.5 rounded-lg border transition cursor-pointer font-medium ${
                             isSelected
-                              ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs font-bold"
-                              : "bg-white hover:bg-emerald-50 text-gray-700 hover:text-emerald-700 border-gray-200"
+                              ? "bg-[#ea580c] text-white border-[#ea580c] shadow-2xs font-bold"
+                              : "bg-white hover:bg-orange-50 text-gray-700 hover:text-[#ea580c] border-gray-200"
                           }`}
                         >
                           {preset.label}
@@ -1436,21 +1431,14 @@ function ProxySeedingContent() {
               </div>
 
               {/* Thời Gian Hẹn Giờ Giãn Cách (Delay Cadence & Presets) */}
-              <div className="space-y-2 bg-gray-50/80 p-3.5 rounded-xl border border-gray-200/80">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Thời Gian Hẹn Giờ Giãn Cách (Delay)</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <span className="text-[11px] text-gray-400">Random giữa Min & Max</span>
-                </div>
-
+              <div className="space-y-2.5 bg-orange-50/40 p-4 rounded-xl border border-orange-200/60">
                 <div className="grid grid-cols-2 gap-3">
                   {/* Min Seconds */}
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-600">
-                      Tối thiểu (Min)
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-[#ea580c]" />
+                      <span>Thời gian tối thiểu (Min)</span>
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -1461,8 +1449,8 @@ function ProxySeedingContent() {
                         onChange={(e) =>
                           setEditMinDelay(e.target.value === "" ? "" : Number(e.target.value))
                         }
-                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                        placeholder="60"
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#ea580c] bg-white text-gray-900"
+                        placeholder="30"
                       />
                       <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
                         giây
@@ -1471,9 +1459,11 @@ function ProxySeedingContent() {
                   </div>
 
                   {/* Max Seconds */}
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-600">
-                      Tối đa (Max)
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-[#ea580c]" />
+                      <span>Thời gian tối đa (Max)</span>
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -1484,8 +1474,8 @@ function ProxySeedingContent() {
                         onChange={(e) =>
                           setEditMaxDelay(e.target.value === "" ? "" : Number(e.target.value))
                         }
-                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                        placeholder="180"
+                        className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#ea580c] bg-white text-gray-900"
+                        placeholder="60"
                       />
                       <span className="absolute right-2.5 top-2 text-[11px] text-gray-400 font-semibold">
                         giây
@@ -1495,9 +1485,9 @@ function ProxySeedingContent() {
                 </div>
 
                 {/* Quick Presets */}
-                <div className="pt-1.5 space-y-1.5">
-                  <div className="text-[11px] font-semibold text-gray-500">
-                    Chọn nhanh khoảng thời gian:
+                <div className="pt-1 space-y-1.5">
+                  <div className="text-xs font-semibold text-gray-600">
+                    Khoảng ngẫu nhiên (Click chọn nhanh):
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5">
                     {[
@@ -1517,10 +1507,10 @@ function ProxySeedingContent() {
                             setEditMinDelay(preset.min);
                             setEditMaxDelay(preset.max);
                           }}
-                          className={`text-[11px] px-2 py-1 rounded-md border transition cursor-pointer font-medium ${
+                          className={`text-xs px-2.5 py-1.5 rounded-lg border transition cursor-pointer font-medium ${
                             isSelected
-                              ? "bg-blue-600 text-white border-blue-600 shadow-2xs font-bold"
-                              : "bg-white hover:bg-blue-50 text-gray-700 hover:text-blue-700 border-gray-200"
+                              ? "bg-[#ea580c] text-white border-[#ea580c] shadow-2xs font-bold"
+                              : "bg-white hover:bg-orange-50 text-gray-700 hover:text-[#ea580c] border-gray-200"
                           }`}
                         >
                           {preset.label}
