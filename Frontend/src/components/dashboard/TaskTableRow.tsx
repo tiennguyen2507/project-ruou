@@ -213,19 +213,18 @@ export function TaskTableRow({
       {/* 6. Action buttons */}
       <td className="py-3 px-3 text-center align-middle">
         <div className="flex items-center justify-center gap-1.5">
-          {/* Toggle Bật / Tắt */}
+          {/* Toggle Bật / Tắt (icon only) */}
           <button
             type="button"
             onClick={() => onToggleTask(task.id)}
             title={task.enabled ? "Đang Bật - Click để tạm dừng" : "Đang Tắt - Click để kích hoạt"}
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition border shadow-2xs cursor-pointer ${
+            className={`p-1.5 rounded-lg transition border shadow-2xs cursor-pointer ${
               task.enabled
-                ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-300"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200 border-gray-200"
+                ? "text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border-emerald-300"
+                : "text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 border-gray-200"
             }`}
           >
-            <Power className={`w-3 h-3 ${task.enabled ? "text-emerald-600" : "text-gray-400"}`} />
-            <span>{task.enabled ? "Bật" : "Tắt"}</span>
+            <Power className="w-3.5 h-3.5" />
           </button>
 
           <button

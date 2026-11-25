@@ -84,7 +84,7 @@ export function TaskTable({
                 <th className="py-3 px-3 min-w-[170px]">Hẹn Giờ / Đếm Ngược</th>
                 <th className="py-3 px-3 min-w-[90px] text-center">Thống Kê</th>
                 <th className="py-3 px-3 min-w-[140px]">Lần Chạy Cuối</th>
-                <th className="py-3 px-3 min-w-[160px] text-center">Thao Tác</th>
+                <th className="py-3 px-3 min-w-[130px] text-center">Thao Tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
